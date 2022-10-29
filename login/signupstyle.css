@@ -27,15 +27,17 @@
 }
 
 .content img{
-    padding-left: 125px;
+	padding-left: 200px;
+    width: 250px;
 }
 
 body {
-	background-color: #cee0c4;
+	background-color: #245b16;
 	font-family: "Roboto Bold", "Roboto", sans-serif;
 	display: flex;
 	align-items:center;
 	justify-content: center;
+	overflow: hidden;
 	min-height: 100vh;
 	margin: 0;
     padding-right: 100px;
@@ -45,7 +47,7 @@ body {
 	background-color: #fff;
 	border-radius: 5px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-	overflow: visible;
+	overflow: hidden;
 	width: 500px;
 	max-width: 100%;
 }
@@ -77,9 +79,8 @@ body {
 
 .form-control input {
 	border: none;
-    font-size: 16px;
     border-bottom: 2px solid #777;
-
+	border-radius: 4px;
 	display: block;
 	font-family: inherit;
 	font-size: 14px;
@@ -103,11 +104,25 @@ body {
 	border-color: #e74c3c;
 }
 
+
 .form-control i {
 	visibility: hidden;
-	position: 10px;
+	/* position: static; */
+	margin-top: 10px;
+	top: 33px;
+	left: 0px;
+}
+.form-control i {
+	visibility: hidden;
+	position: static;
 	top: 40px;
 	right: 10px;
+}
+.form-material-icons{
+	position: static;
+	top: 33px;
+	left: 0px;
+
 }
 
 .form-control.success i.fa-check-circle {
