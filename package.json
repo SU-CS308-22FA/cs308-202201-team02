@@ -12,6 +12,9 @@
   },
   "author": "",
   "license": "ISC",
+  "engines":{
+    "node": "16.18.0"
+  },
   "bugs": {
     "url": "https://github.com/SU-CS308-22FA/cs308-202201-team02/issues"
   },

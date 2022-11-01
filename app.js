@@ -87,10 +87,7 @@ app.get("/editprofile",function(req, res)
   res.render("editprofile");
 });
 
-app.get("/profilePage",function(req, res)
-{
-  res.render("profilePage");
-});
+
 //POST
 app.post("/register",async(req,res)=>{
   console.log("inside post funct");
@@ -99,14 +96,17 @@ app.post("/register",async(req,res)=>{
     email: req.body.email,
     password: req.body.password,
   });
-  newUser.save(function(err){
-    if(err){
-        console.log(err);
-    }
-    else{
-      res.json(req.body);
-    }
-  });
+  await newUser.save();
+  // res.redirect("/profilePage");
+   console.log(newUser._id);
+   const userUrl  = "/profilePage/"+ newUser._id;
+   console.log(userUrl);
+   res.redirect(userUrl,function(req, res)
+   {
+     res.render("profilePage");
+   });
+
+
 });
 
 app.post("/login",function(req,res)
