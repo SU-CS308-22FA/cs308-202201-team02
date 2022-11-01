@@ -1,0 +1,98 @@
+<%- include('partials/profileheader') %>
+<body>
+    <div class="navigation">
+        <div class="logo">
+            <input type="image" src="images/logo.jpg" width="110">
+            <a href="#"></a>
+        </div>
+        <div class="navigation-search-container">
+          <i class="fa fa-search"></i>
+          <input class="search-field" type="text" placeholder="Search">
+          <div class="search-container">
+            <div class="search-container-box">
+              <div class="search-results">
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="navigation-icons">
+            <a class="navigation-link" href="#"><i class="fa fa-home"></i></a>
+            <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+            <a class="navigation-link" href="#"><i class="fa fa-video-camera"></i></a>
+            <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
+        </div>
+      </div>
+
+
+      <div class="profile-page">
+
+        <div class="page-header header-filter" data-parallax="true"></div>
+        <div class="main main-raised">
+            <div class="profile-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 ml-auto mr-auto">
+                            <div class="profile">
+                                <div class="avatar">
+                                    <img src="https://i.pinimg.com/236x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt="Avatar" class="avatar">
+                                </div>
+                                <div class="name">
+                                    <h3 class="title">Name Surname</h3>
+                                    <h6>Striker</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="description text-center">
+                        <p>Football Player. 18 years old. I love football</p>
+                        <a href="/editprofile">Edit Profile</a>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 ml-auto mr-auto">
+                            <div class="profile-tabs">
+                                <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#" role="tab" data-toggle="tab">
+                                            <i class="material-icons">videocam</i>
+                                            Videos
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#" role="tab" data-toggle="tab">
+                                            <i class="material-icons">ballot</i>
+                                            Information
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content tab-space">
+                    <div class="tab-pane active text-center gallery" id="videos">
+                        <div class="row">
+                            <div class="col-md-3 ml-auto">
+                                <!--<video width="320" height="240" autoplay muted>
+                                <source src="https://pin.it/2aVDHgF" type="video/mp4">
+                                Your browser does not support the video tag.
+                                </video>-->
+                                <img src="https://i.pinimg.com/564x/3d/e1/7e/3de17e16ac1b94a87e9b6ed0574bcef3.jpg" class="rounded">
+                                <img src="https://i.pinimg.com/564x/8f/27/a0/8f27a0aba82b3af241bcf4eae2c62180.jpg" class="rounded">
+                            </div>
+                            <div class="col-md-3 mr-auto">
+                                <img src="https://i.pinimg.com/236x/da/91/44/da914453dec90b243d517f023bcfa6a1.jpg" class="rounded">
+                                <img src="https://i.pinimg.com/236x/4f/d4/3b/4fd43b707b099df22476161d8838e38e.jpg" class="rounded">
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
