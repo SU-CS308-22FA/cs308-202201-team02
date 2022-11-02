@@ -7,8 +7,6 @@ const encrypt = require("mongoose-encryption");
 const {check, validationResult} = require("express-validator");
 const Joi = require("joi");
 
-
-
 const app = express();
 
 
@@ -18,8 +16,6 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-
-
 
 const urlencodedParser = bodyParser.urlencoded({extended: false})
 const url = `mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mongodb.net/?retryWrites=true&w=majority`;
@@ -35,13 +31,7 @@ mongoose.connect("mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mo
     .catch( (err) => {
         console.error(`Error connecting to the database. n${err}`);
     })
-
-
-//mongoose.connect("mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mongodb.net/?retryWrites=true&w=majority");
-
-
-//mongoose.connect("mongodb://localhost:27017/tl_userDB");
-
+//SCHEMA
 const userSchema = new mongoose.Schema({
   username:{
     type: String,
@@ -71,8 +61,6 @@ const userSchema = new mongoose.Schema({
 const User = new mongoose.model("User",userSchema);
 
 
-
-
 app.get("/",function(req, res)
 {
   res.render("register");
@@ -87,6 +75,11 @@ app.get("/editprofile",function(req, res)
   res.render("editprofile");
 });
 
+app.get("/ProfilePage",function(req, res)
+{
+  res.render("ProfilePage");
+});
+
 
 //POST
 app.post("/register",async(req,res)=>{
@@ -97,15 +90,8 @@ app.post("/register",async(req,res)=>{
     password: req.body.password,
   });
   await newUser.save();
-  // res.redirect("/profilePage");
-   console.log(newUser._id);
-   const userUrl  = "/profilePage/"+ newUser._id;
-   console.log(userUrl);
-   res.redirect(userUrl,function(req, res)
-   {
-     res.render("profilePage");
-   });
-
+  
+   res.redirect("/ProfilePage");
 
 });
 
@@ -119,7 +105,8 @@ app.post("/login",function(req,res)
       console.log(err);
     }else{
       if (foundUser.password === password) {
-        res.send("logged in");
+        res.redirect("/ProfilePage");
+
       }
    }
   })
@@ -130,7 +117,11 @@ app.post("/login",function(req,res)
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
-
+//let port = process.env.PORT;
+//if (port == null || port == "") {
+//  port = 3000;
+//}
+//app.listen(port);
 app.listen(3000, function(){
   console.log("server on 3000");
 });
