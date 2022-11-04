@@ -1,0 +1,66 @@
+<%- include('partials/header') %>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Sign Up</h2>
+    </div>
+    <form  action="/register" method="POST" class="form" name="form">
+        <div class="form-control">
+            <label for="username">Username</label>
+            <div style="display: flex; flex-direction: row;">
+                <i class="material-icons" style="visibility: visible; margin-top: 10px;">person</i>
+                <input type="text" placeholder="Please enter an username" name="username"  />
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div style="display: flex; flex-direction: row;">
+      <small>Error message</small>
+    </div>
+        </div>
+        <div class="form-control">
+            <label for="email">Email</label>
+            <div style="display: flex; flex-direction: row;">
+                <i class="material-icons" style="visibility: visible; margin-top: 10px;">mail</i>
+                <input type="email" placeholder="Please enter an email" name="email" />
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div style="display: flex; flex-direction: row;">
+      <small>Error message</small>
+    </div>
+
+
+        </div>
+        <div class="form-control">
+            <label for="password">Password</label>
+            <div style="display: flex; flex-direction: row;">
+                <i class="material-icons" style="visibility: visible; margin-top: 10px;">lock</i>
+                <input type="password" placeholder="Please enter a password" name="password"/>
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div style="display: flex; flex-direction: row;">
+      <small>Error message</small>
+    </div>
+        </div>
+        <div class="form-control">
+            <label for="password2">Password Confirmation</label>
+            <div style="display: flex; flex-direction: row;">
+                <i class="material-icons" style="visibility: visible; margin-top: 10px;">lock</i>
+                <input type="password" placeholder="Please enter password again" name="password2"/>
+                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div style="display: flex; flex-direction: row;">
+      <small>Error message</small>
+    </div>
+        </div>
+        <button>Sign Up</button>
+        <div class="login-signup">
+            <span class="text">Already a member?
+                <a href= "/login" class="text login-link">Login Now</a>
+            </span>
+        </div>
+    </form>
+</div>
+<body/>
