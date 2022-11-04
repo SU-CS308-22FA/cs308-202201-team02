@@ -69,9 +69,6 @@ app.use(sessions({
     cookie: { maxAge: oneDay },
     resave: false
 }));
-app.get('/', function(req, res){
-  res.redirect('/register')
-})
 
 app.get('/login', function(req, res) {
   if(req.session.username && req.session.password){
@@ -79,7 +76,6 @@ app.get('/login', function(req, res) {
   }else{
     res.render('login');
   }
-  // res.send('recibido');
 
 });
 app.get('/register', function(req, res) {
