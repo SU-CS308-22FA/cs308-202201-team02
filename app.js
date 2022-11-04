@@ -9,7 +9,7 @@ const sessions = require('express-session');
 const {check, validationResult} = require("express-validator");
 
 const app = express();
-app.use(cookieParser());
+
 
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-const urlencodedParser = bodyParser.urlencoded({extended: false})
+const urlencodedParser = bodyParser.urlencoded({extended: true})
 const url = `mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mongodb.net/?retryWrites=true&w=majority`;
 
 const connectionParams={
@@ -78,7 +78,7 @@ app.get('/login', function(req, res) {
   }
 
 });
-app.get('/register', function(req, res) {
+app.get('/', function(req, res) {
   if(req.session){
     console.log(req.session);
   }
