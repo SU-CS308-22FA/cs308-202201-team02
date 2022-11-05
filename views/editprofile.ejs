@@ -18,9 +18,7 @@
     <div class="navigation-icons">
       <a class="navigation-link" href="#"><i class="fa fa-home"></i></a>
       <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
-      <a class="navigation-link" href="#"
-        ><i class="fa fa-video-camera"></i
-      ></a>
+      <a class="navigation-link" href="#"><i class="fa fa-video-camera"></i></a>
       <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
     </div>
   </div>
@@ -34,7 +32,7 @@
         <li><a href="#help">Help</a></li>
         <br />
         <hr />
-        <li><a href="#deleteaccount">Delete Account</a></li>
+        <li><a href="#">Delete Account</a></li>
       </ul>
     </div>
 
@@ -47,64 +45,29 @@
         <div class="form-control">
           <br />
           <div style="display: flex; flex-direction: row">
-            <label for="username" style="width: 130px; margin-top: 10px"
-              >Name</label
-            >
-            <input
-              type="text"
-              placeholder="Please enter your name"
-              name="username" required
-            />
+            <label for="username" style="width: 130px; margin-top: 10px">Username</label>
+            <input type="text" placeholder="Please enter your username"name="username" required/>
             <i class="fa fa-user-o" aria-hidden="true"></i>
             <i class="fas fa-check-circle"></i>
             <i class="fas fa-exclamation-circle"></i>
           </div>
           <small>Error message</small>
         </div>
+
+
+
         <div class="form-control">
           <div style="display: flex; flex-direction: row">
-            <label for="username" style="width: 130px; margin-top: 10px"
-              >Surname</label
-            >
-            <input
-              type="text"
-              placeholder="Please enter your surname"
-              name="surname" required
-            />
+            <label for="username" style="width: 130px; margin-top: 10px">Email</label>
+            <input type="email" placeholder="eg. email@address.com" name="email" required/>
             <i class="fas fa-check-circle"></i>
             <i class="fas fa-exclamation-circle"></i>
           </div>
           <small>Error message</small>
         </div>
-        <div class="form-control">
-          <div style="display: flex; flex-direction: row">
-            <label for="username" style="width: 130px; margin-top: 10px"
-              >Email</label
-            >
-            <input
-              type="email"
-              placeholder="eg. email@address.com"
-              name="email" required
-            />
-            <i class="fas fa-check-circle"></i>
-            <i class="fas fa-exclamation-circle"></i>
-          </div>
-          <small>Error message</small>
-        </div>
-        <div class="form-control">
-          <div style="display: flex; flex-direction: row">
-            <label for="username" style="width: 130px; margin-top: 10px"
-              >Phone Number</label
-            >
-            <input
-              type="text" placeholder="eg. 05xx xxx xx xx"
-              name="phone" pattern="05\d\d\s\d\d\d\s\d\d\s\d\d" required
-            />
-            <i class="fas fa-check-circle"></i>
-            <i class="fas fa-exclamation-circle"></i>
-          </div>
-          <small>Error message</small>
-        </div>
+
+        
+
         <button>Save</button>
       </form>
     </div>
