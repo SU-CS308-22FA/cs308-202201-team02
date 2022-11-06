@@ -1,77 +1,115 @@
 <%- include('partials/editHeader') %>
-<body>
-  <div class="navigation">
-    <div>
-      <a href="#"></a>
-      <img src="images/logo.jpg" width="110" />
-    </div>
-    <div class="navigation-search-container">
-      <i class="fa fa-search"></i>
-      <input class="search-field" type="text" placeholder="Search" />
-      <div class="search-container">
-        <div class="search-container-box">
-          <div class="search-results"></div>
+
+  <body>
+    <div class="navigation">
+      <div>
+        <a href="#"></a>
+        <img src="images/logo.jpg" width="110" />
+      </div>
+      <div class="navigation-search-container">
+        <i class="fa fa-search"></i>
+        <input class="search-field" type="text" placeholder="Search" />
+        <div class="search-container">
+          <div class="search-container-box">
+            <div class="search-results"></div>
+          </div>
         </div>
+      </div>
+
+      <div class="navigation-icons">
+        <a class="navigation-link" href="#"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="#"><i class="fa fa-video-camera"></i></a>
+        <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
+        <br>
+        <a class="navigation-link" href="/logout" style="color: white;"><i class="fa fa-sign-out"></i></a>
+
       </div>
     </div>
 
-    <div class="navigation-icons">
-      <a class="navigation-link" href="#"><i class="fa fa-home"></i></a>
-      <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
-      <a class="navigation-link" href="#"><i class="fa fa-video-camera"></i></a>
-      <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
-    </div>
-  </div>
-
-  <div class="pageContainer">
-    <div class="content">
-      <ul>
-        <li><a class="active" href="index.html">Edit Profile</a></li>
-        <li><a href="#changepassword">Change Password</a></li>
-        <li><a href="#information">Information</a></li>
-        <li><a href="#help">Help</a></li>
-        <br />
-        <hr />
-        <li><a href="#">Delete Account</a></li>
-      </ul>
-    </div>
-
-    <div class="container">
-      <form action="#" class="form" id="form">
-        <img src="images/profilepic.jpg" class="img" />
-
-        <input type="file" id="myFile" name="filename" />
-
-        <div class="form-control">
+    <div class="pageContainer">
+      <div class="content">
+        <ul>
+          <li><a class="active" href="index.html">Edit Profile</a></li>
+          <li><a href="#changepassword">Change Password</a></li>
+          <li><a href="#information">Information</a></li>
+          <li><a href="#help">Help</a></li>
           <br />
+          <hr />
+          <li><a href="#" onclick="javascript:deleteUser()">Delete Account</a></li>
+        </ul>
+      </div>
+
+      <div class="container">
+        <form action="/editProfile" method="POST" class="form" id="form">
+          <img src="images/profilepic.jpg" class="img" />
+
+          <input type="file" id="myFile" name="filename" />
+
+          <div class="form-control">
+            <br />
+            <div style="display: flex; flex-direction: row">
+              <label for="username" style="width: 130px; margin-top: 10px">Username</label>
+              <input id="username_field" type="text" placeholder="Please enter your name" name="username" required />
+              <i class="fa fa-user-o" aria-hidden="true"></i>
+              <i class="fas fa-check-circle"></i>
+              <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <small>Error message</small>
+          </div>
+          <!-- <div class="form-control">
           <div style="display: flex; flex-direction: row">
-            <label for="username" style="width: 130px; margin-top: 10px">Username</label>
-            <input type="text" placeholder="Please enter your username"name="username" required/>
-            <i class="fa fa-user-o" aria-hidden="true"></i>
+            <label for="username" style="width: 130px; margin-top: 10px"
+              >Surname</label
+            >
+            <input
+              type="text"
+              placeholder="Please enter your surname"
+              name="surname" required
+            />
             <i class="fas fa-check-circle"></i>
             <i class="fas fa-exclamation-circle"></i>
           </div>
           <small>Error message</small>
-        </div>
+        </div> -->
+          <div class="form-control">
+            <div style="display: flex; flex-direction: row">
+              <label for="email" style="width: 130px; margin-top: 10px">Email</label>
+              <input id="email_field" type="email" placeholder="eg. email@address.com" name="email" required />
+              <i class="fas fa-check-circle"></i>
+              <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <small>Error message</small>
+          </div>
 
+          <div class="form-control">
+            <div style="display: flex; flex-direction: row">
+              <label for="password" style="width: 130px; margin-top: 10px">Password</label>
+              <input id="password_field" type="password" placeholder="*******" name="password" required />
+              <i class="fas fa-check-circle"></i>
+              <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <small>Error message</small>
+          </div>
 
-
-        <div class="form-control">
+          <!-- <div class="form-control">
           <div style="display: flex; flex-direction: row">
-            <label for="username" style="width: 130px; margin-top: 10px">Email</label>
-            <input type="email" placeholder="eg. email@address.com" name="email" required/>
+            <label for="username" style="width: 130px; margin-top: 10px"
+              >Phone Number</label
+            >
+            <input
+              type="text" placeholder="eg. 05xx xxx xx xx"
+              name="phone" pattern="05\d\d\s\d\d\d\s\d\d\s\d\d" required
+            />
             <i class="fas fa-check-circle"></i>
             <i class="fas fa-exclamation-circle"></i>
           </div>
           <small>Error message</small>
-        </div>
-
-        
-
-        <button>Save</button>
-      </form>
+        </div> -->
+          <button>Save</button>
+        </form>
+      </div>
     </div>
-  </div>
 
-  <script src="profilePageEdit.js"></script>
-</body>
+    <script src="js/profilePageEdit.js"></script>
+  </body>

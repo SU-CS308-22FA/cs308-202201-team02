@@ -65,7 +65,6 @@ var currentError = "";
 app.get("/", function (req, res) {
   res.render("register");
 });
-
 app.get("/login", function (req, res) {
   res.render("login");
 });
@@ -108,12 +107,10 @@ app.get("/ProfilePage", function (req, res) {
 
 //POST
 app.post("/register", async (req, res) => {
-  console.log("inside register post funct");
+  console.log("inside post funct");
 
   const existingUser = await User.findOne({ email: req.body.email });
   if (existingUser) {
-    console.log("email already in system");
-
     currentError = "this email is already on the system."
     res.redirect("/error");
     return;
@@ -135,8 +132,6 @@ app.post("/login", function (req, res) {
 
   User.findOne({ email: email }).then(function (foundUser) {
     if (!foundUser) {
-      console.log("cant find email");
-
       currentError = "no user with this email."
       res.redirect("/error");
     } else {
@@ -144,18 +139,54 @@ app.post("/login", function (req, res) {
         loggedInUser = foundUser;
         res.redirect("/ProfilePage");
       } else {
-        console.log("wrong password");
-
         currentError = "incorrect password"
         res.redirect("/error");
       }
     }
   }).catch(function (e) {
-    currentError = "ERROR"
+    currentError = "login error."
     res.redirect("/error");
   })
 })
 
+app.post("/editProfile", function (req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    console.log("ff");
+    console.log(foundUser);
+    foundUser.username = username;
+    foundUser.email = email;
+    foundUser.password = password;
+
+    console.log("trying to update password");
+    await foundUser.save();
+
+    loggedInUser = foundUser;
+    res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
+})
+
+app.get("/logout", function (req, res) {
+  loggedInUser = null;
+  res.redirect("/login");
+})
+
+app.get("/deleteUser", function (req, res) {
+  User.deleteOne({ email: loggedInUser?.email }).then(function () {
+    console.log("User deleted");
+    loggedInUser = null;
+    res.redirect("/login");
+
+  }).catch(function (error) {
+    console.log(error); // Failure
+  });
+})
 
 
 
