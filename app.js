@@ -53,6 +53,16 @@ const userSchema = new mongoose.Schema({
     unique: true,
     required: [true, "Please check your data entry, no password specified"],
   },
+    info :
+  {
+    foot:,
+    height:,
+    weight:,
+    nationality:,
+    mainPosition:,
+    pace:
+
+  }
 });
 //const secret = "Thisisourlittlesecret.";
 //userSchema.plugin(encrypt, {secret: secret},['password'] );
@@ -76,6 +86,9 @@ app.get("/editprofile", function (req, res) {
       email: loggedInUser?.email,
     })
   });
+});
+app.get("/help", function (req, res) {
+  res.render("help");
 });
 
 app.get("/error", function (req, res) {
