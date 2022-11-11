@@ -53,6 +53,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     required: [true, "Please check your data entry, no password specified"],
   },
+  phone: {type: String},
 });
 //const secret = "Thisisourlittlesecret.";
 //userSchema.plugin(encrypt, {secret: secret},['password'] );
@@ -67,6 +68,9 @@ app.get("/", function (req, res) {
 });
 app.get("/login", function (req, res) {
   res.render("login");
+});
+app.get("/help", function (req, res) {
+  res.render("help");
 });
 
 app.get("/editprofile", function (req, res) {
@@ -153,6 +157,7 @@ app.post("/editProfile", function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
+  const phone = req.body.phone;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
@@ -160,6 +165,7 @@ app.post("/editProfile", function (req, res) {
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
+    foundUser.phone =phone;
 
     console.log("trying to update password");
     await foundUser.save();
@@ -193,11 +199,11 @@ app.get("/deleteUser", function (req, res) {
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
-let port = process.env.PORT;
-if (port == null || port == "") {
- port = 3000;
-}
-app.listen(port);
+//let port = process.env.PORT;
+//if (port == null || port == "") {
+// port = 3000;
+//}
+//app.listen(port);
 app.listen(3000, function () {
   console.log("server on 3000");
 });
