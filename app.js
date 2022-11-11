@@ -32,7 +32,7 @@ mongoose.connect("mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mo
   .catch((err) => {
     console.error(`Error connecting to the database. n${err}`);
   })
-//SCHEMA
+//SCHEMAa
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
