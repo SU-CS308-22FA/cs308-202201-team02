@@ -83,6 +83,10 @@ app.get("/help", function (req, res) {
   res.render("help");
 });
 
+app.get("/scoutSignupRequest", function (req, res) {
+  res.render("scoutSignupRequest");
+});
+
 
 app.get("/error", function (req, res) {
   res.render("error", {
