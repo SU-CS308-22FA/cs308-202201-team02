@@ -32,7 +32,7 @@
     "heroku": "^7.7.8",
     "joi": "^17.7.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.7.0",
+    "mongoose": "^6.7.2",
     "mongoose-encryption": "^2.1.2",
     "mongoose-findorcreate": "^3.0.0",
     "nodemon": "^2.0.20",

@@ -53,16 +53,8 @@ const userSchema = new mongoose.Schema({
     unique: true,
     required: [true, "Please check your data entry, no password specified"],
   },
-    info :
-  {
-    foot:,
-    height:,
-    weight:,
-    nationality:,
-    mainPosition:,
-    pace:
 
-  }
+
 });
 //const secret = "Thisisourlittlesecret.";
 //userSchema.plugin(encrypt, {secret: secret},['password'] );
@@ -91,6 +83,7 @@ app.get("/help", function (req, res) {
   res.render("help");
 });
 
+
 app.get("/error", function (req, res) {
   res.render("error", {
     error: currentError
@@ -109,6 +102,25 @@ app.get("/ProfilePage", function (req, res) {
   }
 
   res.render("ProfilePage", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+    })
+  });
+});
+app.get("/information", function (req, res) {
+  let jwtToken = null;
+  if (loggedInUser) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("information", {
     token: jwtToken,
     user: JSON.stringify({
       username: loggedInUser?.username,
@@ -206,11 +218,11 @@ app.get("/deleteUser", function (req, res) {
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
-let port = process.env.PORT;
-if (port == null || port == "") {
- port = 3000;
-}
-app.listen(port);
+//let port = process.env.PORT;
+//if (port == null || port == "") {
+ //port = 3000;
+//}
+//app.listen(port);
 app.listen(3000, function () {
   console.log("server on 3000");
 });
