@@ -90,12 +90,42 @@ const videosSchema = new mongoose.Schema({
   },
 
 })
+//informationSchema
+
+const informationSchema = new mongoose.Schema({
+  Name : {
+    type: String,
+  },
+  Height : {
+    type: Number,
+  },
+  Weight : {
+    type: Number,
+  },
+  Nationality : {
+    type : String
+  },
+  Foot : {
+    type: String
+  },
+  Main_Position : {
+    type: String
+  },
+  Pace : {
+    type: Number
+  }
+
+});
+
+
 
 //const secret = "Thisisourlittlesecret.";
 //userSchema.plugin(encrypt, {secret: secret},['password'] );
 
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
+const Information = new mongoose.model("information", informationSchema);
+
 
 
 var loggedInUser = null;
@@ -294,7 +324,20 @@ app.get("/deleteUser", function (req, res) {
 })
 
 
+app.post("/information", async (req, res) => {
+ 
+  const newInformation = new Information ({
+    name: req.body.Name,
+    height: req.body.Height,
+    weight: req.body.Weight,
+    nationality: req.body.Nationality,
+    foot: req.body.Foot,
+    main_Position: req.body.Main_Position,
+    pace: req.body.pace
+  });
+  await newInformation.save();
 
+});
 
 
 //registerdan submitlenen seyi catchleriz
