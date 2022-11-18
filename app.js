@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const encrypt = require("mongoose-encryption");
 const { check, validationResult } = require("express-validator");
 const Joi = require("joi");
+const {ROLE} = require('./middleware/rolelist')
 
 var jwt = require('jsonwebtoken');
 
@@ -53,9 +54,17 @@ const userSchema = new mongoose.Schema({
     unique: true,
     required: [true, "Please check your data entry, no password specified"],
   },
+  role: {
+    type: String,
+    default: 'basic',
+    enum: ["basic", "scout"]
+   },
 
 
 });
+
+
+
 //const secret = "Thisisourlittlesecret.";
 //userSchema.plugin(encrypt, {secret: secret},['password'] );
 
@@ -79,8 +88,19 @@ app.get("/editprofile", function (req, res) {
     })
   });
 });
+app.get("/editprofileScout", function (req, res) {
+  res.render("editprofileScout", {
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+    })
+  });
+});
 app.get("/help", function (req, res) {
   res.render("help");
+});
+app.get("/helpScout", function (req, res) {
+  res.render("helpScout");
 });
 
 app.get("/scoutSignupRequest", function (req, res) {
@@ -95,8 +115,9 @@ app.get("/error", function (req, res) {
 });
 
 app.get("/ProfilePage", function (req, res) {
+  console.log(loggedInUser.role)
   let jwtToken = null;
-  if (loggedInUser) {
+  if (loggedInUser.role !== ROLE.SCOUT) {
     jwtToken = jwt.sign({
       email: loggedInUser.email,
       username: loggedInUser.username
@@ -106,6 +127,26 @@ app.get("/ProfilePage", function (req, res) {
   }
 
   res.render("ProfilePage", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+    })
+  });
+});
+app.get("/ProfilePageScout", function (req, res) {
+  console.log(loggedInUser.role)
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("ProfilePageScout", {
     token: jwtToken,
     user: JSON.stringify({
       username: loggedInUser?.username,
@@ -137,7 +178,6 @@ app.get("/information", function (req, res) {
 //POST
 app.post("/register", async (req, res) => {
   console.log("inside post funct");
-
   const existingUser = await User.findOne({ email: req.body.email });
   if (existingUser) {
     currentError = "this email is already on the system."
@@ -149,6 +189,7 @@ app.post("/register", async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
+    
   });
   await newUser.save();
 
@@ -164,9 +205,12 @@ app.post("/login", function (req, res) {
       currentError = "no user with this email."
       res.redirect("/error");
     } else {
-      if (foundUser.password === password) {
+      if (foundUser.password === password && foundUser.role === 'basic') {
         loggedInUser = foundUser;
         res.redirect("/ProfilePage");
+      } else if (foundUser.password === password && foundUser.role === 'scout'){
+        loggedInUser = foundUser;
+        res.redirect("/ProfilePageScout");
       } else {
         currentError = "incorrect password"
         res.redirect("/error");
@@ -195,6 +239,28 @@ app.post("/editProfile", function (req, res) {
 
     loggedInUser = foundUser;
     res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
+})
+app.post("/editProfileScout", function (req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    console.log("ff");
+    console.log(foundUser);
+    foundUser.username = username;
+    foundUser.email = email;
+    foundUser.password = password;
+
+    console.log("trying to update password");
+    await foundUser.save();
+
+    loggedInUser = foundUser;
+    res.redirect("/ProfilePageScout");
   }).catch(function (error) {
     console.log("EDIT error"); // Fail
     console.log(error);

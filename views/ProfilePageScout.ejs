@@ -1,0 +1,84 @@
+<%- include('partials/profileheader') %>
+
+  <body>
+    <div class="navigation">
+      <div class="logo">
+        <input type="image" src="images/logo.jpg" width="110">
+        <a href="#"></a>
+      </div>
+      <div class="navigation-search-container">
+        <i class="fa fa-search"></i>
+        <input class="search-field" type="text" placeholder="Search">
+        <div class="search-container">
+          <div class="search-container-box">
+            <div class="search-results">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navigation-icons">
+        <a class="navigation-link" href="#"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/ProfilePageScout"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/logout" ><i class="fa fa-sign-out"></i></a>
+
+    </div>
+    </div>
+
+    <div class="profile-page">
+
+      <div class="page-header header-filter" data-parallax="true"></div>
+      <div class="main main-raised">
+        <div class="profile-content">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6 ml-auto mr-auto">
+                <div class="profile">
+                  <div class="avatar">
+                    <img src="https://i.pinimg.com/236x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt="Avatar"
+                      class="avatar">
+                  </div>
+                  <div class="name">
+                    <h3 class="title" id="nameField"> Name </h3>
+                    <h6>Scout</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="description text-center">
+              <p>Fenerbahçe Scout Team</p>
+              <a href="/editprofileScout">Edit Profile</a>
+            </div>
+            <div class="row">
+              <div class="col-md-6 ml-auto mr-auto">
+                <div class="profile-tabs">
+                  <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link" href="/information" role="tab" data-toggle="tab">
+                        <i class="material-icons">ballot</i>
+                        Information
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </body>
+
+  <script>
+    localStorage.setItem('token', "<%= JSON.stringify(token) %>");
+    // var token = localStorage.getItem('token')
+
+    var user = JSON.parse(`<%-user%>`);
+    document.getElementById("nameField").innerHTML = user.username;
+  </script>
