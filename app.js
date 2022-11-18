@@ -33,7 +33,12 @@ mongoose.connect("mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mo
   .catch((err) => {
     console.error(`Error connecting to the database. n${err}`);
   })
-//SCHEMAa
+
+
+//SCHEMAS
+
+
+//User schema
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -51,7 +56,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     min: 3,
-    unique: true,
     required: [true, "Please check your data entry, no password specified"],
   },
   role: {
@@ -63,12 +67,72 @@ const userSchema = new mongoose.Schema({
 
 });
 
+//Videos schema
+const videosSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    min: 3,
+    //required: [true, "Please check your data entry, no email specified"],
+  },
+
+  video_name: {
+    type: String,
+    min: 3,
+    required: [true, "Please check your data entry, no name specified"],
+  },
+
+  /*
+  created_at: {
+    type: Date,
+    min: 3,
+    default: Date.now,
+  },
+  */
+
+  location_url: {
+    type: String,
+    min: 3,
+    required: [true, "Please specify your videos url, no url specified"],
+  },
+
+})
+//informationSchema
+
+const informationSchema = new mongoose.Schema({
+  Name : {
+    type: String,
+  },
+  Height : {
+    type: Number,
+  },
+  Weight : {
+    type: Number,
+  },
+  Nationality : {
+    type : String
+  },
+  Foot : {
+    type: String
+  },
+  Main_Position : {
+    type: String
+  },
+  Pace : {
+    type: Number
+  }
+
+});
+
 
 
 //const secret = "Thisisourlittlesecret.";
 //userSchema.plugin(encrypt, {secret: secret},['password'] );
 
 const User = new mongoose.model("User", userSchema);
+const Video = new mongoose.model("Video", videosSchema);
+const Information = new mongoose.model("information", informationSchema);
+
+
 
 var loggedInUser = null;
 var currentError = "";
@@ -107,10 +171,33 @@ app.get("/scoutSignupRequest", function (req, res) {
   res.render("scoutSignupRequest");
 });
 
-
 app.get("/error", function (req, res) {
   res.render("error", {
     error: currentError
+  });
+});
+
+app.get("/UploadVideo", function (req, res) {
+  let jwtToken = null;
+  
+  if (loggedInUser) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      video_name: loggedInUser.video_name,
+      location_url: loggedInUser.location_url
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("UploadVideo", {
+    token: jwtToken,
+    user: JSON.stringify({
+      email: loggedInUser?.email,
+      video_name: loggedInUser?.video_name,
+      location_url: loggedInUser?.location_url,
+
+    })
   });
 });
 
@@ -134,6 +221,7 @@ app.get("/ProfilePage", function (req, res) {
     })
   });
 });
+
 app.get("/ProfilePageScout", function (req, res) {
   console.log(loggedInUser.role)
   let jwtToken = null;
@@ -174,6 +262,26 @@ app.get("/information", function (req, res) {
   });
 });
 
+app.get("/ProfilePage", function (req, res) {
+  let jwtToken = null;
+  if (loggedInUser) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      video_name: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("ProfilePage", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+    })
+  });
+});
+
 
 //POST
 app.post("/register", async (req, res) => {
@@ -195,6 +303,22 @@ app.post("/register", async (req, res) => {
 
   res.redirect("/login");
 });
+
+app.post("/uploadVideo", async (req, res) => {
+  const existingUser = await Video.findOne({ email: req.body.email });
+
+ 
+  const newVideo = new Video({
+    email: loggedInUser.email,
+    video_name: req.body.video_name,
+    //created_at: req.body.created_at,
+    location_url: req.body.location_url
+  });
+
+  await newVideo.save();
+  res.redirect("/ProfilePage");
+
+})
 
 app.post("/login", function (req, res) {
   const email = req.body.email;
@@ -283,6 +407,21 @@ app.get("/deleteUser", function (req, res) {
   });
 })
 
+
+app.post("/information", async (req, res) => {
+ 
+  const newInformation = new Information ({
+    name: req.body.Name,
+    height: req.body.Height,
+    weight: req.body.Weight,
+    nationality: req.body.Nationality,
+    foot: req.body.Foot,
+    main_Position: req.body.Main_Position,
+    pace: req.body.pace
+  });
+  await newInformation.save();
+
+});
 
 
 //registerdan submitlenen seyi catchleriz
