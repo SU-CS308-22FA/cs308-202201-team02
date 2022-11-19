@@ -6,9 +6,14 @@ const mongoose = require("mongoose");
 const encrypt = require("mongoose-encryption");
 const { check, validationResult } = require("express-validator");
 const Joi = require("joi");
-const {ROLE} = require('./middleware/rolelist')
+const { ROLE } = require('./middleware/rolelist')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 var jwt = require('jsonwebtoken');
+const uploadFile = require("./services/upload");
 
 const app = express();
 
@@ -62,7 +67,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'basic',
     enum: ["basic", "scout"]
-   },
+  },
 
 
 });
@@ -89,35 +94,35 @@ const videosSchema = new mongoose.Schema({
   },
   */
 
-  location_url: {
-    type: String,
-    min: 3,
-    required: [true, "Please specify your videos url, no url specified"],
-  },
+  // location_url: {
+  //   type: String,
+  //   min: 3,
+  //   required: [true, "Please specify your videos url, no url specified"],
+  // },
 
 })
 //informationSchema
 
 const informationSchema = new mongoose.Schema({
-  Name : {
+  Name: {
     type: String,
   },
-  Height : {
+  Height: {
     type: Number,
   },
-  Weight : {
+  Weight: {
     type: Number,
   },
-  Nationality : {
-    type : String
-  },
-  Foot : {
+  Nationality: {
     type: String
   },
-  Main_Position : {
+  Foot: {
     type: String
   },
-  Pace : {
+  Main_Position: {
+    type: String
+  },
+  Pace: {
     type: Number
   }
 
@@ -131,7 +136,6 @@ const informationSchema = new mongoose.Schema({
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
 const Information = new mongoose.model("information", informationSchema);
-
 
 
 var loggedInUser = null;
@@ -178,64 +182,18 @@ app.get("/error", function (req, res) {
 });
 
 app.get("/UploadVideo", function (req, res) {
-  let jwtToken = null;
-  
-  if (loggedInUser) {
-    jwtToken = jwt.sign({
-      email: loggedInUser.email,
-      video_name: loggedInUser.video_name,
-      location_url: loggedInUser.location_url
-    }, "mohit_pandey_1996", {
-      expiresIn: 300000
-    });
-  }
-
   res.render("UploadVideo", {
-    token: jwtToken,
-    user: JSON.stringify({
-      email: loggedInUser?.email,
-      video_name: loggedInUser?.video_name,
-      location_url: loggedInUser?.location_url,
-
-    })
-  });
-});
-
-app.get("/ProfilePage", function (req, res) {
-  console.log(loggedInUser.role)
-  let jwtToken = null;
-  if (loggedInUser.role !== ROLE.SCOUT) {
-    jwtToken = jwt.sign({
-      email: loggedInUser.email,
-      username: loggedInUser.username
-    }, "mohit_pandey_1996", {
-      expiresIn: 300000
-    });
-  }
-
-  res.render("ProfilePage", {
-    token: jwtToken,
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
-    })
+    }),
   });
 });
 
 app.get("/ProfilePageScout", function (req, res) {
   console.log(loggedInUser.role)
-  let jwtToken = null;
-  if (loggedInUser.role !== ROLE.BASIC) {
-    jwtToken = jwt.sign({
-      email: loggedInUser.email,
-      username: loggedInUser.username
-    }, "mohit_pandey_1996", {
-      expiresIn: 300000
-    });
-  }
 
   res.render("ProfilePageScout", {
-    token: jwtToken,
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
@@ -262,26 +220,36 @@ app.get("/information", function (req, res) {
   });
 });
 
-app.get("/ProfilePage", function (req, res) {
-  let jwtToken = null;
-  if (loggedInUser) {
-    jwtToken = jwt.sign({
-      email: loggedInUser.email,
-      video_name: loggedInUser.username
-    }, "mohit_pandey_1996", {
-      expiresIn: 300000
+app.get("/ProfilePage", async (req, res) => {
+  const { BlobServiceClient } = require("@azure/storage-blob");
+  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
+  const config = require('./config');
+  const accountName = config.getStorageAccountName();
+
+  try {
+    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.email });
+    const urls = [];
+
+    for await (let blob of blobs) {
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
+      urls.push(url);
+    }
+
+    res.render('ProfilePage', {
+      user: JSON.stringify({
+        username: loggedInUser?.username,
+        email: loggedInUser?.email,
+      }),
+      Urls: urls
     });
+
+  } catch (err) {
+    currentError = "Something went wrong when fetching videos."
+    res.redirect("/error");
+    return;
   }
-
-  res.render("ProfilePage", {
-    token: jwtToken,
-    user: JSON.stringify({
-      username: loggedInUser?.username,
-      email: loggedInUser?.email,
-    })
-  });
 });
-
 
 //POST
 app.post("/register", async (req, res) => {
@@ -297,27 +265,29 @@ app.post("/register", async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-    
+
   });
   await newUser.save();
 
   res.redirect("/login");
 });
 
-app.post("/uploadVideo", async (req, res) => {
-  const existingUser = await Video.findOne({ email: req.body.email });
+const multer = require('multer');
+const inMemoryStorage = multer.memoryStorage()
+const uploadStrategy = multer({ storage: inMemoryStorage }).single('video_input');
 
- 
+app.post("/uploadVideo", uploadStrategy, async (req, res) => {
+  const name = loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  await uploadFile(req, name);
+
   const newVideo = new Video({
     email: loggedInUser.email,
-    video_name: req.body.video_name,
+    video_name: name,
     //created_at: req.body.created_at,
-    location_url: req.body.location_url
   });
 
   await newVideo.save();
   res.redirect("/ProfilePage");
-
 })
 
 app.post("/login", function (req, res) {
@@ -332,7 +302,7 @@ app.post("/login", function (req, res) {
       if (foundUser.password === password && foundUser.role === 'basic') {
         loggedInUser = foundUser;
         res.redirect("/ProfilePage");
-      } else if (foundUser.password === password && foundUser.role === 'scout'){
+      } else if (foundUser.password === password && foundUser.role === 'scout') {
         loggedInUser = foundUser;
         res.redirect("/ProfilePageScout");
       } else {
@@ -409,8 +379,8 @@ app.get("/deleteUser", function (req, res) {
 
 
 app.post("/information", async (req, res) => {
- 
-  const newInformation = new Information ({
+
+  const newInformation = new Information({
     name: req.body.Name,
     height: req.body.Height,
     weight: req.body.Weight,
@@ -429,7 +399,7 @@ app.post("/information", async (req, res) => {
 
 //let port = process.env.PORT;
 //if (port == null || port == "") {
- //port = 3000;
+//port = 3000;
 //}
 //app.listen(port);
 app.listen(3000, function () {

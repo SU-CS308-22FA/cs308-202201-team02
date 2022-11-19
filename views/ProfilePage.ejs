@@ -3,7 +3,7 @@
   <body>
     <div class="navigation">
       <div class="logo">
-        <input type="image" src="images/logo.jpg" width="110">
+        <input type="image" src="images/logo.jpg" width=110>
         <a href="#"></a>
       </div>
       <div class="navigation-search-container">
@@ -23,9 +23,9 @@
         <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
         <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
         <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
-        <a class="navigation-link" href="/logout" ><i class="fa fa-sign-out"></i></a>
+        <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
 
-    </div>
+      </div>
     </div>
 
     <div class="profile-page">
@@ -75,20 +75,14 @@
 
             <div class="tab-content tab-space">
               <div class="tab-pane active text-center gallery" id="videos">
-                <div class="row">
-                  <div class="col-md-3 ml-auto">
-                    <!--<video width="320" height="240" autoplay muted>
-                                <source src="https://pin.it/2aVDHgF" type="video/mp4">
-                                Your browser does not support the video tag.
-                                </video>-->
-                    <img src="https://i.pinimg.com/564x/3d/e1/7e/3de17e16ac1b94a87e9b6ed0574bcef3.jpg" class="rounded">
-                    <img src="https://i.pinimg.com/564x/8f/27/a0/8f27a0aba82b3af241bcf4eae2c62180.jpg" class="rounded">
+                <% for(const url of Urls) { %>
+                  <div class="row" style="margin-bottom: 10px;">
+                    <video width="400" controls>
+                      <source src="<%= url %>" type="video/mp4">
+                      Your browser does not support HTML video.
+                    </video>
                   </div>
-                  <div class="col-md-3 mr-auto">
-                    <img src="https://i.pinimg.com/236x/da/91/44/da914453dec90b243d517f023bcfa6a1.jpg" class="rounded">
-                    <img src="https://i.pinimg.com/236x/4f/d4/3b/4fd43b707b099df22476161d8838e38e.jpg" class="rounded">
-                  </div>
-                </div>
+                <% } %>
               </div>
             </div>
           </div>
@@ -103,9 +97,8 @@
 
 
   <script>
-    localStorage.setItem('token', "<%= JSON.stringify(token) %>");
-    // var token = localStorage.getItem('token')
-
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
+
+
   </script>
