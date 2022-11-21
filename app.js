@@ -390,7 +390,6 @@ app.post("/editProfileScout", function (req, res) {
     foundUser.password = password;
     foundUser.biographydescription = biographydescription;
 
-    console.log("trying to update password");
     await foundUser.save();
 
     loggedInUser = foundUser;
