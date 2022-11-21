@@ -43,12 +43,12 @@
                   <div class="name">
                     <h3 class="title" id="nameField"> Name </h3>
                     <h6>Scout</h6>
+                    <h4 id="biographydescriptionField"> </h4>
                   </div>
                 </div>
               </div>
             </div>
             <div class="description text-center">
-              <p>Fenerbahçe Scout Team</p>
               <a href="/editprofileScout">Edit Profile</a>
             </div>
 
@@ -67,4 +67,5 @@
 
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
+    document.getElementById("biographydescriptionField").innerHTML = user.biographydescription;
   </script>
