@@ -74,11 +74,11 @@ const userSchema = new mongoose.Schema({
 
   weight : String,
 
-  nationality :  String,
+  nationality : String,
 
-  foot :String,
+  foot : String,
 
-  main_Position :  String,
+  main_Position : String,
 
   pace : String,
 
@@ -192,19 +192,7 @@ app.get("/ProfilePageScout", function (req, res) {
     })
   });
 });
-app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
-  const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-  await uploadFile(req, ppname);
 
-  const newVideo = new Video({
-    email: loggedInUser.email,
-    video_name: ppname,
-    //created_at: req.body.created_at,
-  });
-
-  await newVideo.save();
-  res.redirect("/ProfilePage");
-})
 
 app.get("/ProfilePage", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
@@ -264,7 +252,12 @@ app.get("/information", function (req, res) {
       username: loggedInUser?.username,
       email: loggedInUser?.email,
       height: loggedInUser?.height,
-      //ekle digerlerini
+      weight: loggedInUser?.weight,
+      pace : loggedInUser?.pace,
+      fullName : loggedInUser?.fullName,
+      nationality : loggedInUser?.nationality,
+      main_Position : loggedInUser?.main_Position,
+      foot : loggedInUser?.foot,
     })
   });
 });
@@ -338,14 +331,21 @@ app.post("/login", function (req, res) {
   })
 })
 
-app.post("/editProfile",  uploadStrategy, async (req, res) => {
+app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
   const phone = req.body.phone;
-  const height = req.body.height;
+
+  const weight = req.body.weight;
+    const height = req.body.height;
+    const pace = req.body.pace;
+    const fullName = req.body.fullName;
+    const nationality = req.body.nationality;
+    const main_Position = req.body.main_Position;
+    const foot = req.body.foot;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
@@ -354,7 +354,14 @@ app.post("/editProfile",  uploadStrategy, async (req, res) => {
     foundUser.email = email;
     foundUser.password = password;
     foundUser.phone = phone;
+    foundUser.weight = weight;
     foundUser.height = height;
+    foundUser.pace = pace;
+    foundUser.fullName = fullName;
+    foundUser.nationality = nationality;
+    foundUser.main_Position = main_Position;
+    foundUser.foot = foot;
+
 
     console.log("trying to update password");
     await foundUser.save();
@@ -372,6 +379,19 @@ app.post("/editProfile",  uploadStrategy, async (req, res) => {
     console.log("EDIT error"); // Fail
     console.log(error);
   })
+})
+app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
+  const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  await uploadFile(req, ppname);
+
+  const newVideo = new Video({
+    email: loggedInUser.email,
+    video_name: ppname,
+    //created_at: req.body.created_at,
+  });
+
+  await newVideo.save();
+  res.redirect("/ProfilePage");
 })
 app.post("/editProfileScout", function (req, res) {
   const username = req.body.username;
@@ -419,16 +439,30 @@ app.post("/informationEdit",  uploadStrategy, async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-  const height = req.body.height;
-  //diger seyleri ekle
+  const phone = req.body.phone;
+
+  const weight = req.body.weight;
+    const height = req.body.height;
+    const pace = req.body.pace;
+    const fullName = req.body.fullName;
+    const nationality = req.body.nationality;
+    const main_Position = req.body.main_Position;
+    const foot = req.body.foot;
+  //diger
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
     console.log(foundUser);
-    //ekle
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
+    foundUser.phone = phone;
+    foundUser.weight = weight;
     foundUser.height = height;
+    foundUser.pace = pace;
+    foundUser.fullName = fullName;
+    foundUser.nationality = nationality;
+    foundUser.main_Position = main_Position;
+    foundUser.foot = foot;
 
     console.log("trying to update password");
     await foundUser.save();
