@@ -405,7 +405,7 @@ app.post("/information", async (req, res) => {
 
 let port = process.env.PORT;
 if (port == null || port == "") {
-port = 8080;
+port = 3000;
 }
 app.listen(port);
 app.listen(3000, function () {
