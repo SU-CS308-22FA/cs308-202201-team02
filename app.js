@@ -13,8 +13,6 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-
-
 var jwt = require('jsonwebtoken');
 const uploadFile = require("./services/upload");
 
@@ -225,10 +223,7 @@ app.get("/ProfilePage", async (req, res) => {
     for await (let blob of blobs) {
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
       urls.push(url);
-      console.log("out");
-
     }
-
 
     res.render('ProfilePage', {
       user: JSON.stringify({
@@ -281,7 +276,7 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
   });
 
   await newVideo.save();
-  res.redirect("/ProfilePage");
+  setTimeout(() => res.redirect("/ProfilePage"), 2500);
 })
 
 //****************************************** */

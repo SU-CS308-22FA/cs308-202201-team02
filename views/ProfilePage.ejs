@@ -39,12 +39,15 @@
                 <div class="profile">
 
                   <div class="tab-content tab-space">
-                    <div class="tab-pane active text-center gallery">
+                    <div class="tab-pane active text-center gallery" id="videos">
 
                       <div class="row" style="display: block;
                       margin: 0 auto;">
-                              <img src="" type="image/png">
-
+                        <% for(const url of Urls) {%>
+                          <% if(url.startsWith("https://talentland.blob.core.windows.net/videos/P")){%>
+                            <%console.log("a")%>
+                              <img src="<%url%>" type="image/png">
+                        <% }} %>
                       </div>
 
                     </div>

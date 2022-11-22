@@ -29,20 +29,31 @@
 
     <div class="pageContainer">
 
-      <div class="container" style="margin: 0 auto;">
-        <form action="/uploadVideo" method="POST" class="form" name="form" enctype="multipart/form-data" style="margin: 0 auto;">
-
-          <div >
-            <img src="images/upload-video.png" width="300" 
-            height="400" />
+      <div class="container" style="margin: 0 auto; text-align: center;">
+        <form action="/uploadVideo" method="POST" class="form" name="form" id="my_form" enctype="multipart/form-data">
+          <div style= "text-align: center">
+            <img src="images/upload-video.png" width="300" height="400"/>
 
             <br>
             <label for="video_input">Select a video to upload: </label>
+
             <input id="file-picker" type="file" name="video_input">
           </div>
-
           <button type="submit">Upload</button>
         </form>
       </div>
     </div>
   </body>
+
+  <script>
+    document.getElementById("my_form").onsubmit = function () { myFunction(); };
+
+    function myFunction() {
+      swal({
+        icon: "success",
+        title: "Your video saved sucessfully."
+      }).then(() => {
+        window.location.href = '/ProfilePage';
+      });
+    }
+  </script>
