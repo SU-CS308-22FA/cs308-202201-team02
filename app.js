@@ -262,9 +262,14 @@ app.get("/information", function (req, res) {
     token: jwtToken,
     user: JSON.stringify({
       username: loggedInUser?.username,
+      fullName:loggedInUser?.fullName,
       email: loggedInUser?.email,
       height: loggedInUser?.height,
-      //ekle digerlerini
+      weight:loggedInUser?.weight,
+      nationality:loggedInUser?.nationality,
+      foot:loggedInUser?.foot,
+      main_Position:loggedInUser?.main_Position,
+      pace:loggedInUser?.pace
     })
   });
 });
@@ -420,15 +425,26 @@ app.post("/informationEdit",  uploadStrategy, async (req, res) => {
   const password = req.body.password;
   const email = req.body.email;
   const height = req.body.height;
-  //diger seyleri ekle
+  const fullName = req.body.fullName;
+  const weight = req.body.weight;
+  const nationality = req.body.nationality;
+  const foot = req.body.foot;
+  const main_Position = req.body.main_Position;
+  const pace = req.body.pace;
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
     console.log(foundUser);
     //ekle
+    foundUser.fullName = fullName ;
+    foundUser.weight = weight ;
+    foundUser.nationality = nationality ;
+    foundUser.main_Position = main_Position ;
+    foundUser.pace = pace;
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
     foundUser.height = height;
+    foundUser.foot = foot;
 
     console.log("trying to update password");
     await foundUser.save();
