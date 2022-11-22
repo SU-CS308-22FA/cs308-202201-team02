@@ -63,6 +63,7 @@ const userSchema = new mongoose.Schema({
     min: 3,
     required: [true, "Please check your data entry, no password specified"],
   },
+  phone: String,
   role: {
     type: String,
     default: 'basic',
@@ -316,10 +317,13 @@ app.post("/login", function (req, res) {
   })
 })
 
-app.post("/editProfile", function (req, res) {
+app.post("/editProfile",  uploadStrategy, async (req, res) => {
+  const name = loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
+  const phone = req.body.phone;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
@@ -327,11 +331,19 @@ app.post("/editProfile", function (req, res) {
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
+    foundUser.phone = phone;
 
     console.log("trying to update password");
     await foundUser.save();
 
     loggedInUser = foundUser;
+    await uploadFile(req, name);
+    const newVideo = new Video({
+      email: loggedInUser.email,
+      video_name: name,
+      //created_at: req.body.created_at,
+    });
+    await newVideo.save();
     res.redirect("/ProfilePage");
   }).catch(function (error) {
     console.log("EDIT error"); // Fail
@@ -342,6 +354,7 @@ app.post("/editProfileScout", function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
+  const phone = req.body.phone;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
@@ -349,6 +362,7 @@ app.post("/editProfileScout", function (req, res) {
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
+    foundUser.phone = phone;
 
     console.log("trying to update password");
     await foundUser.save();
