@@ -41,10 +41,21 @@
       </div>
 
       <div class="container">
-        <form action="/editProfile" method="POST" class="form" id="form">
-          <img src="images/profilepic.jpg" class="img" />
 
-          <input type="file" id="myFile" name="filename" />
+        <div class="container" style="margin: 0 auto;">
+          <form action="/uploadPhoto" method="POST" class="form" name="form" enctype="multipart/form-data" style="margin: 0 auto;">
+  
+            <div >
+              <br>
+              <label for="video_input">Select a photo to upload: </label>
+              <input id="file-picker" type="file" name="video_input">
+            </div>
+  
+            <button type="submit">Upload</button>
+          </form>
+        </div>
+
+        <form action="/editProfile" method="POST" class="form" id="form">
 
           <div class="form-control">
             <br />
@@ -57,21 +68,7 @@
             </div>
             <small>Error message</small>
           </div>
-          <!-- <div class="form-control">
-          <div style="display: flex; flex-direction: row">
-            <label for="username" style="width: 130px; margin-top: 10px"
-              >Surname</label
-            >
-            <input
-              type="text"
-              placeholder="Please enter your surname"
-              name="surname" required
-            />
-            <i class="fas fa-check-circle"></i>
-            <i class="fas fa-exclamation-circle"></i>
-          </div>
-          <small>Error message</small>
-        </div> -->
+
           <div class="form-control">
             <div style="display: flex; flex-direction: row">
               <label for="email" style="width: 130px; margin-top: 10px">Email</label>

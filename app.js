@@ -8,9 +8,12 @@ const { check, validationResult } = require("express-validator");
 const Joi = require("joi");
 const { ROLE } = require('./middleware/rolelist')
 
+
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
+
+
 
 var jwt = require('jsonwebtoken');
 const uploadFile = require("./services/upload");
@@ -26,7 +29,6 @@ app.use(bodyParser.urlencoded({
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const url = `mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mongodb.net/?retryWrites=true&w=majority`;
-
 const connectionParams = {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -86,21 +88,9 @@ const videosSchema = new mongoose.Schema({
     required: [true, "Please check your data entry, no name specified"],
   },
 
-  /*
-  created_at: {
-    type: Date,
-    min: 3,
-    default: Date.now,
-  },
-  */
-
-  // location_url: {
-  //   type: String,
-  //   min: 3,
-  //   required: [true, "Please specify your videos url, no url specified"],
-  // },
-
 })
+
+
 //informationSchema
 
 const informationSchema = new mongoose.Schema({
@@ -231,17 +221,21 @@ app.get("/ProfilePage", async (req, res) => {
     const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.email });
     const urls = [];
 
+
     for await (let blob of blobs) {
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
       urls.push(url);
+      console.log("out");
+
     }
+
 
     res.render('ProfilePage', {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
       }),
-      Urls: urls
+      Urls: urls,
     });
 
   } catch (err) {
@@ -289,6 +283,23 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
   await newVideo.save();
   res.redirect("/ProfilePage");
 })
+
+//****************************************** */
+
+app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
+  const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  await uploadFile(req, ppname);
+
+  const newVideo = new Video({
+    email: loggedInUser.email,
+    video_name: ppname,
+    //created_at: req.body.created_at,
+  });
+
+  await newVideo.save();
+  res.redirect("/ProfilePage");
+})
+//****************************************** */
 
 app.post("/login", function (req, res) {
   const email = req.body.email;

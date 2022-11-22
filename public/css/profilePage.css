@@ -231,6 +231,7 @@ p {
 .profile-page .gallery {
   margin-top: 3.213rem;
   padding-bottom: 50px;
+  text-align: center;
 }
 
 .profile-page .gallery img {
