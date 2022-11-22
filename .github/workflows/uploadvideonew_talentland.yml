@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'talentland'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0024346DF7A241D1A93FC6841C973C2B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D36C912F3EF8449BB4D1F836835FFB35 }}
           package: .
