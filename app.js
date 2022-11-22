@@ -69,6 +69,20 @@ const userSchema = new mongoose.Schema({
     default: 'basic',
     enum: ["basic", "scout"]
   },
+  height :  String,
+
+
+  weight : String,
+
+  nationality :  String,
+
+  foot :String,
+
+  main_Position :  String,
+
+  pace : String,
+
+  fullName: String,
 
 
 });
@@ -104,30 +118,7 @@ const videosSchema = new mongoose.Schema({
 })
 //informationSchema
 
-const informationSchema = new mongoose.Schema({
-  Name: {
-    type: String,
-  },
-  Height: {
-    type: Number,
-  },
-  Weight: {
-    type: Number,
-  },
-  Nationality: {
-    type: String
-  },
-  Foot: {
-    type: String
-  },
-  Main_Position: {
-    type: String
-  },
-  Pace: {
-    type: Number
-  }
 
-});
 
 
 
@@ -136,7 +127,7 @@ const informationSchema = new mongoose.Schema({
 
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
-const Information = new mongoose.model("information", informationSchema);
+
 
 
 var loggedInUser = null;
@@ -201,25 +192,19 @@ app.get("/ProfilePageScout", function (req, res) {
     })
   });
 });
-app.get("/information", function (req, res) {
-  let jwtToken = null;
-  if (loggedInUser) {
-    jwtToken = jwt.sign({
-      email: loggedInUser.email,
-      username: loggedInUser.username
-    }, "mohit_pandey_1996", {
-      expiresIn: 300000
-    });
-  }
+app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
+  const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  await uploadFile(req, ppname);
 
-  res.render("information", {
-    token: jwtToken,
-    user: JSON.stringify({
-      username: loggedInUser?.username,
-      email: loggedInUser?.email,
-    })
+  const newVideo = new Video({
+    email: loggedInUser.email,
+    video_name: ppname,
+    //created_at: req.body.created_at,
   });
-});
+
+  await newVideo.save();
+  res.redirect("/ProfilePage");
+})
 
 app.get("/ProfilePage", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
@@ -252,6 +237,40 @@ app.get("/ProfilePage", async (req, res) => {
   }
 });
 
+app.get("/informationEdit", function (req, res) {
+  res.render("informationEdit", {
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+
+    })
+  });
+});
+app.get("/information", function (req, res) {
+  console.log(loggedInUser.role)
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.SCOUT) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("information", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      height: loggedInUser?.height,
+      //ekle digerlerini
+    })
+  });
+});
+
+
+
 //POST
 app.post("/register", async (req, res) => {
   console.log("inside post funct");
@@ -267,7 +286,9 @@ app.post("/register", async (req, res) => {
     email: req.body.email,
     password: req.body.password,
 
+
   });
+
   await newUser.save();
 
   res.redirect("/login");
@@ -318,12 +339,13 @@ app.post("/login", function (req, res) {
 })
 
 app.post("/editProfile",  uploadStrategy, async (req, res) => {
-  const name = loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
   const phone = req.body.phone;
+  const height = req.body.height;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
@@ -332,18 +354,19 @@ app.post("/editProfile",  uploadStrategy, async (req, res) => {
     foundUser.email = email;
     foundUser.password = password;
     foundUser.phone = phone;
+    foundUser.height = height;
 
     console.log("trying to update password");
     await foundUser.save();
 
     loggedInUser = foundUser;
-    await uploadFile(req, name);
-    const newVideo = new Video({
-      email: loggedInUser.email,
-      video_name: name,
+  //  await uploadFile(req, photoName);
+  //  const newVideo = new Video({
+  //    email: loggedInUser.email,
+  //    video_name: photoName,
       //created_at: req.body.created_at,
-    });
-    await newVideo.save();
+  //  });
+  //  await newVideo.save();
     res.redirect("/ProfilePage");
   }).catch(function (error) {
     console.log("EDIT error"); // Fail
@@ -389,23 +412,46 @@ app.get("/deleteUser", function (req, res) {
   }).catch(function (error) {
     console.log(error); // Failure
   });
+});
+app.post("/informationEdit",  uploadStrategy, async (req, res) => {
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+  const height = req.body.height;
+  //diger seyleri ekle
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    console.log("ff");
+    console.log(foundUser);
+    //ekle
+    foundUser.username = username;
+    foundUser.email = email;
+    foundUser.password = password;
+    foundUser.height = height;
+
+    console.log("trying to update password");
+    await foundUser.save();
+
+    loggedInUser = foundUser;
+  //  await uploadFile(req, photoName);
+  //  const newVideo = new Video({
+  //    email: loggedInUser.email,
+  //    video_name: photoName,
+      //created_at: req.body.created_at,
+  //  });
+  //  await newVideo.save();
+    res.redirect("/information");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
 })
 
 
-app.post("/information", async (req, res) => {
 
-  const newInformation = new Information({
-    name: req.body.Name,
-    height: req.body.Height,
-    weight: req.body.Weight,
-    nationality: req.body.Nationality,
-    foot: req.body.Foot,
-    main_Position: req.body.Main_Position,
-    pace: req.body.pace
-  });
-  await newInformation.save();
 
-});
+
 
 
 //registerdan submitlenen seyi catchleriz
