@@ -32,7 +32,7 @@
         <ul>
           <li><a  href="/editProfile">Edit Profile</a></li>
           <!-- <li><a href="#changepassword">Change Password</a></li> -->
-          <li><a href="#information">Information</a></li>
+          <li><a href="/informationEdit">Information</a></li>
           <li><a class="active" href="#help">Help</a></li>
           <br />
           <hr />
@@ -41,14 +41,14 @@
       </div>
 
       <div class="container">
-        <form class="" action = "mailto::info@talentland.com"method="POST" >
+        <form class="form" action = "/help" method="POST" >
           <label> Your Name: </label>
-          <input type="text" name="" value=""><br>
+          <input type="text" name="name" ><br>
           <label> Your Email: </label>
-          <input type="text" name="" value=""><br>
+          <input type="text" name="email" ><br>
           <label> Your Message: </label><br>
-          <textarea name="name" rows="10" cols="80"></textarea><br>
-          <input type="submit" name="" >
+          <textarea name="message" rows="10" cols="80"></textarea><br>
+          <input type="submit"  >
         </form>
     </body>
 

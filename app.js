@@ -84,6 +84,8 @@ const userSchema = new mongoose.Schema({
 
   fullName: String,
 
+  message : String,
+
 
 });
 
@@ -157,7 +159,12 @@ app.get("/editprofileScout", function (req, res) {
   });
 });
 app.get("/help", function (req, res) {
-  res.render("help");
+  res.render("help", {
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+    })
+  });
 });
 app.get("/helpScout", function (req, res) {
   res.render("helpScout");
@@ -330,7 +337,29 @@ app.post("/login", function (req, res) {
     res.redirect("/error");
   })
 })
+app.post("/help",  async (req, res) => {
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
+
+
+  const message = req.body.message;
+
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    console.log("ff");
+    console.log(foundUser);
+    foundUser.message = message;
+
+
+    console.log("trying to update password");
+    await foundUser.save();
+
+    loggedInUser = foundUser;
+    res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
+})
 app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -339,14 +368,6 @@ app.post("/editProfile",  async (req, res) => {
   const email = req.body.email;
   const phone = req.body.phone;
 
-  const weight = req.body.weight;
-    const height = req.body.height;
-    const pace = req.body.pace;
-    const fullName = req.body.fullName;
-    const nationality = req.body.nationality;
-    const main_Position = req.body.main_Position;
-    const foot = req.body.foot;
-
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
     console.log(foundUser);
@@ -354,13 +375,6 @@ app.post("/editProfile",  async (req, res) => {
     foundUser.email = email;
     foundUser.password = password;
     foundUser.phone = phone;
-    foundUser.weight = weight;
-    foundUser.height = height;
-    foundUser.pace = pace;
-    foundUser.fullName = fullName;
-    foundUser.nationality = nationality;
-    foundUser.main_Position = main_Position;
-    foundUser.foot = foot;
 
 
     console.log("trying to update password");
@@ -433,6 +447,7 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
+
 app.post("/informationEdit",  uploadStrategy, async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -452,11 +467,15 @@ app.post("/informationEdit",  uploadStrategy, async (req, res) => {
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
     console.log(foundUser);
+
+    foundUser.weight = weight;
+
+
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
     foundUser.phone = phone;
-    foundUser.weight = weight;
+
     foundUser.height = height;
     foundUser.pace = pace;
     foundUser.fullName = fullName;
