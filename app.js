@@ -358,6 +358,8 @@ app.post("/information", async (req, res) => {
   });
   await newInformation.save();
 
+})
+
 
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
