@@ -525,13 +525,13 @@ app.get("/deleteUser", function (req, res) {
   });
 });
 
-app.post("/informationEdit",  uploadStrategy, async (req, res) => {
+app.post("/informationEdit", async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-
+  const phone = req.body.phone;
 
   const weight = req.body.weight;
     const height = req.body.height;
@@ -544,10 +544,11 @@ app.post("/informationEdit",  uploadStrategy, async (req, res) => {
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
     console.log(foundUser);
-    foundUser.weight = weight;
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
+    foundUser.phone = phone;
+    foundUser.weight = weight;
     foundUser.height = height;
     foundUser.pace = pace;
     foundUser.fullName = fullName;
@@ -557,7 +558,7 @@ app.post("/informationEdit",  uploadStrategy, async (req, res) => {
 
     console.log("trying to update password");
     await foundUser.save();
-    
+
     loggedInUser = foundUser;
   //  await uploadFile(req, photoName);
   //  const newVideo = new Video({
