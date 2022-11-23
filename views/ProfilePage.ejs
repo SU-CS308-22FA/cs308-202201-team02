@@ -37,10 +37,23 @@
             <div class="row">
               <div class="col-md-6 ml-auto mr-auto">
                 <div class="profile">
-                  <div class="avatar">
-                    <img src="https://i.pinimg.com/236x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt="Avatar"
-                      class="avatar">
+
+                  <div class="tab-content tab-space">
+                    <div class="tab-pane active text-center gallery" id="videos">
+
+                      <div class="row" style="display: block;
+                      margin: 0 auto;">
+                        <% for(const url of Urls) {%>
+                          <% if(url.startsWith("https://talentland.blob.core.windows.net/videos/P")){%>
+                            <%console.log("a")%>
+                              <img src="<%url%>" type="image/png">
+                        <% }} %>
+                      </div>
+
+                    </div>
                   </div>
+
+
                   <div class="name">
                     <h3 class="title" id="nameField"> Name </h3>
                     <h6>Striker</h6>
@@ -76,8 +89,9 @@
             <div class="tab-content tab-space">
               <div class="tab-pane active text-center gallery" id="videos">
                 <% for(const url of Urls) { %>
-                  <div class="row" style="margin-bottom: 10px;">
-                    <video width="400" controls>
+                  <div class="row" style="display: block;
+                  margin: 0 auto;">
+                    <video width="400" controls >
                       <source src="<%= url %>" type="video/mp4">
                       Your browser does not support HTML video.
                     </video>

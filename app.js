@@ -8,6 +8,7 @@ const { check, validationResult } = require("express-validator");
 const Joi = require("joi");
 const { ROLE } = require('./middleware/rolelist')
 
+
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
@@ -26,7 +27,6 @@ app.use(bodyParser.urlencoded({
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const url = `mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mongodb.net/?retryWrites=true&w=majority`;
-
 const connectionParams = {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -86,6 +86,9 @@ const userSchema = new mongoose.Schema({
 
   message : String,
 
+   biographydescription: {
+    type: String,
+   },
 
 });
 
@@ -103,26 +106,7 @@ const videosSchema = new mongoose.Schema({
     required: [true, "Please check your data entry, no name specified"],
   },
 
-  /*
-  created_at: {
-    type: Date,
-    min: 3,
-    default: Date.now,
-  },
-  */
-
-  // location_url: {
-  //   type: String,
-  //   min: 3,
-  //   required: [true, "Please specify your videos url, no url specified"],
-  // },
-
 })
-//informationSchema
-
-
-
-
 
 //const secret = "Thisisourlittlesecret.";
 //userSchema.plugin(encrypt, {secret: secret},['password'] );
@@ -134,6 +118,8 @@ const scoutReq = new mongoose.Schema({
 });
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
+
+
 const Scout = new mongoose.model("scoutReq",scoutReq );
 
 
@@ -161,6 +147,7 @@ app.get("/editprofileScout", function (req, res) {
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
+      biographydescription: loggedInUser?.biographydescription,
     })
   });
 });
@@ -197,14 +184,28 @@ app.get("/UploadVideo", function (req, res) {
 
 app.get("/ProfilePageScout", function (req, res) {
   console.log(loggedInUser.role)
+  
+
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
 
   res.render("ProfilePageScout", {
+    token: jwtToken,
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
+      biographydescription: loggedInUser?.biographydescription,
     })
   });
 });
+
 
 
 app.get("/ProfilePage", async (req, res) => {
@@ -218,6 +219,7 @@ app.get("/ProfilePage", async (req, res) => {
     const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.email });
     const urls = [];
 
+
     for await (let blob of blobs) {
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
       urls.push(url);
@@ -228,7 +230,7 @@ app.get("/ProfilePage", async (req, res) => {
         username: loggedInUser?.username,
         email: loggedInUser?.email,
       }),
-      Urls: urls
+      Urls: urls,
     });
 
   } catch (err) {
@@ -292,6 +294,7 @@ app.post("/register", async (req, res) => {
     email: req.body.email,
     password: req.body.password,
 
+    biographydescription: req.body.biographydescription,
 
   });
 
@@ -315,8 +318,25 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
   });
 
   await newVideo.save();
+  setTimeout(() => res.redirect("/ProfilePage"), 2500);
+})
+
+//****************************************** */
+
+app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
+  const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  await uploadFile(req, ppname);
+
+  const newVideo = new Video({
+    email: loggedInUser.email,
+    video_name: ppname,
+    //created_at: req.body.created_at,
+  });
+
+  await newVideo.save();
   res.redirect("/ProfilePage");
 })
+
 app.post("/scoutSignupRequest", async (req, res) => {
   const name = req.body.sname;
   const email = req.body.semail;
@@ -437,7 +457,9 @@ app.post("/editProfileScout", function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-  const phone = req.body.phone;
+  
+  const biographydescription = req.body.biographydescription;
+
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
@@ -445,9 +467,9 @@ app.post("/editProfileScout", function (req, res) {
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
-    foundUser.phone = phone;
 
-    console.log("trying to update password");
+    foundUser.biographydescription = biographydescription;
+
     await foundUser.save();
 
     loggedInUser = foundUser;
@@ -524,18 +546,14 @@ app.post("/informationEdit",  uploadStrategy, async (req, res) => {
 
 
 
-
-
-
-
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
-//let port = process.env.PORT;
-//if (port == null || port == "") {
-//port = 3000;
-//}
-//app.listen(port);
+let port = process.env.PORT;
+if (port == null || port == "") {
+port = 3000;
+}
+app.listen(port);
 app.listen(3000, function () {
   console.log("server on 3000");
 });
