@@ -66,8 +66,7 @@ const userSchema = new mongoose.Schema({
 
    biographydescription: {
     type: String,
-   }
-
+   },
 
 });
 
@@ -100,33 +99,7 @@ const videosSchema = new mongoose.Schema({
   },
 
 })
-//informationSchema
 
-const informationSchema = new mongoose.Schema({
-  Name : {
-    type: String,
-    default: 'scout'
-  },
-  Height : {
-    type: Number,
-  },
-  Weight : {
-    type: Number,
-  },
-  Nationality : {
-    type : String
-  },
-  Foot : {
-    type: String
-  },
-  Main_Position : {
-    type: String
-  },
-  Pace : {
-    type: Number
-  }
-
-});
 
 
 //const secret = "Thisisourlittlesecret.";
@@ -134,7 +107,6 @@ const informationSchema = new mongoose.Schema({
 
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
-const Information = new mongoose.model("Information", informationSchema);
 
 
 
@@ -248,25 +220,7 @@ app.get("/ProfilePageScout", function (req, res) {
     })
   });
 });
-app.get("/information", function (req, res) {
-  let jwtToken = null;
-  if (loggedInUser) {
-    jwtToken = jwt.sign({
-      email: loggedInUser.email,
-      username: loggedInUser.username
-    }, "mohit_pandey_1996", {
-      expiresIn: 300000
-    });
-  }
 
-  res.render("information", {
-    token: jwtToken,
-    user: JSON.stringify({
-      username: loggedInUser?.username,
-      email: loggedInUser?.email,
-    })
-  });
-});
 
 
 app.get("/ProfilePage", function (req, res) {
@@ -417,20 +371,6 @@ app.get("/deleteUser", function (req, res) {
 })
 
 
-app.post("/information", async (req, res) => {
- 
-  const newInformation = new Information ({
-    name: req.body.Name,
-    height: req.body.Height,
-    weight: req.body.Weight,
-    nationality: req.body.Nationality,
-    foot: req.body.Foot,
-    main_Position: req.body.Main_Position,
-    pace: req.body.pace
-  });
-  await newInformation.save();
-
-});
 
 
 
