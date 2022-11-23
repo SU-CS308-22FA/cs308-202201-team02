@@ -78,7 +78,7 @@
               <div>
                 <br>
                 <br>
-                
+
                 <p align="right">
                   <input type="button" value="Edit" />
                 </p>
@@ -87,24 +87,24 @@
                   <style>
                     table, th, td {
                       border:1px solid black;
-                      
+
                     }
                     </style>
                     <br>
                     <br>
                     <br>
-                  
+
                   <tr>
-                    <th>Full Name</th>                   
+                    <th>Full Name</th>
                   <tr>
 
                   </tr>
                     <th>Height</th>
                   </tr>
-                  
+
                   </tr>
                     <th>Weight</th>
-                  </tr>  
+                  </tr>
 
                   </tr>
                     <th>Nationality</th>
@@ -113,17 +113,17 @@
                   </tr>
                     <th>Foot</th>
                   </tr>
-                  
+
                   </tr>
                     <th>Main Position</th>
-                  </tr>  
+                  </tr>
 
                   </tr>
                     <th>Pace (m/s)</th>
-                  </tr>  
-                  
+                  </tr>
+
                   <td>
-                    <tr>                                      
+                    <tr>
                       <td> <input type="height" name="height" required /> </td>
                       <td> <input type="weight" name="weight" required /> </td>
                       <td> <input type="nationality" name="nationality" required /> </td>
@@ -132,87 +132,94 @@
                       <td> <input type="pace" name="pace" required /> </td>
                     </tr>
                   </td>
-                  
-                  
+
+
                 </table>
-                
+
               </div>
             -->
-            
+
             <br>
             <br>
             <center>
               <h2>Information Table</h2>
             </center>
-            
+
             <br>
             <br>
-            
+
             <center>
-              <table>
-                <form>
-                    <tr>
-                        <td>
-                            <label for="Name">
-                                Name
+                <div>
+
+                    <form action="/information" method="POST" class="form" id="form">
+                      <table>
+
+                      <tr>
+                          <td>
+                              <label for="fullName">
+                                  Full Name
+                              </label>
+                          </td>
+
+                          <td> <p type="text" id="fullName" ></p> </td>
+
+                      </tr>
+                      <tr>
+                          <td><label for="height">
+                                  Height
+                              </label>
+                          </td>
+                          <td>  <p type="text" id="height" ></p></td>
+                      </tr>
+                      <tr>
+                        <td><label for="weight">
+                                Weight
                             </label>
                         </td>
-                        <td><input type="text" id="Name" />
-                        </td>
+                        <td>  <p type="text" id="weight" ></p></td>
                     </tr>
-                    <tr>
-                        <td><label for="Height">
-                                Height
+                      <tr>
+                          <td><label for="nationality">
+                                  Nationality
+                              </label>
+                          </td>
+                          <td><p type="text" id="nationality" ></p></td>
+                      </tr>
+                      <tr>
+                        <td><label for="foot">
+                                Foot
                             </label>
                         </td>
-                        <td><input type="text" id="Height" />
-                        </td>
+                        <td> <p type="text" id="foot" ></p></td>
                     </tr>
                     <tr>
-                      <td><label for="Weight">
-                              Weight
+                      <td><label for="main_Position">
+                              Main_Position
                           </label>
                       </td>
-                      <td><input type="text" id="Weight" />
-                      </td>
+                      <td> <p type="text" id="main_Position" ></p></td>
                   </tr>
-                    <tr>
-                        <td><label for="Nationality">
-                                Nationality
-                            </label>
-                        </td>
-                        <td><input type="text" id="Nationality" />
-                        </td>
-                    </tr>
-                    <tr>
-                      <td><label for="Foot">
-                              Foot
-                          </label>
-                      </td>
-                      <td><input type="text" id="Foot" />
-                      </td>
-                  </tr>
-                  <tr>
-                    <td><label for="Main_Position">
-                            Main_Position 
-                        </label>
-                    </td>
-                    <td><input type="text" id="Main_Position" />
-                    </td>
-                </tr>
-                    <tr>
-                        <td><label for="Pace">
-                                Pace 
-                            </label>
-                        </td>
-                        <td><input type="number" id="Pace" />
-                        </td>
-                    </tr>
-                </form>
-            </table>
+                      <tr>
+                          <td><label for="pace">
+                                  Pace
+                              </label>
+                          </td>
+                          <td> <p type="text" id="pace" ></p></td>
+                      </tr>
+                    </table>
+                      <br>
+                      <br>
+                    
+                  </form>
+
+                </div>
+
+
+
+
             </center>
-          
-            
+
+
 
 
             <div class="tab-content tab-space">
@@ -239,8 +246,10 @@
   </body>
   <script>
     localStorage.setItem('token', "<%= JSON.stringify(token) %>");
-    //var token = localStorage.getItem('token')
+
+    // BURAYI DUZENLE
 
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
+
   </script>

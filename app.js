@@ -69,6 +69,9 @@ const userSchema = new mongoose.Schema({
     enum: ["basic", "scout"]
   },
 
+   biographydescription: {
+    type: String,
+   },
 
 });
 
@@ -89,33 +92,6 @@ const videosSchema = new mongoose.Schema({
 })
 
 
-//informationSchema
-
-const informationSchema = new mongoose.Schema({
-  Name: {
-    type: String,
-  },
-  Height: {
-    type: Number,
-  },
-  Weight: {
-    type: Number,
-  },
-  Nationality: {
-    type: String
-  },
-  Foot: {
-    type: String
-  },
-  Main_Position: {
-    type: String
-  },
-  Pace: {
-    type: Number
-  }
-
-});
-
 
 
 //const secret = "Thisisourlittlesecret.";
@@ -123,7 +99,6 @@ const informationSchema = new mongoose.Schema({
 
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
-const Information = new mongoose.model("information", informationSchema);
 
 
 var loggedInUser = null;
@@ -149,6 +124,7 @@ app.get("/editprofileScout", function (req, res) {
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
+      biographydescription: loggedInUser?.biographydescription,
     })
   });
 });
@@ -185,28 +161,12 @@ app.get("/ProfilePageScout", function (req, res) {
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
+      biographydescription: loggedInUser?.biographydescription,
     })
   });
 });
-app.get("/information", function (req, res) {
-  let jwtToken = null;
-  if (loggedInUser) {
-    jwtToken = jwt.sign({
-      email: loggedInUser.email,
-      username: loggedInUser.username
-    }, "mohit_pandey_1996", {
-      expiresIn: 300000
-    });
-  }
 
-  res.render("information", {
-    token: jwtToken,
-    user: JSON.stringify({
-      username: loggedInUser?.username,
-      email: loggedInUser?.email,
-    })
-  });
-});
+
 
 app.get("/ProfilePage", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
@@ -254,7 +214,7 @@ app.post("/register", async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-
+    biographydescription: req.body.biographydescription,
   });
   await newUser.save();
 
@@ -348,6 +308,7 @@ app.post("/editProfileScout", function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
+  const biographydescription = req.body.biographydescription;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
@@ -355,8 +316,8 @@ app.post("/editProfileScout", function (req, res) {
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
+    foundUser.biographydescription = biographydescription;
 
-    console.log("trying to update password");
     await foundUser.save();
 
     loggedInUser = foundUser;
@@ -396,8 +357,6 @@ app.post("/information", async (req, res) => {
     pace: req.body.pace
   });
   await newInformation.save();
-
-});
 
 
 //registerdan submitlenen seyi catchleriz
