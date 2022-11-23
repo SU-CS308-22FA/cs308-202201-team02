@@ -4,7 +4,7 @@
     <div class="navigation">
       <div>
         <a href="#"></a>
-        <img src="images/logo.jpg" width="110" />
+        <img src="images/logo.jpg" width=110 />
       </div>
       <div class="navigation-search-container">
         <i class="fa fa-search"></i>
@@ -29,28 +29,31 @@
 
     <div class="pageContainer">
 
-      <div class="container">
-        <form action="/uploadVideo" method="POST" class="form" name="form">
+      <div class="container" style="margin: 0 auto; text-align: center;">
+        <form action="/uploadVideo" method="POST" class="form" name="form" id="my_form" enctype="multipart/form-data">
+          <div style= "text-align: center">
+            <img src="images/upload-video.png" width="300" height="400"/>
 
-          <div class="form-control">
-            <br />
-            <div style="display: flex; flex-direction: row">
-              <label for="video_name" style="width: 130px; margin-top: 10px">Video Name: </label>
-              <input type="text" placeholder="Please enter the name of the video" name="video_name" required />
-            </div>
-            <small>Error message</small>
+            <br>
+            <label for="video_input">Select a video to upload: </label>
+
+            <input id="file-picker" type="file" name="video_input">
           </div>
-
-          <div class="form-control">
-            <div style="display: flex; flex-direction: row">
-              <label for="location_url" style="width: 130px; margin-top: 10px">Location URL</label>
-              <input type="text" placeholder="url of the video" name="location_url" required />
-            </div>
-            <small>Error message</small>
-          </div>
-
-          <button>Upload</button>
+          <button type="submit">Upload</button>
         </form>
       </div>
     </div>
   </body>
+
+  <script>
+    document.getElementById("my_form").onsubmit = function () { myFunction(); };
+
+    function myFunction() {
+      swal({
+        icon: "success",
+        title: "Your video saved sucessfully."
+      }).then(() => {
+        window.location.href = '/ProfilePage';
+      });
+    }
+  </script>
