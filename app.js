@@ -340,8 +340,6 @@ app.post("/login", function (req, res) {
 app.post("/help",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
-
-
   const message = req.body.message;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
@@ -359,6 +357,7 @@ app.post("/help",  async (req, res) => {
     console.log("EDIT error"); // Fail
     console.log(error);
   })
+
 })
 app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
@@ -454,7 +453,7 @@ app.post("/informationEdit",  uploadStrategy, async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-  const phone = req.body.phone;
+
 
   const weight = req.body.weight;
     const height = req.body.height;
@@ -467,15 +466,10 @@ app.post("/informationEdit",  uploadStrategy, async (req, res) => {
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
     console.log(foundUser);
-
     foundUser.weight = weight;
-
-
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
-    foundUser.phone = phone;
-
     foundUser.height = height;
     foundUser.pace = pace;
     foundUser.fullName = fullName;
