@@ -126,9 +126,15 @@ const videosSchema = new mongoose.Schema({
 
 //const secret = "Thisisourlittlesecret.";
 //userSchema.plugin(encrypt, {secret: secret},['password'] );
+const scoutReq = new mongoose.Schema({
+  username: String,
+  email: String,
+  smessage: String,
 
+});
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
+const Scout = new mongoose.model("scoutReq",scoutReq );
 
 
 
@@ -311,6 +317,27 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
   await newVideo.save();
   res.redirect("/ProfilePage");
 })
+app.post("/scoutSignupRequest", async (req, res) => {
+  const name = req.body.sname;
+  const email = req.body.semail;
+  const message = req.body.smessage;
+  console.log(name);
+  console.log(email);
+  console.log(message);
+
+  const newReq = new Scout({
+    username: name,
+    email: email,
+    smessage: message,
+
+    //created_at: req.body.created_at,
+  });
+
+  await newReq.save();
+  console.log("inside post funct");
+  res.redirect("/login");
+})
+
 
 app.post("/login", function (req, res) {
   const email = req.body.email;
