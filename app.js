@@ -156,8 +156,18 @@ app.get("/UploadVideo", function (req, res) {
 
 app.get("/ProfilePageScout", function (req, res) {
   console.log(loggedInUser.role)
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
 
   res.render("ProfilePageScout", {
+    token: jwtToken,
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
