@@ -167,7 +167,12 @@ app.get("/help", function (req, res) {
   });
 });
 app.get("/helpScout", function (req, res) {
-  res.render("helpScout");
+  res.render("helpScout", {
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+    })
+  });
 });
 
 app.get("/scoutSignupRequest", function (req, res) {
@@ -359,6 +364,30 @@ app.post("/help",  async (req, res) => {
   })
 
 })
+
+app.post("/helpScout",  async (req, res) => {
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+
+  const message = req.body.message;
+
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    console.log("ff");
+    console.log(foundUser);
+    foundUser.message = message;
+
+
+    console.log("trying to update password");
+    await foundUser.save();
+
+    loggedInUser = foundUser;
+    res.redirect("/ProfilePageScout");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
+
+})
+
 app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
