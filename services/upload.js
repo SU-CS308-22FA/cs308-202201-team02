@@ -10,6 +10,7 @@ const { BlockBlobClient } = require('@azure/storage-blob')
 const uploadFile = async (req, name) => {
     const blobName = name;
     const blobService = new BlockBlobClient(process.env.AZURE_STORAGE_CONNECTION_STRING, containerName, blobName);
+
     try {
         const stream = getStream(req.file.buffer);
         const streamLength = req.file.buffer.length;
@@ -18,6 +19,7 @@ const uploadFile = async (req, name) => {
     } catch (error) {
         console.log(error);
     }
+
 }
 
 module.exports = uploadFile;

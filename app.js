@@ -63,11 +63,28 @@ const userSchema = new mongoose.Schema({
     min: 3,
     required: [true, "Please check your data entry, no password specified"],
   },
+  phone: String,
   role: {
     type: String,
     default: 'basic',
     enum: ["basic", "scout"]
   },
+  height :  String,
+
+
+  weight : String,
+
+  nationality : String,
+
+  foot : String,
+
+  main_Position : String,
+
+  pace : String,
+
+  fullName: String,
+
+  message : String,
 
    biographydescription: {
     type: String,
@@ -91,14 +108,20 @@ const videosSchema = new mongoose.Schema({
 
 })
 
-
-
-
 //const secret = "Thisisourlittlesecret.";
 //userSchema.plugin(encrypt, {secret: secret},['password'] );
+const scoutReq = new mongoose.Schema({
+  username: String,
+  email: String,
+  smessage: String,
 
+});
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
+
+
+const Scout = new mongoose.model("scoutReq",scoutReq );
+
 
 
 var loggedInUser = null;
@@ -129,7 +152,12 @@ app.get("/editprofileScout", function (req, res) {
   });
 });
 app.get("/help", function (req, res) {
-  res.render("help");
+  res.render("help", {
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+    })
+  });
 });
 app.get("/helpScout", function (req, res) {
   res.render("helpScout");
@@ -156,6 +184,8 @@ app.get("/UploadVideo", function (req, res) {
 
 app.get("/ProfilePageScout", function (req, res) {
   console.log(loggedInUser.role)
+  
+
   let jwtToken = null;
   if (loggedInUser.role !== ROLE.BASIC) {
     jwtToken = jwt.sign({
@@ -210,6 +240,45 @@ app.get("/ProfilePage", async (req, res) => {
   }
 });
 
+app.get("/informationEdit", function (req, res) {
+  res.render("informationEdit", {
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+
+    })
+  });
+});
+app.get("/information", function (req, res) {
+  console.log(loggedInUser.role)
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.SCOUT) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("information", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      height: loggedInUser?.height,
+      weight: loggedInUser?.weight,
+      pace : loggedInUser?.pace,
+      fullName : loggedInUser?.fullName,
+      nationality : loggedInUser?.nationality,
+      main_Position : loggedInUser?.main_Position,
+      foot : loggedInUser?.foot,
+    })
+  });
+});
+
+
+
 //POST
 app.post("/register", async (req, res) => {
   console.log("inside post funct");
@@ -224,8 +293,11 @@ app.post("/register", async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
+
     biographydescription: req.body.biographydescription,
+
   });
+
   await newUser.save();
 
   res.redirect("/login");
@@ -264,7 +336,28 @@ app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
   await newVideo.save();
   res.redirect("/ProfilePage");
 })
-//****************************************** */
+
+app.post("/scoutSignupRequest", async (req, res) => {
+  const name = req.body.sname;
+  const email = req.body.semail;
+  const message = req.body.smessage;
+  console.log(name);
+  console.log(email);
+  console.log(message);
+
+  const newReq = new Scout({
+    username: name,
+    email: email,
+    smessage: message,
+
+    //created_at: req.body.created_at,
+  });
+
+  await newReq.save();
+  console.log("inside post funct");
+  res.redirect("/login");
+})
+
 
 app.post("/login", function (req, res) {
   const email = req.body.email;
@@ -291,18 +384,16 @@ app.post("/login", function (req, res) {
     res.redirect("/error");
   })
 })
+app.post("/help",  async (req, res) => {
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
-app.post("/editProfile", function (req, res) {
-  const username = req.body.username;
-  const password = req.body.password;
-  const email = req.body.email;
+  const message = req.body.message;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
     console.log(foundUser);
-    foundUser.username = username;
-    foundUser.email = email;
-    foundUser.password = password;
+    foundUser.message = message;
+
 
     console.log("trying to update password");
     await foundUser.save();
@@ -313,12 +404,15 @@ app.post("/editProfile", function (req, res) {
     console.log("EDIT error"); // Fail
     console.log(error);
   })
+
 })
-app.post("/editProfileScout", function (req, res) {
+app.post("/editProfile",  async (req, res) => {
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-  const biographydescription = req.body.biographydescription;
+  const phone = req.body.phone;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
@@ -326,6 +420,54 @@ app.post("/editProfileScout", function (req, res) {
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
+    foundUser.phone = phone;
+
+
+    console.log("trying to update password");
+    await foundUser.save();
+
+    loggedInUser = foundUser;
+  //  await uploadFile(req, photoName);
+  //  const newVideo = new Video({
+  //    email: loggedInUser.email,
+  //    video_name: photoName,
+      //created_at: req.body.created_at,
+  //  });
+  //  await newVideo.save();
+    res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
+})
+app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
+  const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  await uploadFile(req, ppname);
+
+  const newVideo = new Video({
+    email: loggedInUser.email,
+    video_name: ppname,
+    //created_at: req.body.created_at,
+  });
+
+  await newVideo.save();
+  res.redirect("/ProfilePage");
+})
+app.post("/editProfileScout", function (req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+  
+  const biographydescription = req.body.biographydescription;
+
+
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    console.log("ff");
+    console.log(foundUser);
+    foundUser.username = username;
+    foundUser.email = email;
+    foundUser.password = password;
+
     foundUser.biographydescription = biographydescription;
 
     await foundUser.save();
@@ -352,23 +494,56 @@ app.get("/deleteUser", function (req, res) {
   }).catch(function (error) {
     console.log(error); // Failure
   });
+});
+
+app.post("/informationEdit",  uploadStrategy, async (req, res) => {
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+
+
+  const weight = req.body.weight;
+    const height = req.body.height;
+    const pace = req.body.pace;
+    const fullName = req.body.fullName;
+    const nationality = req.body.nationality;
+    const main_Position = req.body.main_Position;
+    const foot = req.body.foot;
+  //diger
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    console.log("ff");
+    console.log(foundUser);
+    foundUser.weight = weight;
+    foundUser.username = username;
+    foundUser.email = email;
+    foundUser.password = password;
+    foundUser.height = height;
+    foundUser.pace = pace;
+    foundUser.fullName = fullName;
+    foundUser.nationality = nationality;
+    foundUser.main_Position = main_Position;
+    foundUser.foot = foot;
+
+    console.log("trying to update password");
+    await foundUser.save();
+
+    loggedInUser = foundUser;
+  //  await uploadFile(req, photoName);
+  //  const newVideo = new Video({
+  //    email: loggedInUser.email,
+  //    video_name: photoName,
+      //created_at: req.body.created_at,
+  //  });
+  //  await newVideo.save();
+    res.redirect("/information");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
 })
 
-
-app.post("/information", async (req, res) => {
-
-  const newInformation = new Information({
-    name: req.body.Name,
-    height: req.body.Height,
-    weight: req.body.Weight,
-    nationality: req.body.Nationality,
-    foot: req.body.Foot,
-    main_Position: req.body.Main_Position,
-    pace: req.body.pace
-  });
-  await newInformation.save();
-
-})
 
 
 //registerdan submitlenen seyi catchleriz
