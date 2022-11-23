@@ -528,7 +528,7 @@ app.post("/informationEdit",  uploadStrategy, async (req, res) => {
 
     console.log("trying to update password");
     await foundUser.save();
-
+    
     loggedInUser = foundUser;
   //  await uploadFile(req, photoName);
   //  const newVideo = new Video({

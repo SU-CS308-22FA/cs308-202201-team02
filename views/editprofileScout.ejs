@@ -39,10 +39,19 @@
       </div>
 
       <div class="container">
+      
+      <div class="container" style="margin: 0 auto;">
+          <form action="/uploadPhoto" method="POST" class="form" name="form" enctype="multipart/form-data" style="margin: 0 auto;">
+            <div >
+              <br>
+              <label for="video_input">Select a photo to upload: </label>
+              <input id="file-picker" type="file" name="video_input">
+            </div>
+            <button type="submit">Upload</button>
+          </form>
+        </div>
         <form action="/editProfileScout" method="POST" class="form" id="form">
-          <img src="images/profilepic.jpg" class="img" />
-
-          <input type="file" id="myFile" name="filename" />
+         
 
           <div class="form-control">
             <br />
