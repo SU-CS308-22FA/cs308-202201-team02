@@ -7,14 +7,14 @@ const encrypt = require("mongoose-encryption");
 const { check, validationResult } = require("express-validator");
 const Joi = require("joi");
 const { ROLE } = require('./middleware/rolelist')
-
+const uploadFile = require("./services/upload");
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
 var jwt = require('jsonwebtoken');
-const uploadFile = require("./services/upload");
+
 
 const app = express();
 
@@ -42,7 +42,13 @@ mongoose.connect("mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mo
 
 //SCHEMAS
 
+const requestsSchema = new mongoose.Schema({
+   name: String,
+   status: String,
 
+  });
+
+const request = mongoose.model("request", requestsSchema);
 //User schema
 const userSchema = new mongoose.Schema({
   username: {
@@ -89,6 +95,22 @@ const userSchema = new mongoose.Schema({
    biographydescription: {
     type: String,
    },
+   requests: [
+     {
+         request: { type: mongoose.Schema.Types.ObjectId, ref: 'request' },
+       post: String,
+       timeInPost: String,
+   }
+],
+ reqs:[{
+   type: String,
+ }],
+ accreqs :[{
+   type: String,
+ }],
+ rejreqs:[{
+   type: String,
+ }],
 
 });
 
@@ -186,10 +208,58 @@ app.get("/UploadVideo", function (req, res) {
     }),
   });
 });
+app.get("/getmeeting", function (req, res) {
+  console.log(loggedInUser.role)
+
+
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("getmeeting", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      reqs: loggedInUser?.reqs,
+    })
+  });
+  console.log(loggedInUser.reqs);
+});
+app.get("/requestmeeting", function (req, res) {
+  console.log(loggedInUser.role)
+
+
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("requestmeeting", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      biographydescription: loggedInUser?.biographydescription,
+        reqs: loggedInUser?.reqs,
+    })
+  });
+});
 
 app.get("/ProfilePageScout", function (req, res) {
   console.log(loggedInUser.role)
-  
+
 
   let jwtToken = null;
   if (loggedInUser.role !== ROLE.BASIC) {
@@ -389,6 +459,27 @@ app.post("/login", function (req, res) {
     res.redirect("/error");
   })
 })
+app.post("/requestmeeting",  async (req, res) => {
+  const uid = req.body.username;
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  const findResult = await User.findOne({
+    username: uid,
+
+  });
+  console.log(findResult);
+User.findOne({ email: loggedInUser?.email }).then(async function (foundUser){
+findResult.reqs.push(foundUser.username);
+foundUser.reqs.push(findResult.username);
+
+findResult.save();
+foundUser.save();
+})
+
+console.log(findResult)
+
+  res.redirect("/profilePageScout");
+
+})
 app.post("/help",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -486,7 +577,7 @@ app.post("/editProfileScout", function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-  
+
   const biographydescription = req.body.biographydescription;
 
 
@@ -579,11 +670,11 @@ app.post("/informationEdit", async (req, res) => {
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-port = 3000;
-}
-app.listen(port);
+//let port = process.env.PORT;
+//if (port == null || port == "") {
+//port = 3000;
+//}
+//app.listen(port);
 app.listen(3000, function () {
   console.log("server on 3000");
 });
