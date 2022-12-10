@@ -60,15 +60,16 @@
                             <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
                             <button>Save</button>
                           </div>
-
                         </div>
 
                         </form>
+                        <ul>
 
-                      
-
-
-
+                        <% const cars = ["Saab", "Volvo", "BMW"];%>
+                        <% for(let i = 0; i < reqs.length; i++){ %>
+                            <li><%= reqs[i] %></li>
+                        <% } %>
+                        </ul
 
                       <br>
                       <br>
@@ -86,20 +87,6 @@
 
 
 
-            <div class="tab-content tab-space">
-              <div class="tab-pane active text-center gallery" id="videos">
-                <div class="row">
-                  <div class="col-md-3 ml-auto">
-                    <!--<video width="320" height="240" autoplay muted>
-                                <source src="https://pin.it/2aVDHgF" type="video/mp4">
-                                Your browser does not support the video tag.
-                                </video>-->
-
-                  </div>
-                  <div class="col-md-3 mr-auto"></div>
-                </div>
-              </div>
-            </div>
           </div>
 
 
@@ -116,7 +103,7 @@
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
     document.getElementById("fullName").innerHTML = user.fullName;
-    document.getElementById("requests").innerHTML = user.height;
+    document.getElementById("reqs").innerHTML = getArray(user.reqs);
 
 
 

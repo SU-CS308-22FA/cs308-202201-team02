@@ -208,6 +208,7 @@ app.get("/UploadVideo", function (req, res) {
     }),
   });
 });
+
 app.get("/getmeeting", function (req, res) {
   console.log(loggedInUser.role)
 
@@ -216,7 +217,8 @@ app.get("/getmeeting", function (req, res) {
   if (loggedInUser.role !== ROLE.BASIC) {
     jwtToken = jwt.sign({
       email: loggedInUser.email,
-      username: loggedInUser.username
+      username: loggedInUser.username,
+
     }, "mohit_pandey_1996", {
       expiresIn: 300000
     });
@@ -246,15 +248,19 @@ app.get("/requestmeeting", function (req, res) {
     });
   }
 
-  res.render("requestmeeting", {
+  res.render("requestmeeting",{
     token: jwtToken,
+
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
-      biographydescription: loggedInUser?.biographydescription,
-        reqs: loggedInUser?.reqs,
-    })
+      reqs: loggedInUser?.reqs,
+    }),
+    reqs: loggedInUser.reqs,
+
+
   });
+  console.log(loggedInUser.reqs);
 });
 
 app.get("/ProfilePageScout", function (req, res) {
