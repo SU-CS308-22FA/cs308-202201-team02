@@ -230,7 +230,8 @@ app.get("/getmeeting", function (req, res) {
       username: loggedInUser?.username,
       email: loggedInUser?.email,
       reqs: loggedInUser?.reqs,
-    })
+    }),
+      reqs: loggedInUser.reqs,
   });
   console.log(loggedInUser.reqs);
 });

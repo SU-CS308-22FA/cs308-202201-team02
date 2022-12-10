@@ -57,14 +57,17 @@
 
                         <tr>
                           <td><label for="reqs">
-                                  Name =>
                                   <br>
                                   <br>
 
                               </label>
                           </td>
                           <br>
-                          <td>  <p type="text" id="nameField" ></p></td>
+                          <ul>
+                          <% for(let i = 0; i < reqs.length; i++){ %>
+                              <li><%= reqs[i] %></li>
+                          <% } %>
+                          </ul
 
                       </tr>
                                   </table>
