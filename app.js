@@ -15,7 +15,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 var jwt = require('jsonwebtoken');
 
-
 const app = express();
 
 app.use(express.static("public"));
@@ -38,16 +37,12 @@ mongoose.connect("mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mo
   .catch((err) => {
     console.error(`Error connecting to the database. n${err}`);
   })
-
-
 //SCHEMAS
 
 const requestsSchema = new mongoose.Schema({
    name: String,
    status: String,
-
   });
-
 const request = mongoose.model("request", requestsSchema);
 //User schema
 const userSchema = new mongoose.Schema({
@@ -130,8 +125,6 @@ const videosSchema = new mongoose.Schema({
 
 })
 
-//const secret = "Thisisourlittlesecret.";
-//userSchema.plugin(encrypt, {secret: secret},['password'] );
 const scoutReq = new mongoose.Schema({
   username: String,
   email: String,
@@ -140,11 +133,7 @@ const scoutReq = new mongoose.Schema({
 });
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
-
-
 const Scout = new mongoose.model("scoutReq",scoutReq );
-
-
 
 var loggedInUser = null;
 var currentError = "";
@@ -170,6 +159,9 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
+
+
+
 app.get("/editprofile", function (req, res) {
   res.render("editprofile", {
     user: JSON.stringify({
@@ -244,8 +236,10 @@ app.get("/getmeeting", function (req, res) {
       username: loggedInUser?.username,
       email: loggedInUser?.email,
       reqs: loggedInUser?.reqs,
+      accreqs: loggedInUser?.accreqs,
     }),
       reqs: loggedInUser.reqs,
+      accreqs: loggedInUser.accreqs,
   });
   console.log(loggedInUser.reqs);
 });
@@ -256,7 +250,8 @@ app.get("/requestmeeting", function (req, res) {
   if (loggedInUser.role !== ROLE.BASIC) {
     jwtToken = jwt.sign({
       email: loggedInUser.email,
-      username: loggedInUser.username
+      username: loggedInUser.username,
+
     }, "mohit_pandey_1996", {
       expiresIn: 300000
     });
@@ -269,9 +264,12 @@ app.get("/requestmeeting", function (req, res) {
       username: loggedInUser?.username,
       email: loggedInUser?.email,
       reqs: loggedInUser?.reqs,
+      accreqs: loggedInUser?.accreqs,
 
     }),
     reqs: loggedInUser.reqs,
+    accreqs: loggedInUser.accreqs,
+    
   });
   console.log(loggedInUser.reqs);
 });
@@ -488,8 +486,8 @@ User.findOne({ email: loggedInUser?.email }).then(async function (foundUser){
 findResult.reqs.push(foundUser.username);
 foundUser.reqs.push(findResult.username);
 
-findResult.save();
-foundUser.save();
+await findResult.save();
+await foundUser.save();
 })
 
 console.log(findResult)
@@ -551,16 +549,49 @@ app.post("/accept",  async (req, res) => {
   });
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
   //console.log("ff");
-    console.log(foundUser);
+
+
     foundUser.accreqs.push(requester);
     findResult.accreqs.push(foundUser.username);
-    foundUser.save();
-    findResult.save();
+
+    foundUser.reqs.splice(requester);
+    findResult.reqs.splice(foundUser.username);
+
+
+     await foundUser.save();
+     await findResult.save();
+     console.log(foundUser);
 
 
     res.redirect("/ProfilePage");
   }).catch(function (error) {
     console.log("accept error"); // Fail
+    console.log(error);
+  })
+})
+app.post("/reject",  async (req, res) => {
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  const rejected = req.body.rejected;
+  console.log(rejected);
+  const findResult = await User.findOne({
+    username: rejected,
+  });
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+  //console.log("ff");
+    console.log(foundUser);
+    foundUser.rejreqs.push(rejected);
+    findResult.rejreqs.push(foundUser.username);
+
+    foundUser.reqs.splice(rejected);
+    findResult.reqs.splice(foundUser.username);
+
+    await foundUser.save();
+    await findResult.save();
+
+
+    res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("reject error"); // Fail
     console.log(error);
   })
 })
@@ -583,6 +614,7 @@ app.post("/editProfile",  async (req, res) => {
 
     console.log("trying to update password");
     await foundUser.save();
+
 
     loggedInUser = foundUser;
   //  await uploadFile(req, photoName);
