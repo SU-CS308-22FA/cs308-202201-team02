@@ -155,7 +155,21 @@ app.get("/", function (req, res) {
 app.get("/login", function (req, res) {
   res.render("login");
 });
+app.get("/logout", function (req, res) {
+  loggedInUser = null;
+  res.redirect("/login");
+})
 
+app.get("/deleteUser", function (req, res) {
+  User.deleteOne({ email: loggedInUser?.email }).then(function () {
+    console.log("User deleted");
+    loggedInUser = null;
+    res.redirect("/login");
+
+  }).catch(function (error) {
+    console.log(error); // Failure
+  });
+});
 app.get("/editprofile", function (req, res) {
   res.render("editprofile", {
     user: JSON.stringify({
@@ -238,7 +252,6 @@ app.get("/getmeeting", function (req, res) {
 app.get("/requestmeeting", function (req, res) {
   console.log(loggedInUser.role)
 
-
   let jwtToken = null;
   if (loggedInUser.role !== ROLE.BASIC) {
     jwtToken = jwt.sign({
@@ -256,10 +269,9 @@ app.get("/requestmeeting", function (req, res) {
       username: loggedInUser?.username,
       email: loggedInUser?.email,
       reqs: loggedInUser?.reqs,
+
     }),
     reqs: loggedInUser.reqs,
-
-
   });
   console.log(loggedInUser.reqs);
 });
@@ -287,8 +299,6 @@ app.get("/ProfilePageScout", function (req, res) {
     })
   });
 });
-
-
 
 app.get("/ProfilePage", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
@@ -375,7 +385,6 @@ app.post("/register", async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-
     biographydescription: req.body.biographydescription,
 
   });
@@ -466,6 +475,7 @@ app.post("/login", function (req, res) {
     res.redirect("/error");
   })
 })
+
 app.post("/requestmeeting",  async (req, res) => {
   const uid = req.body.username;
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
@@ -532,7 +542,28 @@ app.post("/helpScout",  async (req, res) => {
   })
 
 })
+app.post("/accept",  async (req, res) => {
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  const requester = req.body.requester;
+  console.log(requester);
+  const findResult = await User.findOne({
+    username: requester,
+  });
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+  //console.log("ff");
+    console.log(foundUser);
+    foundUser.accreqs.push(requester);
+    findResult.accreqs.push(foundUser.username);
+    foundUser.save();
+    findResult.save();
 
+
+    res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("accept error"); // Fail
+    console.log(error);
+  })
+})
 app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -607,21 +638,7 @@ app.post("/editProfileScout", function (req, res) {
   })
 })
 
-app.get("/logout", function (req, res) {
-  loggedInUser = null;
-  res.redirect("/login");
-})
 
-app.get("/deleteUser", function (req, res) {
-  User.deleteOne({ email: loggedInUser?.email }).then(function () {
-    console.log("User deleted");
-    loggedInUser = null;
-    res.redirect("/login");
-
-  }).catch(function (error) {
-    console.log(error); // Failure
-  });
-});
 
 app.post("/informationEdit", async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
@@ -658,19 +675,15 @@ app.post("/informationEdit", async (req, res) => {
     await foundUser.save();
 
     loggedInUser = foundUser;
-  //  await uploadFile(req, photoName);
-  //  const newVideo = new Video({
-  //    email: loggedInUser.email,
-  //    video_name: photoName,
-      //created_at: req.body.created_at,
-  //  });
-  //  await newVideo.save();
+
     res.redirect("/information");
   }).catch(function (error) {
     console.log("EDIT error"); // Fail
     console.log(error);
   })
 })
+
+
 
 
 

@@ -1,5 +1,6 @@
 <%- include('partials/profileheader') %>
 
+
   <body>
     <div class="navigation">
       <div class="logo">
@@ -35,11 +36,6 @@
 
           <div class="container">
 
-
-
-
-
-
             <br>
             <br>
             <br>
@@ -48,7 +44,7 @@
             <center>
                 <div>
 
-                    <form action="/getmeeting" method="POST" class="form" id="form">
+
                       <center>
                         <h2>Requests</h2>
                       </center>
@@ -63,51 +59,51 @@
                               </label>
                           </td>
                           <br>
+
                           <ul>
                           <% for(let i = 0; i < reqs.length; i++){ %>
                               <li><%= reqs[i] %></li>
+
+                              <form action="/accept" method="post">
+
+
+                                <button type="submit" name ="requester" id="requester" value= <%= reqs[i] %> >Accept</button>
+
+                              </form>
+
+                              <input type="submit" name ="requester" id=<%= reqs[i] %> value= <%= reqs[i] %>>
+                                <button type="button" name="reject">Reject</button>
+
+
                           <% } %>
                           </ul
 
                       </tr>
                                   </table>
+
+
                       <br>
                       <br>
-
-
-                  </form>
-
                 </div>
-
-
-
-
             </center>
-
-
-
-
-
           </div>
-
-
-
-
     </div>
-
   </body>
   <script>
     localStorage.setItem('token', "<%= JSON.stringify(token) %>");
-
     // BURAYI DUZENLE
-
     var user = JSON.parse(`<%-user%>`);
+      function acceptfunc(x)
+      {
+        console.log(x);
+        const findResult = await User.findOne({
+          username: x,
+        });
+        user.accreqs.push(x);
+        findResult.accreqs.push(user.username);
 
+      }
     document.getElementById("nameField").innerHTML = user.username;
     document.getElementById("fullName").innerHTML = user.fullName;
     document.getElementById("reqs").innerHTML = user.reqs;
-
-
-
-
   </script>
