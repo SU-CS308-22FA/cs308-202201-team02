@@ -5,13 +5,17 @@
   }
   
   img {
-	width: 100px;
 	height: auto;
   }
   
   .container form .img {
 	border-radius: 50%;
   }
+
+ .videoupload {
+	margin: 0 auto;
+  }
+  
   
   body {
 	background-color: #ffffff;

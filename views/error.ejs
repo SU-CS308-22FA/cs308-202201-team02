@@ -1,0 +1,12 @@
+<%- include('partials/headerLogin') %>
+  <div class="container">
+    <h2 class="header">Error</h2>
+
+    <span id="error_span"></span>
+
+  </div>
+
+
+  <script> 
+    document.getElementById("error_span").innerHTML = `<%- error %>`;
+  </script>
