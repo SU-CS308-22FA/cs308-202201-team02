@@ -1,0 +1,118 @@
+<%- include('partials/profileheader') %>
+
+  <body>
+    <div class="navigation">
+      <div class="logo">
+        <input type="image" src="images/logo.jpg" width=110>
+        <a href="#"></a>
+      </div>
+      <div class="navigation-search-container">
+        <i class="fa fa-search"></i>
+        <input class="search-field" type="text" placeholder="Search">
+        <div class="search-container">
+          <div class="search-container-box">
+            <div class="search-results">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navigation-icons">
+        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
+        <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
+
+      </div>
+    </div>
+
+    <div class="profile-page">
+
+      <div class="page-header header-filter" data-parallax="true"></div>
+      <div class="main main-raised">
+        <div class="profile-content">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6 ml-auto mr-auto">
+                <div class="profile">
+
+                  <div class="tab-content tab-space">
+                    <div class="tab-pane active text-center gallery" id="videos">
+
+                      <div class="row" style="display: block;
+                      margin: 0 auto;">
+                        <% for(const url of Urls) {%>
+                          <% if(url.startsWith("https://talentland.blob.core.windows.net/videos/P")){%>
+                            <%console.log("a")%>
+                              <img src="<%url%>" type="image/png">
+                        <% }} %>
+                      </div>
+
+                    </div>
+                  </div>
+
+
+                  <div class="name">
+                    <h3 class="title" id="nameField"> Name </h3>
+                    <h6>Striker</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="description text-center">
+              <p>Football Player. 18 years old. I love football</p>
+              <a href="/editprofile">Edit Profile</a>
+            </div>
+            <div class="row">
+              <div class="col-md-6 ml-auto mr-auto">
+                <div class="profile-tabs">
+                  <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" href="#" role="tab" data-toggle="tab">
+                        <i class="material-icons">videocam</i>
+                        Videos
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/information" role="tab" data-toggle="tab">
+                        <i class="material-icons">ballot</i>
+                        Information
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-content tab-space">
+              <div class="tab-pane active text-center gallery" id="videos">
+                <% for(const url of Urls) { %>
+                  <div class="row" style="display: block;
+                  margin: 0 auto;">
+                    <video width="400" controls >
+                      <source src="<%= url %>" type="video/mp4">
+                      Your browser does not support HTML video.
+                    </video>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </body>
+
+
+
+  <script>
+    var user = JSON.parse(`<%-user%>`);
+    document.getElementById("nameField").innerHTML = user.username;
+
+
+  </script>

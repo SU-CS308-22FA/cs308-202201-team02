@@ -1,0 +1,59 @@
+<%- include('partials/editHeader') %>
+
+  <body>
+    <div class="navigation">
+      <div>
+        <a href="#"></a>
+        <img src="images/logo.jpg" width=110 />
+      </div>
+      <div class="navigation-search-container">
+        <i class="fa fa-search"></i>
+        <input class="search-field" type="text" placeholder="Search" />
+        <div class="search-container">
+          <div class="search-container-box">
+            <div class="search-results"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navigation-icons">
+        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
+        <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
+        <br>
+        <a class="navigation-link" href="/logout" style="color: white;"><i class="fa fa-sign-out"></i></a>
+
+      </div>
+    </div>
+
+    <div class="pageContainer">
+
+      <div class="container" style="margin: 0 auto; text-align: center;">
+        <form action="/uploadVideo" method="POST" class="form" name="form" id="my_form" enctype="multipart/form-data">
+          <div style= "text-align: center">
+            <img src="images/upload-video.png" width="300" height="400"/>
+
+            <br>
+            <label for="video_input">Select a video to upload: </label>
+
+            <input id="file-picker" type="file" name="video_input">
+          </div>
+          <button type="submit">Upload</button>
+        </form>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    document.getElementById("my_form").onsubmit = function () { myFunction(); };
+
+    function myFunction() {
+      swal({
+        icon: "success",
+        title: "Your video saved sucessfully."
+      }).then(() => {
+        window.location.href = '/ProfilePage';
+      });
+    }
+  </script>
