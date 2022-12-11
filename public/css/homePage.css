@@ -1,0 +1,10 @@
+.homePageContent {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 30px;
+}
+
+.videoContainer {
+  border-radius: 100px;
+  box-shadow: 0 16px 24px 2px #245b16, 0 6px 30px 5px #245b16, 0 8px 10px -5px #245b16;
+}

@@ -9,6 +9,8 @@ const Joi = require("joi");
 const { ROLE } = require('./middleware/rolelist')
 
 
+
+
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
@@ -245,6 +247,53 @@ app.get("/ProfilePage", async (req, res) => {
   }
 });
 
+app.get("/homePage", async (req, res) => {
+  const allUrls = [];
+
+  const { BlobServiceClient } = require("@azure/storage-blob");
+  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
+  const config = require('./config');
+  const accountName = config.getStorageAccountName();
+
+  try {
+    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat();
+    i=0;
+
+    for await (let blob of blobs) {
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
+      
+      const email = blob.name.split('_')[0];
+      const user = await User.findOne({ email });
+      if (!user) {
+        currentError = "Something went wrong when fetching videos."
+        res.redirect("/error");
+        return;
+      }
+
+      allUrls.push({
+        key: user?.username,
+        value: url
+      });
+
+      console.log(allUrls[i].Owner, allUrls[i].VideoUrl, "--");
+    }
+    console.log("*")
+
+    res.render('HomePage', {
+      user: JSON.stringify({
+        username: loggedInUser?.username,
+        email: loggedInUser?.email,
+      }),
+      allUrls: allUrls,
+    });
+  } catch (err) {
+    currentError = "Something went wrong when fetching videos in the home page."
+    res.redirect("/error");
+    return;
+  }
+});
+
 app.get("/informationEdit", function (req, res) {
   res.render("informationEdit", {
     user: JSON.stringify({
@@ -284,6 +333,7 @@ app.get("/information", function (req, res) {
 
 
 
+
 //POST
 app.post("/register", async (req, res) => {
   console.log("inside post funct");
@@ -313,8 +363,10 @@ const inMemoryStorage = multer.memoryStorage()
 const uploadStrategy = multer({ storage: inMemoryStorage }).single('video_input');
 
 app.post("/uploadVideo", uploadStrategy, async (req, res) => {
+  
   const name = loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   await uploadFile(req, name);
+
 
   const newVideo = new Video({
     email: loggedInUser.email,
@@ -323,6 +375,7 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
   });
 
   await newVideo.save();
+
   setTimeout(() => res.redirect("/ProfilePage"), 2500);
 })
 
@@ -579,11 +632,15 @@ app.post("/informationEdit", async (req, res) => {
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
+/*
 let port = process.env.PORT;
 if (port == null || port == "") {
 port = 3000;
 }
 app.listen(port);
+*/
+
+
 app.listen(3000, function () {
   console.log("server on 3000");
 });
