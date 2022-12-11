@@ -108,6 +108,12 @@ const videosSchema = new mongoose.Schema({
     required: [true, "Please check your data entry, no name specified"],
   },
 
+  like_count: {
+    type: Number,
+    min: 0,
+    default: 0,
+    // required: [true, "Please check your data entry, no name specified"],
+  },
 })
 
 //const secret = "Thisisourlittlesecret.";
@@ -258,8 +264,6 @@ app.get("/homePage", async (req, res) => {
 
   try {
     const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat();
-    i=0;
-
     for await (let blob of blobs) {
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
       
@@ -271,14 +275,14 @@ app.get("/homePage", async (req, res) => {
         return;
       }
 
+      const video = await Video.findOne({ video_name: blob.name });
       allUrls.push({
         key: user?.username,
-        value: url
+        value: url,
+        video_name: blob.name,
+        like_count: video?.like_count ?? 0,
       });
-
-      console.log(allUrls[i].Owner, allUrls[i].VideoUrl, "--");
     }
-    console.log("*")
 
     res.render('HomePage', {
       user: JSON.stringify({
@@ -292,6 +296,21 @@ app.get("/homePage", async (req, res) => {
     res.redirect("/error");
     return;
   }
+});
+
+app.get("/likeVideo", async function (req, res) {
+  const video = await Video.findOne({video_name: req.query.video_name});
+  if (!video) {
+    currentError = "Something went wrong when liking video in the home page."
+    res.redirect("/error");
+    return;
+  }
+
+  video.like_count = (video.like_count === null || video.like_count === undefined) ? 1 : video.like_count + 1;
+  await video.save();
+
+  res.redirect("/homePage");
+  return;
 });
 
 app.get("/informationEdit", function (req, res) {

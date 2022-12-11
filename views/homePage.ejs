@@ -35,17 +35,21 @@
         <p>Football Player. 18 years old. I love football</p>
         <a href="/editprofile">Edit Profile</a>
         <% for(const item of allUrls) { %>
-          <div class="row" style="display: block;
-                margin: 0 auto;">
-            <h3 class="title">
-              <%= item.key %>
-            </h3>
-
+          <div class="row" style="display: block;margin: 0 auto; margin-bottom: 30px; margin-top: 10px; max-width: 500px;">
             <div class="videoContainer">
-              <video width="400" controls>
-                <source src="<%= item.value %>" type="video/mp4">
-                Your browser does not support HTML video.
-              </video>
+              <div>
+                <h3 class="title">
+                  <%= item.key %>
+                </h3>
+                <video width="400" controls>
+                  <source src="<%= item.value %>" type="video/mp4">
+                  Your browser does not support HTML video.
+                </video>
+                <div class="videoLikeContainer">
+                  <a class="navigation-link" href="/likeVideo?video_name=<%= item.video_name %>"><i class="fa"  style="color:red">&#xf004;</i></a>
+                  <span style="margin-left: 10px;"><%= item.like_count %> likes</span>
+                </div>
+              </div>
             </div>
           </div>
           <% } %>
