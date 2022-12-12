@@ -2,6 +2,7 @@
   padding-left: 30px;
   padding-right: 30px;
   padding-top: 30px;
+  padding-bottom: 50px;
 }
 
 .videoContainer {
@@ -21,4 +22,27 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.filterActionsContainer {
+  display: flex;
+  flex-direction: row-reverse;
+  padding-right: 10px;
+}
+
+.filterActions {
+  display: flex;
+  flex-direction: column;
+}
+
+.filterButton {
+  background-color: #245b16;
+	border: 2px solid #245b16;
+	border-radius: 4px;
+	color: #fff;
+	display: block;
+	font-family: inherit;
+	font-size: 16px;
+	padding: 10px;
+	margin-top: 20px;
 }
