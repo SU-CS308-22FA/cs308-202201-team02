@@ -1,0 +1,145 @@
+<%- include('partials/profileheader') %>
+
+  <body>
+    <div class="navigation">
+      <div class="logo">
+        <input type="image" src="images/logo.jpg" width=110>
+        <a href="#"></a>
+      </div>
+      <div class="navigation-search-container">
+        <i class="fa fa-search"></i>
+        <input class="search-field" type="text" placeholder="Search">
+        <div class="search-container">
+          <div class="search-container-box">
+            <div class="search-results">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navigation-icons">
+        <a class="navigation-link" href="/homePageScout"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/profilePageScout"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
+      </div>
+    </div>
+
+    <div class="profile-page">
+      <div class="page-header header-filter" data-parallax="true"></div>
+      <div class="main user homePageContent">
+        <h3 class="title" id="nameField"> Name </h3>
+        <h6>Striker</h6>
+        <p>Football Player. 18 years old. I love football</p>
+        <a href="/editprofileScout">Edit Profile</a>
+        <% for(const item of allUrls) { %>
+          <div class="row" style="display: block;margin: 0 auto; margin-bottom: 30px; margin-top: 10px; max-width: 500px;">
+            <div class="videoContainer">
+              <div>
+                <h3 class="title">
+                  <%= item.key %>
+                </h3>
+                <video width="400" controls>
+                  <source src="<%= item.value %>" type="video/mp4">
+                  Your browser does not support HTML video.
+                </video>
+                <div class="videoLikeContainer">
+                  <a class="navigation-link" href="/rateVideo?video_name=<%= item.video_name %>"><input id="rate" placeholder="0" name="rate_count" /></a>
+                  <span style="margin-left: 10px;"><p type="text" id="rate" ></p></span>
+                </div>
+                
+                <!--<div class="videoLikeContainer">
+                  <a class="navigation-link" href="/rateVideo?video_name=<%= item.video_name %>">
+                  <button class="star">&#9734</button>
+                  <button class="star">&#9734</button>
+                  <button class="star">&#9734</button>
+                  <button class="star">&#9734</button>
+                  <button class="star">&#9734</button></a>
+                  <span style="margin-left: 10px;"><%= item.rate_count %> </span>
+                </div> -->
+                <!--<div class="star_rating">
+                  <button class="star">&#9734</button>
+                  <button class="star">&#9734</button>
+                  <button class="star">&#9734</button>
+                  <button class="star">&#9734</button>
+                  <button class="star">&#9734</button>
+                  <p class = "current_rating">0 of 5</p>
+              </div>-->
+              <!--<div class="star-rating">
+                <i class="my-star star-1" data-star="1"></i>
+                <i class="my-star star-2" data-star="2"></i>
+                <i class="my-star star-3" data-star="3"></i>
+                <i class="my-star star-4" data-star="4"></i>
+                <i class="my-star star-5" data-star="5"></i>
+                
+              </div>
+              <input type="number" readonly id="output">-->
+              </div>
+            </div>
+          </div>
+          <% } %>
+
+      </div>
+    </div>
+
+
+    </div>
+    
+  </body>
+
+
+
+  <script>
+    var user = JSON.parse(`<%-user%>`);
+    document.getElementById("nameField").innerHTML = user.username;
+    document.getElementById("rate").innerHTML = videos.rate_count;
+
+    const allStars = document.querySelectorAll('.star');
+    let current_rating = document.querySelector('current_rating');
+
+    allStars.forEach((star,i) => {
+        star.onclick =function () {
+            let current_star_level = i + 1;
+            current_rating.innerText = '${current_star_level} of 5';
+            allStars.forEach((star, j) => {
+                if (current_star_level >= j+1)
+                {
+                    star.innerHTML = '&#9733';
+                }else{
+                    star.innerHTML = '&#9734';
+                }
+            })
+        }
+    })
+    /*document.addEventListener('DOMContentLoaded', function(){
+    (function(){
+        let sr = document.querySelectorAll('.my-star');
+        let i = 0;
+        while (i < sr.length){
+            sr[i].addEventListener('click', function(){
+                let cs = parseInt(this.getAttribute("data-star"));
+                document.querySelector('item.rate_count ').value = cs;
+                let pre = cs;
+                while(1 <= pre){
+                    if(!document.querySelector('.star-'+pre).classList.contains('is-active')){
+                        document.querySelector('.star-'+pre).classList.add('is-active');
+                    }
+                    
+                    --pre;
+                }
+                let succ = cs+1;
+                while(5 >= succ){
+                    if(document.querySelector('.star-'+succ).classList.contains('is-active')){
+                        document.querySelector('.star-'+succ).classList.remove('is-active');
+                    }
+                    ++succ;
+                }
+
+            })
+            i++;
+        }
+    })();
+})*/
+
+  </script>

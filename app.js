@@ -114,6 +114,19 @@ const videosSchema = new mongoose.Schema({
     default: 0,
     // required: [true, "Please check your data entry, no name specified"],
   },
+  rate_count: {
+    type: Number,
+    min: 0,
+    default: 0,
+    // required: [true, "Please check your data entry, no name specified"],
+  },
+  totalrate: {
+    type: Number,
+    min: 0,
+    default: 0,
+    // required: [true, "Please check your data entry, no name specified"],
+  },
+  
 })
 
 //const secret = "Thisisourlittlesecret.";
@@ -297,6 +310,50 @@ app.get("/homePage", async (req, res) => {
     return;
   }
 });
+app.get("/homePageScout", async (req, res) => {
+  const allUrls = [];
+
+  const { BlobServiceClient } = require("@azure/storage-blob");
+  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
+  const config = require('./config');
+  const accountName = config.getStorageAccountName();
+
+  try {
+    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat();
+    for await (let blob of blobs) {
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
+      
+      const email = blob.name.split('_')[0];
+      const user = await User.findOne({ email });
+      if (!user) {
+        currentError = "Something went wrong when fetching videos."
+        res.redirect("/error");
+        return;
+      }
+
+      const video = await Video.findOne({ video_name: blob.name });
+      allUrls.push({
+        key: user?.username,
+        value: url,
+        video_name: blob.name,
+        rate_count: video?.rate_count ?? 0,
+      });
+    }
+
+    res.render('HomePageScout', {
+      user: JSON.stringify({
+        username: loggedInUser?.username,
+        email: loggedInUser?.email,
+      }),
+      allUrls: allUrls,
+    });
+  } catch (err) {
+    currentError = "Something went wrong when fetching videos in the home page."
+    res.redirect("/error");
+    return;
+  }
+});
 
 app.get("/likeVideo", async function (req, res) {
   const video = await Video.findOne({video_name: req.query.video_name});
@@ -310,6 +367,20 @@ app.get("/likeVideo", async function (req, res) {
   await video.save();
 
   res.redirect("/homePage");
+  return;
+});
+app.get("/rateVideo", async function (req, res) {
+  const video = await Video.findOne({video_name: req.query.video_name});
+  if (!video) {
+    currentError = "Something went wrong when rating video in the home page."
+    res.redirect("/error");
+    return;
+  }
+
+  video.totalrate = (video.totalrate === null || video.totalrate === undefined) ? 1 : video.totalrate + video.rate_count;
+  await video.save();
+
+  res.redirect("/homePageScout");
   return;
 });
 
