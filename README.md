@@ -13,15 +13,15 @@ increase the quality of football players.In addition, ensuring that young talent
 </table>
 
 ### Table of Contents
-+ #### [Description](#desc)
-+ #### [User Documentation](#userdoc)
-  - [Installing the Software](#installandrunsoftware)
-  - [Reporting bugs](#reportbugs)
-  - [Known bugs](#knownbugs)
-+ #### [Develeoper Documentation](#devdoc)
-  - [Obtaining the source code](#obtainsource)
-  - [Layout of the directory and branching](#layoutdirectory)
-  - [Building and deploying](#buildanddeploy)
++ #### [1.Description](#desc)
++ #### [2.User Documentation](#userdoc)
+  - [2.1Installing the Software](#installandrunsoftware)
+  - [2.2Reporting bugs](#reportbugs)
+  - [2.3Known bugs](#knownbugs)
++ #### [3.Develeoper Documentation](#devdoc)
+  - [3.1Obtaining the source code](#obtainsource)
+  - [3.2Layout of the directory and branching](#layoutdirectory)
+  - [3.3Building and deploying](#buildanddeploy)
   
 # **Talent Land**
 
@@ -60,16 +60,16 @@ kkaran@sabanciuniv.edu
 Users can directly navigate to profile page with undefined username even users are not logged in.
 Even users are not logged out, after a few times credentials automatically may return to null and username turns the undefined.
 
-# 3. Developer Documentation
+# 3. Developer Documentation <a name="devdoc"/>
 
-### 3.1 Obtaining source code
+### 3.1 Obtaining source code <a name="obtainsource"/>
 
 Type git clone, and then paste the URL you copied earlier.
 https://github.com/SU-CS308-22FA/cs308-202201-team02.git
 
 You can clone the repository and run it with "nodemon app.js"  or "node app.js" command line
 
-## 3.2 Layout of the Directory
+## 3.2 Layout of the Directory <a name="layoutdirectory"/>
 
 **middleware**: Contains functions of rolelist.js to determine the user roles and permissions that are needed for authorization.
 
@@ -87,7 +87,7 @@ You can clone the repository and run it with "nodemon app.js"  or "node app.js" 
 **package.json**: Contains the related packages.
    
 
-## 3.3 Building and Deploying the Project
+## 3.3 Building and Deploying <a name="buildanddeploy"/>
 
 After clonning the project successfully, from the compiler you have to install some packages from the terminal:
 
