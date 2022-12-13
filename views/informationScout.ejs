@@ -21,7 +21,7 @@
       <div class="navigation-icons">
         <a class="navigation-link" href="/homePageScout"><i class="fa fa-home"></i></a>
         <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
-        <a class="navigation-link" href="/ProfilePageScout"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/profilePageScout"><i class="fa fa-user"></i></a>
         <a class="navigation-link" href="/logout" ><i class="fa fa-sign-out"></i></a>
 
     </div>
@@ -49,12 +49,15 @@
                 </div>
               </div>
             </div>
+            <div class="description text-center">
+              <a href="/editprofileScout">Edit Profile</a>
+            </div>
             <div class="row">
               <div class="col-md-6 ml-auto mr-auto">
                 <div class="profile-tabs">
                   <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
                     <li class="nav-item">
-                      <a class="nav-link" href="/informationSCout" role="tab" data-toggle="tab">
+                      <a class="nav-link active" href="/informationScout" role="tab" data-toggle="tab">
                         <i class="material-icons">ballot</i>
                         Information
                       </a>
@@ -63,9 +66,58 @@
                 </div>
               </div>
             </div>
-            <div class="description text-center">
-              <a href="/editprofileScout">Edit Profile</a>
-            </div>
+
+            <br>
+            <br>
+            <center>
+              <h2>Information Table</h2>
+            </center>
+
+            <br>
+            <br>
+
+            <center>
+                <div>
+
+                    <form action="/informationScout" method="POST" class="form" id="form">
+                      <table>
+
+                        <tr>
+                          <td><label for="age">
+                                  Age
+                              </label>
+                          </td>
+                          <td>  <p type="text" id="age" ></p></td>
+                      </tr>
+                      <tr>
+                        <td><label for="club">
+                                Club
+                            </label>
+                        </td>
+                        <td>  <p type="text" id="club" ></p></td>
+                    </tr>
+                    <tr>
+                        <td><label for="scoutposition">
+                                Position/Role
+                            </label>
+                        </td>
+                        <td>  <p type="text" id="scoutposition" ></p></td>
+                    </tr>
+                    
+                    </table>
+                      <br>
+                      <br>
+
+
+                  </form>
+
+                </div>
+
+
+
+
+            </center>
+
 
           </div>
         </div>
@@ -75,12 +127,16 @@
     </div>
 
   </body>
-
   <script>
     localStorage.setItem('token', "<%= JSON.stringify(token) %>");
-    // var token = localStorage.getItem('token')
+
+    // BURAYI DUZENLE
 
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
+    document.getElementById("age").innerHTML = user.age;
+    document.getElementById("club").innerHTML = user.club;
+    document.getElementById("scoutposition").innerHTML = user.scoutposition;
     document.getElementById("biographydescriptionField").innerHTML = user.biographydescription;
+
   </script>

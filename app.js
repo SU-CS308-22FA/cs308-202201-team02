@@ -440,6 +440,30 @@ app.get("/information", function (req, res) {
     })
   });
 });
+app.get("/informationScout", function (req, res) {
+  console.log(loggedInUser.role)
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("informationScout", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      age: loggedInUser?.age,
+      scoutposition: loggedInUser?.scoutposition,
+      club: loggedInUser?.club,
+      biographydescription: loggedInUser?.biographydescription,
+    })
+  });
+});
 
 
 
@@ -758,7 +782,7 @@ app.post("/informationEditScout", async (req, res) => {
     console.log("EDIT error"); // Fail
     console.log(error);
   })
-})
+});
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
