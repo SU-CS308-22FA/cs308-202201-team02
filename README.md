@@ -56,7 +56,7 @@ Even users are not logged out, after a few times credentials automatically may r
 Type git clone, and then paste the URL you copied earlier.
 https://github.com/SU-CS308-22FA/cs308-202201-team02.git
 
-You can clone the repository and run it with "nodemon app.js"  or "node app.js" command line
+You can clone the repository and run it with "nodemon app.js" or "node app.js" command line.
 
 ## 3.2 Layout of the Directory <a name="layoutdirectory"/>
 
@@ -66,7 +66,7 @@ You can clone the repository and run it with "nodemon app.js"  or "node app.js" 
 
 **public**: 
     *css*: Conains the design materials of the website. For profile page view there is profilePage.css and for the home page there is homePage.css files.
-    *image*: Contains the image and icons that are used in web     site.
+    *image*: Contains the image and icons that are used in web site.
     *js*: Contains validation functions for edit profile page(ProfilePageEdit.js).
     
 **services**: Contains the functionalities for upload video.
@@ -84,7 +84,7 @@ You have to install required packages from ‘package.json’ by using "npm inst
 
 After installation:
 
--  Connect the backend by writing terminal to ‘nodemon app.js’or "node app.js" 
+-  Connect the backend by writing terminal to ‘nodemon app.js’or "node app.js".
 
 
 
