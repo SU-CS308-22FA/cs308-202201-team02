@@ -57,6 +57,7 @@
                   <div class="name">
                     <h3 class="title" id="nameField"> Name </h3>
                     <h6>Striker</h6>
+                    <h3 class="title" id="overall_rate"> Rate </h3>
                   </div>
                 </div>
               </div>
@@ -113,6 +114,7 @@
   <script>
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
+    document.getElementById("overall_rate").innerHTML = user.overall_rate;
 
 
   </script>

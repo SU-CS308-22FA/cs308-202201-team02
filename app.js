@@ -101,6 +101,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default:0,
   },
+   overall_rate: {
+    type: Number,
+    default:0,
+  },
 
 
 });
@@ -245,6 +249,7 @@ app.get("/ProfilePage", async (req, res) => {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
+        overall_rate: loggedInUser?.overall_rate,
       }),
       Urls: urls,
     });
@@ -375,9 +380,8 @@ app.get("/rateVideo", async function (req, res) {
   user.rate = (user.rate === null || user.rate === undefined) ? 0 : Number(user.rate) + Number(req.query.rate_score);
   user.rate_count = (user.rate_count === null || user.rate_count === undefined) ? 0 : Number(user.rate_count) + 1;
 
-  console.log("name:", user.username);
-  console.log("rate:", user.rate);
-  console.log("rate count:", user.rate_count);
+  user.overall_rate= (user.rate === null || user.rate === undefined) ? 0 : Number(user.rate)/ Number(user.rate_count);
+
   await user.save();
 
   res.redirect("/homePageScout");

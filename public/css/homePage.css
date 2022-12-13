@@ -28,7 +28,7 @@
 }
 .star{
   font-size: 3rem;
-  color: #ff9800;
+  color: #0c0c0b;
   background-color: unset;
   border: none;
 }
@@ -38,30 +38,10 @@
 
 .scout-rate i {
   justify-content: center;
+  padding: 0px;
 
   margin-left: 30px;
   color: #fdfdfd;
   text-decoration: none;
   font-size: 22px;
 }
-
-/*.star-rating{
-  color: #080808;
-  font-size:2em;
-}
-
-.my-star::before{
-  content:"\002605";
-}
-
-.my-star{
-  font-style: unset !important;
-}
-
-.is-active{
-  color:#fb8900;
-}
-
-.my-star:not(.is-active):hover{
-  color: #fb8900;
-}*/

@@ -39,11 +39,11 @@
               <div>
                 <h3 class="title">
                   <%= item.key %>
-                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=1"><i class="fa"  style="color:rgb(123, 121, 165)">&#xf005;</i></a>
-                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=2"><i class="fa"  style="color:rgb(103, 100, 167)">&#xf005;</i></a>
-                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=3"><i class="fa"  style="color:rgb(84, 80, 165)">&#xf005;</i></a>
-                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=4"><i class="fa"  style="color:rgb(68, 64, 161)">&#xf005;</i></a>
-                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=5"><i class="fa"  style="color:rgb(52, 46, 165)">&#xf005;</i></a>
+                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=1"><i class="fa"  style="color:rgb(0, 0, 0)">&#xf005;</i></a>
+                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=2"><i class="fa"  style="color:rgb(0, 0, 0)">&#xf005;</i></a>
+                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=3"><i class="fa"  style="color:rgb(0, 0, 0)">&#xf005;</i></a>
+                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=4"><i class="fa"  style="color:rgb(0, 0, 0)">&#xf005;</i></a>
+                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=5"><i class="fa"  style="color:rgb(0, 0, 0)">&#xf005;</i></a>
 
                 </h3>
 
@@ -52,7 +52,7 @@
                   Your browser does not support HTML video.
                 </video>
                 <div class="videoLikeContainer">
-                  <a class="navigation-link" href="/likeVideo?video_name=<%= item.video_name %>"><i class="fa"  style="color:red">&#xf004;</i></a>
+                  <a class="navigation-link" href="/likeVideo?video_name=<%= item.video_name %>"><i class="fa"  style="color:rgb(0, 0, 0)">&#xf004;</i></a>
                   <span style="margin-left: 10px;"><%= item.like_count %> likes</span>
                 </div>
               </div>
@@ -73,53 +73,6 @@
   <script>
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
-    document.getElementById("rate").innerHTML = videos.rate_count;
 
-    const allStars = document.querySelectorAll('.star');
-    let current_rating = document.querySelector('current_rating');
-
-    allStars.forEach((star,i) => {
-        star.onclick =function () {
-            let current_star_level = i + 1;
-            current_rating.innerText = '${current_star_level} of 5';
-            allStars.forEach((star, j) => {
-                if (current_star_level >= j+1)
-                {
-                    star.innerHTML = '&#9733';
-                }else{
-                    star.innerHTML = '&#9734';
-                }
-            })
-        }
-    })
-    /*document.addEventListener('DOMContentLoaded', function(){
-    (function(){
-        let sr = document.querySelectorAll('.my-star');
-        let i = 0;
-        while (i < sr.length){
-            sr[i].addEventListener('click', function(){
-                let cs = parseInt(this.getAttribute("data-star"));
-                document.querySelector('item.rate_count ').value = cs;
-                let pre = cs;
-                while(1 <= pre){
-                    if(!document.querySelector('.star-'+pre).classList.contains('is-active')){
-                        document.querySelector('.star-'+pre).classList.add('is-active');
-                    }
-                    
-                    --pre;
-                }
-                let succ = cs+1;
-                while(5 >= succ){
-                    if(document.querySelector('.star-'+succ).classList.contains('is-active')){
-                        document.querySelector('.star-'+succ).classList.remove('is-active');
-                    }
-                    ++succ;
-                }
-
-            })
-            i++;
-        }
-    })();
-})*/
-
+    
   </script>
