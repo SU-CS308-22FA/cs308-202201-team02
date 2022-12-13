@@ -39,42 +39,22 @@
               <div>
                 <h3 class="title">
                   <%= item.key %>
+                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=1"><i class="fa"  style="color:rgb(123, 121, 165)">&#xf005;</i></a>
+                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=2"><i class="fa"  style="color:rgb(103, 100, 167)">&#xf005;</i></a>
+                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=3"><i class="fa"  style="color:rgb(84, 80, 165)">&#xf005;</i></a>
+                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=4"><i class="fa"  style="color:rgb(68, 64, 161)">&#xf005;</i></a>
+                  <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=5"><i class="fa"  style="color:rgb(52, 46, 165)">&#xf005;</i></a>
+
                 </h3>
+
                 <video width="400" controls>
                   <source src="<%= item.value %>" type="video/mp4">
                   Your browser does not support HTML video.
                 </video>
                 <div class="videoLikeContainer">
-                  <a class="navigation-link" href="/rateVideo?video_name=<%= item.video_name %>"><input id="rate" placeholder="0" name="rate_count" /></a>
-                  <span style="margin-left: 10px;"><p type="text" id="rate" ></p></span>
+                  <a class="navigation-link" href="/likeVideo?video_name=<%= item.video_name %>"><i class="fa"  style="color:red">&#xf004;</i></a>
+                  <span style="margin-left: 10px;"><%= item.like_count %> likes</span>
                 </div>
-                
-                <!--<div class="videoLikeContainer">
-                  <a class="navigation-link" href="/rateVideo?video_name=<%= item.video_name %>">
-                  <button class="star">&#9734</button>
-                  <button class="star">&#9734</button>
-                  <button class="star">&#9734</button>
-                  <button class="star">&#9734</button>
-                  <button class="star">&#9734</button></a>
-                  <span style="margin-left: 10px;"><%= item.rate_count %> </span>
-                </div> -->
-                <!--<div class="star_rating">
-                  <button class="star">&#9734</button>
-                  <button class="star">&#9734</button>
-                  <button class="star">&#9734</button>
-                  <button class="star">&#9734</button>
-                  <button class="star">&#9734</button>
-                  <p class = "current_rating">0 of 5</p>
-              </div>-->
-              <!--<div class="star-rating">
-                <i class="my-star star-1" data-star="1"></i>
-                <i class="my-star star-2" data-star="2"></i>
-                <i class="my-star star-3" data-star="3"></i>
-                <i class="my-star star-4" data-star="4"></i>
-                <i class="my-star star-5" data-star="5"></i>
-                
-              </div>
-              <input type="number" readonly id="output">-->
               </div>
             </div>
           </div>
