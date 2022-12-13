@@ -3,15 +3,6 @@
 
 # **Talent Land**
 
-<table>
-<tr>
-<td>
-Talent Land is a social media web application which is designed for Turkish Football Federation. The main goal is facilitate the discovery of undiscovered football players and
-increase the quality of football players.In addition, ensuring that young talents have equal chances and rights. Also, facilitating the scouts' work and at the same time preventing the transportation problem, enabling more than one scout to reach more than one young talent are the other goals. The project has been developed in JavaScript engine NodeJS with express for the frontend, MongoDB for the database system.
-</td>
-</tr>
-</table>
-
 ### Table of Contents
 + #### [1.Description](#desc)
 + #### [2.User Documentation](#userdoc)
