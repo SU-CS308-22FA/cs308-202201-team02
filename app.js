@@ -104,6 +104,7 @@ const userSchema = new mongoose.Schema({
    overall_rate: {
     type: Number,
     default:0,
+    $round: [ "$overallrate", 2 ] 
   },
 
 
