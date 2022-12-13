@@ -4,13 +4,13 @@
 ### Table of Contents
 + #### [1.Description](#desc)
 + #### [2.User Documentation](#userdoc)
-  - [2.1Installing the Software](#installandrunsoftware)
-  - [2.2Reporting bugs](#reportbugs)
-  - [2.3Known bugs](#knownbugs)
+  - [2.1 Installing the Software](#installandrunsoftware)
+  - [2.2 Reporting bugs](#reportbugs)
+  - [2.3 Known bugs](#knownbugs)
 + #### [3.Develeoper Documentation](#devdoc)
-  - [3.1Obtaining the source code](#obtainsource)
-  - [3.2Layout of the directory and branching](#layoutdirectory)
-  - [3.3Building and deploying](#buildanddeploy)
+  - [3.1 Obtaining the source code](#obtainsource)
+  - [3.2 Layout of the directory and branching](#layoutdirectory)
+  - [3.3 Building and deploying](#buildanddeploy)
   
 # **Talent Land**
 # 1.Description <a name="desc"/>
@@ -27,7 +27,7 @@ increase the quality of football players.In addition, ensuring that young talent
 
 
 # 2.User Documentation <a name="userdoc"/>
-### Installing the Software <a name="installandrunsoftware"/>
+### 2.1 Installing the Software <a name="installandrunsoftware"/>
 No installation is required. You can just click on the link: https://shrouded-harbor-04645.herokuapp.com
 
 Clone the Repository git clone https://github.com/SU-CS308-22FA/cs308-202201-team02.git
@@ -37,7 +37,7 @@ Run development server
 Comment env port to be able to redirect conncection from deployed website to localhost:3000.
 Open http://localhost:3000/ in browser
 
-### Reporting bugs <a name="reportbugs"/>
+### 2.2 Reporting bugs <a name="reportbugs"/>
 To report a bug, you can use scout request page message box. All of the messages that are come from this page will be evaluatedas as a repoorted bugs and responded.
 If you have problems during the installation of the software project, you can send e-mail to the email adresses below:
 bengisutepe@sabanciuniv.edu
@@ -45,7 +45,7 @@ bhadimlioglu@sabanciuniv.edu
 beyzaarmagan@sabanciuniv.edu
 kkaran@sabanciuniv.edu
 
-### Known bugs <a name="knownbugs"/>
+### 2.3 Known bugs <a name="knownbugs"/>
 Users can directly navigate to profile page with undefined username even users are not logged in.
 Even users are not logged out, after a few times credentials automatically may return to null and username turns the undefined.
 
