@@ -19,7 +19,7 @@
       <div class="navigation-icons">
         <a class="navigation-link" href="/homePageScout"><i class="fa fa-home"></i></a>
         <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
-        <a class="navigation-link" href="/ProfilePageScout"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/profilePageScout"><i class="fa fa-user"></i></a>
         <br>
         <a class="navigation-link" href="/logout" style="color: white;"><i class="fa fa-sign-out"></i></a>
 
@@ -29,9 +29,9 @@
     <div class="pageContainer">
       <div class="content">
         <ul>
-          <li><a class="active" href="index.html">Edit Profile</a></li>
+          <li><a href="/editProfileScout">Edit Profile</a></li>
           <!-- <li><a href="#changepassword">Change Password</a></li> -->
-          <li><a href="/informationEditScout">Information</a></li>
+          <li><a class="active" href="/informationEditScout">Information</a></li>
           <li><a href="/helpScout">Help</a></li>
           <br />
           <hr />
@@ -40,19 +40,10 @@
       </div>
 
       <div class="container">
-      
-      <div class="container" style="margin: 0 auto;">
-          <form action="/uploadPhoto" method="POST" class="form" name="form" enctype="multipart/form-data" style="margin: 0 auto;">
-            <div >
-              <br>
-              <label for="video_input">Select a photo to upload: </label>
-              <input id="file-picker" type="file" name="video_input">
-            </div>
-            <button type="submit">Upload</button>
-          </form>
-        </div>
-        <form action="/editProfileScout" method="POST" class="form" id="form">
-         
+
+
+        <form action="/informationEditScout" method="POST" class="form" id="form">
+
 
           <div class="form-control">
             <br />
@@ -65,7 +56,7 @@
             </div>
             <small>Error message</small>
           </div>
-    
+          
           <div class="form-control">
             <div style="display: flex; flex-direction: row">
               <label for="email" style="width: 130px; margin-top: 10px">Email</label>
@@ -85,35 +76,44 @@
             </div>
             <small>Error message</small>
           </div>
-          <!---
-         <div class="form-control">
+
+
+
+        <div class="form-control">
           <div style="display: flex; flex-direction: row">
-            <label for="username" style="width: 130px; margin-top: 10px"
-              >Phone Number</label
-            >
-            <input
-              type="text" placeholder="eg. 05xx xxx xx xx"
-              name="phone" pattern="05\d\d\s\d\d\d\s\d\d\s\d\d" 
-            />
+            <label for="club" style="width: 130px; margin-top: 10px">club</label>
+            <input id="club" type="text" name="club" required />
             <i class="fas fa-check-circle"></i>
             <i class="fas fa-exclamation-circle"></i>
           </div>
           <small>Error message</small>
-        </div>-->
+        </div>
+
         <div class="form-control">
           <div style="display: flex; flex-direction: row">
-            <label for="biographydescription" style="width: 130px; margin-top: 10px">Biography</label>
-            <input id="biographydescriptionField"  placeholder="Add description" name="biographydescription" />
+            <label for="age" style="width: 130px; margin-top: 10px">age</label>
+            <input id="age" type="text" name="age" required />
             <i class="fas fa-check-circle"></i>
             <i class="fas fa-exclamation-circle"></i>
           </div>
-          
+          <small>Error message</small>
         </div>
+        <div class="form-control">
+            <div style="display: flex; flex-direction: row">
+              <label for="scoutposition" style="width: 130px; margin-top: 10px">scoutposition</label>
+              <input id="scoutposition" type="text" name="scoutposition" required />
+              <i class="fas fa-check-circle"></i>
+              <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <small>Error message</small>
+          </div>
+
+        
           <button>Save</button>
         </form>
       </div>
     </div>
 
     <script src="js/profilePageEdit.js"></script>
-  
+
   </body>
