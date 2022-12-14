@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const encrypt = require("mongoose-encryption");
 const { check, validationResult } = require("express-validator");
 const Joi = require("joi");
-const { ROLE } = require('./middleware/rolelist')
+const { ROLE } = require('../middleware/rolelist')
 
 
 
@@ -16,7 +16,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 var jwt = require('jsonwebtoken');
-const uploadFile = require("./services/upload");
+const uploadFile = require("../services/upload");
 
 const app = express();
 
@@ -240,7 +240,7 @@ app.get("/ProfilePage", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
   const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
-  const config = require('./config');
+  const config = require('../config');
   const accountName = config.getStorageAccountName();
 
   try {
@@ -285,7 +285,7 @@ app.get("/homePage", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
   const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
-  const config = require('./config');
+  const config = require('../config');
   const accountName = config.getStorageAccountName();
 
   try {
@@ -328,7 +328,7 @@ app.get("/homePageScout", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
   const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
-  const config = require('./config');
+  const config = require('../config');
   const accountName = config.getStorageAccountName();
 
   try {
