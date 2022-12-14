@@ -92,6 +92,22 @@ const userSchema = new mongoose.Schema({
     type: String,
    },
 
+   rate: {
+    type: Number,
+    default:0,
+  },
+   
+   rate_count: {
+    type: Number,
+    default:0,
+  },
+   overall_rate: {
+    type: Number,
+    default:0,
+    $round: [ "$overallrate", 2 ] 
+  },
+
+
 });
 
 //Videos schema
@@ -140,7 +156,6 @@ app.get("/", function (req, res) {
 app.get("/login", function (req, res) {
   res.render("login");
 });
-
 app.get("/editprofile", function (req, res) {
   if (!loggedInUser) {
     res.redirect('/login');
@@ -179,17 +194,14 @@ app.get("/helpScout", function (req, res) {
     })
   });
 });
-
 app.get("/scoutSignupRequest", function (req, res) {
   res.render("scoutSignupRequest");
 });
-
 app.get("/error", function (req, res) {
   res.render("error", {
     error: currentError
   });
 });
-
 app.get("/UploadVideo", function (req, res) {
   res.render("UploadVideo", {
     user: JSON.stringify({
@@ -198,7 +210,6 @@ app.get("/UploadVideo", function (req, res) {
     }),
   });
 });
-
 app.get("/ProfilePageScout", function (req, res) {
   console.log(loggedInUser.role)
   
@@ -224,6 +235,7 @@ app.get("/ProfilePageScout", function (req, res) {
 });
 
 
+
 app.get("/ProfilePage", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
@@ -245,6 +257,7 @@ app.get("/ProfilePage", async (req, res) => {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
+        overall_rate: loggedInUser?.overall_rate,
       }),
       Urls: urls,
     });
@@ -309,6 +322,50 @@ app.get("/homePage", async (req, res) => {
     return;
   }
 });
+app.get("/homePageScout", async (req, res) => {
+  const allUrls = [];
+
+  const { BlobServiceClient } = require("@azure/storage-blob");
+  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
+  const config = require('./config');
+  const accountName = config.getStorageAccountName();
+
+  try {
+    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat();
+    for await (let blob of blobs) {
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
+      
+      const email = blob.name.split('_')[0];
+      const user = await User.findOne({ email });
+      if (!user) {
+        currentError = "Something went wrong when fetching videos."
+        res.redirect("/error");
+        return;
+      }
+
+      const video = await Video.findOne({ video_name: blob.name });
+      allUrls.push({
+        key: user?.username,
+        value: url,
+        video_name: blob.name,
+      });
+      console.log(allUrls[0]);
+    }
+
+    res.render('HomePageScout', {
+      user: JSON.stringify({
+        username: loggedInUser?.username,
+        email: loggedInUser?.email,
+      }),
+      allUrls: allUrls,
+    });
+  } catch (err) {
+    currentError = "Something went wrong when fetching videos in the home page."
+    res.redirect("/error");
+    return;
+  }
+});
 
 app.get("/likeVideo", async function (req, res) {
   const video = await Video.findOne({video_name: req.query.video_name});
@@ -324,6 +381,30 @@ app.get("/likeVideo", async function (req, res) {
   res.redirect("/homePage");
   return;
 });
+
+
+
+app.get("/rateVideo", async function (req, res) {
+  console.log("---");
+
+  const user = await User.findOne({username: req.query.username});
+  if (!user) {
+    currentError = "Something went wrong when rating video in the home page."
+    res.redirect("/error");
+    return;
+  }
+
+  user.rate = (user.rate === null || user.rate === undefined) ? 0 : Number(user.rate) + Number(req.query.rate_score);
+  user.rate_count = (user.rate_count === null || user.rate_count === undefined) ? 0 : Number(user.rate_count) + 1;
+
+  user.overall_rate= (user.rate === null || user.rate === undefined) ? 0 : Number(user.rate)/ Number(user.rate_count);
+
+  await user.save();
+
+  res.redirect("/homePageScout");
+  return;
+});
+
 
 app.get("/informationEdit", function (req, res) {
   res.render("informationEdit", {
@@ -365,7 +446,12 @@ app.get("/information", function (req, res) {
 
 
 
-//POST
+/* ****** */
+
+/* ****** */
+
+/* ****** */
+
 app.post("/register", async (req, res) => {
   console.log("inside post funct");
   const existingUser = await User.findOne({ email: req.body.email });
@@ -409,9 +495,7 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
 
   setTimeout(() => res.redirect("/ProfilePage"), 2500);
 })
-
 //****************************************** */
-
 app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
   const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   await uploadFile(req, ppname);
@@ -425,7 +509,6 @@ app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
   await newVideo.save();
   res.redirect("/ProfilePage");
 })
-
 app.post("/scoutSignupRequest", async (req, res) => {
   const name = req.body.sname;
   const email = req.body.semail;
@@ -446,8 +529,6 @@ app.post("/scoutSignupRequest", async (req, res) => {
   console.log("inside post funct");
   res.redirect("/login");
 })
-
-
 app.post("/login", function (req, res) {
   const email = req.body.email;
   const password = req.body.password;
@@ -495,7 +576,6 @@ app.post("/help",  async (req, res) => {
   })
 
 })
-
 app.post("/helpScout",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -518,7 +598,6 @@ app.post("/helpScout",  async (req, res) => {
   })
 
 })
-
 app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -592,12 +671,10 @@ app.post("/editProfileScout", function (req, res) {
     console.log(error);
   })
 })
-
 app.get("/logout", function (req, res) {
   loggedInUser = null;
   res.redirect("/login");
 })
-
 app.get("/deleteUser", function (req, res) {
   User.deleteOne({ email: loggedInUser?.email }).then(function () {
     console.log("User deleted");
@@ -608,7 +685,6 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
-
 app.post("/informationEdit", async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -657,9 +733,6 @@ app.post("/informationEdit", async (req, res) => {
     console.log(error);
   })
 })
-
-
-
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
