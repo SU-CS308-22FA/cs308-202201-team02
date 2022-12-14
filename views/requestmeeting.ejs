@@ -1,0 +1,123 @@
+<%- include('partials/profileheader') %>
+
+  <body>
+    <div class="navigation">
+      <div class="logo">
+        <input type="image" src="images/logo.jpg" width="110">
+        <a href="#"></a>
+      </div>
+      <div class="navigation-search-container">
+        <i class="fa fa-search"></i>
+        <input class="search-field" type="text" placeholder="Search">
+        <div class="search-container">
+          <div class="search-container-box">
+            <div class="search-results">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navigation-icons">
+        <a class="navigation-link" href="#"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="#"><i class="fa fa-video-camera"></i></a>
+        <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/logout" ><i class="fa fa-sign-out"></i></a>
+
+    </div>
+    </div>
+
+    <div class="profile-page">
+
+
+
+
+          <div class="container">
+
+
+
+
+
+
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <center>
+                <div>
+
+                    <form action="/requestmeeting" method="POST" class="form" id="form">
+                      <center>
+                        <h2>Send Request</h2>
+                      </center>
+                      <table>
+                        <div class="form-control">
+                          <br />
+                          <div style="display: flex; flex-direction: row">
+                            <label for="username" style="width: 130px; margin-top: 10px">Username</label>
+                            <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
+                            <button>Save</button>
+                          </div>
+                        </div>
+
+                        </form>
+
+                </div>
+            </center>
+            <center>
+              <h2>Sent requests</h2>
+            </center>
+
+            <ul>
+            <% for(let i = 0; i < reqs.length; i++){ %>
+                <li><%= reqs[i] %></li>
+            <% } %>
+            
+            </ul
+
+          <br>
+          <br>
+
+            <center>
+              <h2>Accepted requests</h2>
+            </center>
+            <table>
+              <tr>
+                <td><label for="reqs">
+                        <br>
+                        <br>
+
+                    </label>
+                </td>
+                <br>
+
+                <ul>
+                <% for(let i = 0; i < accreqs.length; i++){ %>
+                    <li><%= accreqs[i] %></li>
+                <% } %>
+                </ul
+
+            </tr>
+                        </table>
+
+          </div>
+
+    </div>
+
+  </body>
+  <script>
+    localStorage.setItem('token', "<%= JSON.stringify(token) %>");
+
+    // BURAYI DUZENLE
+
+    var user = JSON.parse(`<%-user%>`);
+    document.getElementById("nameField").innerHTML = user.username;
+    document.getElementById("fullName").innerHTML = user.fullName;
+  //  document.getElementById("reqs").innerHTML = getArray(user.reqs);
+  //  document.getElementById("rejreqs").innerHTML = getArray(user.rejreqs);
+
+
+
+  </script>

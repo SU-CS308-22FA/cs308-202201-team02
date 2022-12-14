@@ -36,7 +36,7 @@
     "into-stream": "^3.1.0",
     "joi": "^17.7.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.7.2",
+    "mongoose": "^6.8.0",
     "mongoose-encryption": "^2.1.2",
     "mongoose-findorcreate": "^3.0.0",
     "morgan": "~1.9.0",
