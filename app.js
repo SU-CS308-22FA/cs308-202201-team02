@@ -309,7 +309,7 @@ app.get("/homePage", async (req, res) => {
       });
     }
 
-    res.render('HomePage', {
+    res.render('homePage', {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
