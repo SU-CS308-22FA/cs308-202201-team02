@@ -504,7 +504,7 @@ app.post("/help",  async (req, res) => {
     console.log("ff");
     console.log(foundUser);
     foundUser.message = message;
-
+// bak
 
     console.log("trying to update password");
     await foundUser.save();
