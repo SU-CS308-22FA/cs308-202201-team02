@@ -19,13 +19,9 @@
       </div>
 
       <div class="navigation-icons">
-
-       
         <a class="navigation-link" href="/homePageScout"><i class="fa fa-home"></i></a>
-         <a class="navigation-link" href="/requestmeeting"><i class="fa fa-envelope"></i></a>
-     
-
-        <a class="navigation-link" href="/ProfilePageScout"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/profilePageScout"><i class="fa fa-user"></i></a>
         <a class="navigation-link" href="/logout" ><i class="fa fa-sign-out"></i></a>
 
     </div>
@@ -61,7 +57,7 @@
                 <div class="profile-tabs">
                   <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
                     <li class="nav-item">
-                      <a class="nav-link" href="/informationSCout" role="tab" data-toggle="tab">
+                      <a class="nav-link active" href="/informationScout" role="tab" data-toggle="tab">
                         <i class="material-icons">ballot</i>
                         Information
                       </a>
@@ -70,7 +66,52 @@
                 </div>
               </div>
             </div>
-            
+
+            <br>
+            <br>
+            <center>
+              <h4>Information Table</h4>
+            </center>
+
+            <br>
+            <br>
+
+            <center>
+                <div>
+                    <form action="/informationScout" method="POST" class="form" id="form">
+                        <table>
+                            <tr>
+                              <td><label for="age"> Age </label></td>
+                              <td><p type="text" id="age" ></p></td>
+                            </tr>
+                            <tr>
+                              <td><label for="club"> Club </label></td>
+                              <td><p type="text" id="club" ></p></td>
+                            </tr>
+                            <tr>
+                                <td><label for="scoutposition"> Position/Role </label></td>
+                                <td><p type="text" id="scoutposition" ></p></td>
+                            </tr>    
+                          </table>
+                          <style>
+                            table, th, td {
+                                border: 2px solid #245b16;
+                            }
+                            th, td {
+                                padding-top: 10px;
+                                padding-bottom: 20px;
+                                padding-left: 30px;
+                                padding-right: 40px;
+                            }
+                            </style>
+                      <br>
+                      <br>
+                  </form>
+
+                </div>
+
+            </center>
+
 
           </div>
         </div>
@@ -80,12 +121,16 @@
     </div>
 
   </body>
-
   <script>
     localStorage.setItem('token', "<%= JSON.stringify(token) %>");
-    // var token = localStorage.getItem('token')
+
+    // BURAYI DUZENLE
 
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
+    document.getElementById("age").innerHTML = user.age;
+    document.getElementById("club").innerHTML = user.club;
+    document.getElementById("scoutposition").innerHTML = user.scoutposition;
     document.getElementById("biographydescriptionField").innerHTML = user.biographydescription;
+
   </script>

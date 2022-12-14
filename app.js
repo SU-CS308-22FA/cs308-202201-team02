@@ -123,6 +123,11 @@ const userSchema = new mongoose.Schema({
     default:0,
     $round: [ "$overallrate", 2 ] 
   },
+  age : String,
+
+  club: String,
+
+  scoutposition : String,
 
 
 });
@@ -505,6 +510,15 @@ app.get("/informationEdit", function (req, res) {
     })
   });
 });
+app.get("/informationEditScout", function (req, res) {
+  res.render("informationEditScout", {
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+
+    })
+  });
+});
 app.get("/information", function (req, res) {
   console.log(loggedInUser.role)
   let jwtToken = null;
@@ -529,6 +543,30 @@ app.get("/information", function (req, res) {
       nationality : loggedInUser?.nationality,
       main_Position : loggedInUser?.main_Position,
       foot : loggedInUser?.foot,
+    })
+  });
+});
+app.get("/informationScout", function (req, res) {
+  console.log(loggedInUser.role)
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("informationScout", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      age: loggedInUser?.age,
+      scoutposition: loggedInUser?.scoutposition,
+      club: loggedInUser?.club,
+      biographydescription: loggedInUser?.biographydescription,
     })
   });
 });
@@ -846,6 +884,7 @@ app.get("/logout", function (req, res) {
   res.redirect("/login");
 })
 app.get("/deleteUser", function (req, res) {
+  
   User.deleteOne({ email: loggedInUser?.email }).then(function () {
     console.log("User deleted");
     loggedInUser = null;
@@ -898,6 +937,39 @@ app.post("/informationEdit", async (req, res) => {
     console.log(error);
   })
 })
+
+app.post("/informationEditScout", async (req, res) => {
+
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+  const scoutposition = req.body.scoutposition;
+  const club = req.body.club;
+  const age = req.body.age;
+  //diger
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    foundUser.username = username;
+    foundUser.email = email;
+    foundUser.password = password;
+    foundUser.age = age;
+    foundUser.scoutposition = scoutposition;
+    foundUser.club = club;
+    
+
+    console.log("trying to update password");
+    await foundUser.save();
+
+    loggedInUser = foundUser;
+    res.redirect("/informationScout");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
+});
+//registerdan submitlenen seyi catchleriz
+//name ve password name olarak görünüyor
+
+
 
 
 
