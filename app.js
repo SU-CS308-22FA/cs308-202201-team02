@@ -698,6 +698,7 @@ app.get("/logout", function (req, res) {
   res.redirect("/login");
 })
 app.get("/deleteUser", function (req, res) {
+  
   User.deleteOne({ email: loggedInUser?.email }).then(function () {
     console.log("User deleted");
     loggedInUser = null;
