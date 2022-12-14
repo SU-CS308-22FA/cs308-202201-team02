@@ -33,13 +33,6 @@ increase the quality of football players.In addition, ensuring that young talent
 ### 2.1 Installing the Software <a name="installandrunsoftware"/>
 No installation is required. You can just click on the link: https://shrouded-harbor-04645.herokuapp.com
 
-Clone the Repository git clone https://github.com/SU-CS308-22FA/cs308-202201-team02.git
-Open the working directory 
-Install dependencies npm install
-Run development server
-Comment env port to be able to redirect conncection from deployed website to localhost:3000.
-Open http://localhost:3000/ in browser
-
 ### 2.2 Reporting bugs <a name="reportbugs"/>
 To report a bug, you can use scout request page message box. All of the messages that are come from this page will be evaluatedas as a repoorted bugs and responded.
 If you have problems during the installation of the software project, you can send e-mail to the email adresses below:
@@ -80,6 +73,13 @@ You can clone the repository and run it with "nodemon app.js" or "node app.js" c
    
 
 ## 3.3 Building and Deploying <a name="buildanddeploy"/>
+
+Clone the Repository git clone https://github.com/SU-CS308-22FA/cs308-202201-team02.git
+Open the working directory 
+Install dependencies npm install
+Run development server
+Comment env port to be able to redirect conncection from deployed website to localhost:3000.
+Open http://localhost:3000/ in browser
 
 After clonning the project successfully, from the compiler you have to install some packages from the terminal:
 
