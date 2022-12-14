@@ -7,7 +7,7 @@ const encrypt = require("mongoose-encryption");
 const { check, validationResult } = require("express-validator");
 const Joi = require("joi");
 const { ROLE } = require('./middleware/rolelist')
-
+const uploadFile = require("./services/upload");
 
 
 
@@ -16,7 +16,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 var jwt = require('jsonwebtoken');
-const uploadFile = require("./services/upload");
 
 const app = express();
 
@@ -40,11 +39,13 @@ mongoose.connect("mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mo
   .catch((err) => {
     console.error(`Error connecting to the database. n${err}`);
   })
-
-
 //SCHEMAS
 
-
+const requestsSchema = new mongoose.Schema({
+   name: String,
+   status: String,
+  });
+const request = mongoose.model("request", requestsSchema);
 //User schema
 const userSchema = new mongoose.Schema({
   username: {
@@ -91,6 +92,22 @@ const userSchema = new mongoose.Schema({
    biographydescription: {
     type: String,
    },
+   requests: [
+     {
+         request: { type: mongoose.Schema.Types.ObjectId, ref: 'request' },
+       post: String,
+       timeInPost: String,
+   }
+],
+ reqs:[{
+   type: String,
+ }],
+ accreqs :[{
+   type: String,
+ }],
+ rejreqs:[{
+   type: String,
+ }],
 
    rate: {
     type: Number,
@@ -137,8 +154,6 @@ const videosSchema = new mongoose.Schema({
   },
 })
 
-//const secret = "Thisisourlittlesecret.";
-//userSchema.plugin(encrypt, {secret: secret},['password'] );
 const scoutReq = new mongoose.Schema({
   username: String,
   email: String,
@@ -147,10 +162,7 @@ const scoutReq = new mongoose.Schema({
 });
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
-
-
 const Scout = new mongoose.model("scoutReq",scoutReq );
-
 
 
 var loggedInUser = null;
@@ -162,7 +174,29 @@ app.get("/", function (req, res) {
 app.get("/login", function (req, res) {
   res.render("login");
 });
+
+app.get("/logout", function (req, res) {
+  loggedInUser = null;
+  res.redirect("/login");
+})
+
+app.get("/deleteUser", function (req, res) {
+  User.deleteOne({ email: loggedInUser?.email }).then(function () {
+    console.log("User deleted");
+    loggedInUser = null;
+    res.redirect("/login");
+
+  }).catch(function (error) {
+    console.log(error); // Failure
+  });
+});
+
 app.get("/editprofile", function (req, res) {
+  if (!loggedInUser) {
+    res.redirect('/login');
+    return;
+  }
+  
   res.render("editprofile", {
     user: JSON.stringify({
       username: loggedInUser?.username,
@@ -211,9 +245,71 @@ app.get("/UploadVideo", function (req, res) {
     }),
   });
 });
+
+
+app.get("/getmeeting", function (req, res) {
+  console.log(loggedInUser.role)
+
+
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username,
+
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("getmeeting", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      reqs: loggedInUser?.reqs,
+      accreqs: loggedInUser?.accreqs,
+    }),
+      reqs: loggedInUser.reqs,
+      accreqs: loggedInUser.accreqs,
+  });
+  console.log(loggedInUser.reqs);
+});
+app.get("/requestmeeting", function (req, res) {
+  console.log(loggedInUser.role)
+
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username,
+
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("requestmeeting",{
+    token: jwtToken,
+
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      reqs: loggedInUser?.reqs,
+      accreqs: loggedInUser?.accreqs,
+
+    }),
+    reqs: loggedInUser.reqs,
+    accreqs: loggedInUser.accreqs,
+    
+  });
+  console.log(loggedInUser.reqs);
+});
+
+
 app.get("/ProfilePageScout", function (req, res) {
   console.log(loggedInUser.role)
-  
+
 
   let jwtToken = null;
   if (loggedInUser.role !== ROLE.BASIC) {
@@ -234,6 +330,7 @@ app.get("/ProfilePageScout", function (req, res) {
     })
   });
 });
+
 app.get("/ProfilePage", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
@@ -269,6 +366,16 @@ app.get("/ProfilePage", async (req, res) => {
 
 app.get("/homePage", async (req, res) => {
   const allUrls = [];
+  const filterByLikes = req.query.filterByLikes;
+
+  let databaseVideos = [];
+  if (filterByLikes) {
+    databaseVideos = await Video.find({
+      like_count: { $gt: filterByLikes }
+    });
+  } else {
+    databaseVideos = await Video.find();
+  }
 
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
@@ -277,28 +384,27 @@ app.get("/homePage", async (req, res) => {
   const accountName = config.getStorageAccountName();
 
   try {
-    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat();
-    for await (let blob of blobs) {
-      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
-      
-      const email = blob.name.split('_')[0];
+    for await (let video of databaseVideos) {
+      console.log('vid:');
+      console.log(JSON.stringify(video));
+
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${video.video_name}`;
+      const email = video.video_name.split('_')[0];
       const user = await User.findOne({ email });
       if (!user) {
         currentError = "Something went wrong when fetching videos."
         res.redirect("/error");
         return;
       }
-
-      const video = await Video.findOne({ video_name: blob.name });
       allUrls.push({
         key: user?.username,
         value: url,
-        video_name: blob.name,
+        video_name: video.video_name,
         like_count: video?.like_count ?? 0,
       });
     }
 
-    res.render('HomePage', {
+    res.render('homePage', {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
@@ -342,7 +448,7 @@ app.get("/homePageScout", async (req, res) => {
       console.log(allUrls[0]);
     }
 
-    res.render('HomePageScout', {
+    res.render('homePageScout', {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
@@ -487,7 +593,6 @@ app.post("/register", async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-
     biographydescription: req.body.biographydescription,
 
   });
@@ -576,6 +681,28 @@ app.post("/login", function (req, res) {
     res.redirect("/error");
   })
 })
+
+app.post("/requestmeeting",  async (req, res) => {
+  const uid = req.body.username;
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  const findResult = await User.findOne({
+    username: uid,
+
+  });
+  console.log(findResult);
+User.findOne({ email: loggedInUser?.email }).then(async function (foundUser){
+findResult.reqs.push(foundUser.username);
+foundUser.reqs.push(findResult.username);
+
+await findResult.save();
+await foundUser.save();
+})
+
+console.log(findResult)
+
+  res.redirect("/profilePageScout");
+
+})
 app.post("/help",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -620,6 +747,63 @@ app.post("/helpScout",  async (req, res) => {
   })
 
 })
+
+app.post("/accept",  async (req, res) => {
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  const requester = req.body.requester;
+  console.log(requester);
+  const findResult = await User.findOne({
+    username: requester,
+  });
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+  //console.log("ff");
+
+
+    foundUser.accreqs.push(requester);
+    findResult.accreqs.push(foundUser.username);
+
+    foundUser.reqs.splice(requester);
+    findResult.reqs.splice(foundUser.username);
+
+
+     await foundUser.save();
+     await findResult.save();
+     console.log(foundUser);
+
+
+    res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("accept error"); // Fail
+    console.log(error);
+  })
+})
+app.post("/reject",  async (req, res) => {
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  const rejected = req.body.rejected;
+  console.log(rejected);
+  const findResult = await User.findOne({
+    username: rejected,
+  });
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+  //console.log("ff");
+    console.log(foundUser);
+    foundUser.rejreqs.push(rejected);
+    findResult.rejreqs.push(foundUser.username);
+
+    foundUser.reqs.splice(rejected);
+    findResult.reqs.splice(foundUser.username);
+
+    await foundUser.save();
+    await findResult.save();
+
+
+    res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("reject error"); // Fail
+    console.log(error);
+  })
+})
+
 app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -639,6 +823,7 @@ app.post("/editProfile",  async (req, res) => {
 
     console.log("trying to update password");
     await foundUser.save();
+
 
     loggedInUser = foundUser;
   //  await uploadFile(req, photoName);
@@ -671,7 +856,7 @@ app.post("/editProfileScout", function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-  
+
   const biographydescription = req.body.biographydescription;
 
 
@@ -693,6 +878,7 @@ app.post("/editProfileScout", function (req, res) {
     console.log(error);
   })
 })
+
 app.get("/logout", function (req, res) {
   loggedInUser = null;
   res.redirect("/login");
@@ -708,6 +894,7 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
+
 app.post("/informationEdit", async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -743,19 +930,14 @@ app.post("/informationEdit", async (req, res) => {
     await foundUser.save();
 
     loggedInUser = foundUser;
-  //  await uploadFile(req, photoName);
-  //  const newVideo = new Video({
-  //    email: loggedInUser.email,
-  //    video_name: photoName,
-      //created_at: req.body.created_at,
-  //  });
-  //  await newVideo.save();
+
     res.redirect("/information");
   }).catch(function (error) {
     console.log("EDIT error"); // Fail
     console.log(error);
   })
 })
+
 app.post("/informationEditScout", async (req, res) => {
 
   const username = req.body.username;
@@ -787,15 +969,16 @@ app.post("/informationEditScout", async (req, res) => {
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
-/*
+
+
+
+
 let port = process.env.PORT;
 if (port == null || port == "") {
 port = 3000;
 }
 app.listen(port);
-*/
-
 
 app.listen(3000, function () {
-  console.log("server on 3000");
+ console.log("server on 3000");
 });
