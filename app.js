@@ -353,7 +353,7 @@ app.get("/homePageScout", async (req, res) => {
       console.log(allUrls[0]);
     }
 
-    res.render('HomePageScout', {
+    res.render('homePageScout', {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
