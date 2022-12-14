@@ -147,7 +147,6 @@ const Video = new mongoose.model("Video", videosSchema);
 const Scout = new mongoose.model("scoutReq",scoutReq );
 
 
-
 var loggedInUser = null;
 var currentError = "";
 
@@ -158,6 +157,11 @@ app.get("/login", function (req, res) {
   res.render("login");
 });
 app.get("/editprofile", function (req, res) {
+  if (!loggedInUser) {
+    res.redirect('/login');
+    return;
+  }
+  
   res.render("editprofile", {
     user: JSON.stringify({
       username: loggedInUser?.username,
@@ -229,6 +233,9 @@ app.get("/ProfilePageScout", function (req, res) {
     })
   });
 });
+
+
+
 app.get("/ProfilePage", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
@@ -264,6 +271,16 @@ app.get("/ProfilePage", async (req, res) => {
 
 app.get("/homePage", async (req, res) => {
   const allUrls = [];
+  const filterByLikes = req.query.filterByLikes;
+
+  let databaseVideos = [];
+  if (filterByLikes) {
+    databaseVideos = await Video.find({
+      like_count: { $gt: filterByLikes }
+    });
+  } else {
+    databaseVideos = await Video.find();
+  }
 
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
@@ -272,23 +289,22 @@ app.get("/homePage", async (req, res) => {
   const accountName = config.getStorageAccountName();
 
   try {
-    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat();
-    for await (let blob of blobs) {
-      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
-      
-      const email = blob.name.split('_')[0];
+    for await (let video of databaseVideos) {
+      console.log('vid:');
+      console.log(JSON.stringify(video));
+
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${video.video_name}`;
+      const email = video.video_name.split('_')[0];
       const user = await User.findOne({ email });
       if (!user) {
         currentError = "Something went wrong when fetching videos."
         res.redirect("/error");
         return;
       }
-
-      const video = await Video.findOne({ video_name: blob.name });
       allUrls.push({
         key: user?.username,
         value: url,
-        video_name: blob.name,
+        video_name: video.video_name,
         like_count: video?.like_count ?? 0,
       });
     }
@@ -720,15 +736,15 @@ app.post("/informationEdit", async (req, res) => {
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
-/*
+
 let port = process.env.PORT;
 if (port == null || port == "") {
 port = 3000;
 }
 app.listen(port);
-*/
+
 
 
 app.listen(3000, function () {
-  console.log("server on 3000");
+ console.log("server on 3000");
 });
