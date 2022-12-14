@@ -1,0 +1,46 @@
+<%- include('partials/headerLogin') %>
+  <div class="container">
+    <h2 class="header">Log In</h2>
+
+    <form action="/login" method="POST" class="form" name="form">
+      <div class="form-control">
+        <label for="email">Email</label>
+
+        <div style="display: flex; flex-direction: row;">
+          <i class="material-icons" style="visibility: visible; margin-top: 10px;">mail</i>
+          <input type="email" placeholder="Please enter your email" name="email" required />
+          <i class="fa fa-check-circle"></i>
+          <i class="fa fa-exclamation-circle"></i>
+        </div>
+
+        <div style="display: flex; flex-direction: row;">
+          <small>Error message</small>
+        </div>
+
+      </div>
+
+      <div class="form-control">
+        <label for="password">Password </label>
+
+        <div style="display: flex; flex-direction: row;">
+          <i class="material-icons" style="visibility: visible; margin-top: 10px;">lock</i>
+          <input type="password" placeholder="Please enter your password" name="password" required />
+          <i class="fa fa-check-circle"></i>
+          <i class="fa fa-exclamation-circle"></i>
+        </div>
+
+        <div style="display: flex; flex-direction: row;">
+          <small>Error message</small>
+        </div>
+      </div>
+      <button>Login</button>
+
+      <div class="login">
+        <span class="text">Don't have an account?
+          <a href="/" class="text signup-link">Signup</a>
+        </span>
+      </div>
+    </form>
+  </div>
+
+  <!-- <script src="login/main.js"></script> -->

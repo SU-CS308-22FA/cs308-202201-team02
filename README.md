@@ -1,3 +1,6 @@
+# cs308-202201-team02
+https://talent-land1.herokuapp.com/ProfilePageScout
+=======
 # Team02-TalentLand
 
 ### https://shrouded-harbor-04645.herokuapp.com 
@@ -85,6 +88,3 @@ You have to install required packages from ‘package.json’ by using "npm inst
 After installation:
 
 -  Connect the backend by writing terminal to ‘nodemon app.js’or "node app.js".
-
-
-
