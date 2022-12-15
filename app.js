@@ -703,7 +703,7 @@ app.post("/informationEdit", async (req, res) => {
     foundUser.nationality = nationality;
     foundUser.main_Position = main_Position;
     foundUser.foot = foot;
-
+//
     console.log("trying to update password");
     await foundUser.save();
 
