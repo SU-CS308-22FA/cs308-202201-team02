@@ -55,6 +55,7 @@
 
         <form action="/editProfile" method="POST" class="form" id="form">
 
+          
           <div class="form-control">
             <br />
             <div style="display: flex; flex-direction: row">
@@ -94,7 +95,7 @@
             >
             <input
               type="text" placeholder="eg. 05xx xxx xx xx"
-              name="phone" pattern="05\d\d\s\d\d\d\s\d\d\s\d\d" required
+              name="phone" required
             />
             <i class="fas fa-check-circle"></i>
             <i class="fas fa-exclamation-circle"></i>
@@ -102,6 +103,19 @@
           <small>Error message</small>
         </div>
 
+          <div  class="form-control" >
+            <div style="display: flex; flex-direction: row">
+              <label for="messageedit" style="width: 130px; margin-top: 10px"
+                > message </label 
+                >
+              <input
+                type="text" placeholder="I love football" 
+                name="message" required
+              />
+      
+            </div>
+            
+          </div>
 
           <button>Save</button>
         </form>

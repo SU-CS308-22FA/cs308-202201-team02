@@ -78,6 +78,7 @@ const userSchema = new mongoose.Schema({
   },
   height :  String,
 
+  message : String,
 
   weight : String,
 
@@ -189,6 +190,7 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
+
 
 app.get("/editprofile", function (req, res) {
   if (!loggedInUser) {
@@ -331,7 +333,7 @@ app.get("/ProfilePageScout", function (req, res) {
 });
 
 app.get("/ProfilePage", async (req, res) => {
-  const { BlobServiceClient } = require("@azure/storage-blob");
+  const { BlobServiceClient, logger } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
   const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
   const config = require('./config');
@@ -351,7 +353,11 @@ app.get("/ProfilePage", async (req, res) => {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
+
+        message: loggedInUser?.message,
+
         overall_rate: loggedInUser?.overall_rate,
+
       }),
       Urls: urls,
     });
@@ -622,6 +628,7 @@ app.post("/scoutSignupRequest", async (req, res) => {
   console.log("inside post funct");
   res.redirect("/login");
 })
+
 app.post("/login", function (req, res) {
   const email = req.body.email;
   const password = req.body.password;
@@ -678,7 +685,7 @@ app.post("/help",  async (req, res) => {
     console.log("ff");
     console.log(foundUser);
     foundUser.message = message;
-
+// bak
 
     console.log("trying to update password");
     await foundUser.save();
@@ -777,6 +784,7 @@ app.post("/editProfile",  async (req, res) => {
   const password = req.body.password;
   const email = req.body.email;
   const phone = req.body.phone;
+  const message = req.body.message;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
     console.log("ff");
@@ -785,7 +793,7 @@ app.post("/editProfile",  async (req, res) => {
     foundUser.email = email;
     foundUser.password = password;
     foundUser.phone = phone;
-
+    foundUser.message = message;
 
     console.log("trying to update password");
     await foundUser.save();
@@ -890,7 +898,7 @@ app.post("/informationEdit", async (req, res) => {
     foundUser.nationality = nationality;
     foundUser.main_Position = main_Position;
     foundUser.foot = foot;
-
+//
     console.log("trying to update password");
     await foundUser.save();
 
@@ -904,12 +912,14 @@ app.post("/informationEdit", async (req, res) => {
 })
 
 
+
 // set port for heroku deployment
 let port = process.env.PORT;
 if (port == null || port == "") {
 port = 3000;
 }
 app.listen(port);
+
 
 
 app.listen(3000, function () {
