@@ -669,12 +669,7 @@ app.post("/scoutSignupRequest", async (req, res) => {
   console.log("inside post funct");
   res.redirect("/login");
 })
-/**
-	 * Save  accounts' password, email to database.
-	 * With the help of loggedInUser the user has checked that exist or not. 
-	 * The type of the user checked(scout or normal user).
-	 * After user account type check the scout redirected to ProfilePageScout and normal user redirected to Profilepage.
-	 */
+
 app.post("/login", function (req, res) {
   const email = req.body.email;
   const password = req.body.password;
@@ -700,7 +695,13 @@ app.post("/login", function (req, res) {
     res.redirect("/error");
   })
 })
-
+/**
+	 * Get username of the account that requested meeting.
+	 * Find related user using findone function and send username as a variable.
+	 * Save requested meeting account username to scout account reqs.
+	 * Save scout account username that request meeting to user account reqs.
+	 * Finally, redirect user to login page.
+	 */
 app.post("/requestmeeting",  async (req, res) => {
   const uid = req.body.username;
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
