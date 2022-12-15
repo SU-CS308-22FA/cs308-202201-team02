@@ -728,11 +728,16 @@ app.post("/requestmeeting",  async (req, res) => {
   const uid = req.body.username;
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   const findResult = await User.findOne({
+	if (!findResult) {
+      currentError = "no user with this username."
+      res.redirect("/error");
+    }
     username: uid,
 
   });
   console.log(findResult);
 User.findOne({ email: loggedInUser?.email }).then(async function (foundUser){
+	
 findResult.reqs.push(foundUser.username);
 foundUser.reqs.push(findResult.username);
 
