@@ -490,7 +490,14 @@ app.get("/likeVideo", async function (req, res) {
   return;
 });
 
-
+/**
+ 	 * Save the rate of the user in an async approach after defining.
+   * Check whether rate null or undefined.
+   * After add rate and rate score for the total rate.
+   * Increment rate count by 1 for every click.
+   * Calculate overall rate with rate divided by rate count.
+	 * Redirected to homePage after all.
+ 	 */
 
 app.get("/rateVideo", async function (req, res) {
   console.log("---");
