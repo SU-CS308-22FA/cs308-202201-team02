@@ -3,7 +3,7 @@ https://talentland1.herokuapp.com/
 =======
 # Team02-TalentLand
 
-### https://talentland1.herokuapp.com/ 
+### https://talentlandtr.herokuapp.com
 ### Table of Contents
 + #### [1.Description](#desc)
 + #### [2.User Documentation](#userdoc)
