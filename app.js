@@ -467,6 +467,14 @@ app.get("/homePageScout", async (req, res) => {
   }
 });
 
+/**
+ 	 * Save the like of the video of the user in an async approach after defining
+ 	 * With the help of the condition the we checked wheter video ok or not.
+ 	 * If not (!) redirected error.
+	 * After return the if the like count equals null or undefined video like count defined as 1 else video like count incereas 1.
+	 * Redirected to homePage after all.
+ 	 */
+
 app.get("/likeVideo", async function (req, res) {
   const video = await Video.findOne({video_name: req.query.video_name});
   if (!video) {
