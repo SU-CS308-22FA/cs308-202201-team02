@@ -838,6 +838,14 @@ app.post("/reject",  async (req, res) => {
   })
 })
 
+/**
+ 	 * Save  accounts' username,password, email, phone and message to database.
+ 	 * With the help of loggedInUser the user has checked that exist or not. 
+ 	 * After that the user found with matching the variables and Save the new ones with the help of async function.
+ 	 * After save process user redirected to Profile Page.
+ 	 */
+
+
 app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
