@@ -730,6 +730,13 @@ console.log(findResult)
   res.redirect("/profilePageScout");
 
 })
+/**
+	 * Get help message of the user to save it to the database.
+	 * Using findone function to find loggedin user.
+	 * Save message to the found user message area in database.
+	 * Give error if there. is a problim in saving.
+	 * Finally, redirect user to the profilepage.
+	 */
 app.post("/help",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
