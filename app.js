@@ -670,6 +670,13 @@ app.post("/scoutSignupRequest", async (req, res) => {
   res.redirect("/login");
 })
 
+/**
+ 	 * Save  accounts' password, email to database.
+ 	 * With the help of loggedInUser the user has checked that exist or not. 
+ 	 * The type of the user checked(scout or normal user).
+ 	 * After user account type check the scout redirected to ProfilePageScout and normal user redirected to Profilepage.
+ 	 */
+
 app.post("/login", function (req, res) {
   const email = req.body.email;
   const password = req.body.password;
