@@ -21,6 +21,8 @@ const app = express();
 
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
+
+// Add support for parsing json
 app.use(express.json());
 app.use(bodyParser.urlencoded({
   extended: true
@@ -32,6 +34,8 @@ const connectionParams = {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }
+
+//Establish database connection
 mongoose.connect("mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mongodb.net/?retryWrites=true&w=majority", connectionParams)
   .then(() => {
     console.log('Connected to the database ')
@@ -39,8 +43,8 @@ mongoose.connect("mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mo
   .catch((err) => {
     console.error(`Error connecting to the database. n${err}`);
   })
+  
 //SCHEMAS
-
 const requestsSchema = new mongoose.Schema({
    name: String,
    status: String,
@@ -900,12 +904,13 @@ app.post("/informationEdit", async (req, res) => {
 })
 
 
-
+// set port for heroku deployment
 let port = process.env.PORT;
 if (port == null || port == "") {
 port = 3000;
 }
 app.listen(port);
+
 
 app.listen(3000, function () {
  console.log("server on 3000");
