@@ -767,18 +767,20 @@ app.post("/help",  async (req, res) => {
   })
 
 })
-app.post("/helpScout",  async (req, res) => {
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
+/**
+	 * Get username of the account that requested meeting.
+	 * Find related user using findone function and send username as a variable.
+	 * Save requested meeting account username to scout account reqs.
+	 * Save scout account username that request meeting to user account reqs.
+	 * Finally, redirect user to scout profile page.
+	 */
+
+app.post("/helpScout",  async (req, res) => {
   const message = req.body.message;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
-    console.log("ff");
-    console.log(foundUser);
     foundUser.message = message;
-
-
-    console.log("trying to update password");
     await foundUser.save();
 
     loggedInUser = foundUser;
@@ -845,14 +847,6 @@ app.post("/reject",  async (req, res) => {
     console.log(error);
   })
 })
-
-/**
- 	 * Save  accounts' username,password, email, phone and message to database.
- 	 * With the help of loggedInUser the user has checked that exist or not. 
- 	 * After that the user found with matching the variables and Save the new ones with the help of async function.
- 	 * After save process user redirected to Profile Page.
- 	 */
-
 
 app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
@@ -945,6 +939,13 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
+
+/**
+ 	 * Save  accounts' username,password, email, phone and other information to the database.
+ 	 * With the help of loggedInUser, the user is checked whether it exist in the database or not. 
+ 	 * After the user id found with matching email, the newly entered information varibales is set as the user's information.
+ 	 * After the save process, user redirected to information page.
+ 	 */
 
 app.post("/informationEdit", async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
