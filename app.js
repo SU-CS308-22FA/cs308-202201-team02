@@ -645,6 +645,10 @@ app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
   await newVideo.save();
   res.redirect("/ProfilePage");
 })
+/**
+	 * Save scout accounts' name, email, and request message to the databse in scoutrequest colletion.
+	 * Finally, redirect user to login page.
+	 */
 app.post("/scoutSignupRequest", async (req, res) => {
   const name = req.body.sname;
   const email = req.body.semail;
