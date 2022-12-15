@@ -1,9 +1,8 @@
 # cs308-202201-team02
-https://talent-land1.herokuapp.com/ProfilePageScout
+https://talentland1.herokuapp.com/
 =======
 # Team02-TalentLand
 
-### https://shrouded-harbor-04645.herokuapp.com 
 ### Table of Contents
 + #### [1.Description](#desc)
 + #### [2.User Documentation](#userdoc)
