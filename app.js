@@ -9,6 +9,8 @@ const Joi = require("joi");
 const { ROLE } = require('./middleware/rolelist')
 const uploadFile = require("./services/upload");
 
+
+
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
@@ -108,6 +110,27 @@ const userSchema = new mongoose.Schema({
    type: String,
  }],
 
+   rate: {
+    type: Number,
+    default:0,
+  },
+   
+   rate_count: {
+    type: Number,
+    default:0,
+  },
+   overall_rate: {
+    type: Number,
+    default:0,
+    $round: [ "$overallrate", 2 ] 
+  },
+  age : String,
+
+  club: String,
+
+  scoutposition : String,
+
+
 });
 
 //Videos schema
@@ -124,6 +147,12 @@ const videosSchema = new mongoose.Schema({
     required: [true, "Please check your data entry, no name specified"],
   },
 
+  like_count: {
+    type: Number,
+    min: 0,
+    default: 0,
+    // required: [true, "Please check your data entry, no name specified"],
+  },
 })
 
 const scoutReq = new mongoose.Schema({
@@ -136,6 +165,7 @@ const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
 const Scout = new mongoose.model("scoutReq",scoutReq );
 
+
 var loggedInUser = null;
 var currentError = "";
 
@@ -145,6 +175,7 @@ app.get("/", function (req, res) {
 app.get("/login", function (req, res) {
   res.render("login");
 });
+
 app.get("/logout", function (req, res) {
   loggedInUser = null;
   res.redirect("/login");
@@ -161,8 +192,12 @@ app.get("/deleteUser", function (req, res) {
   });
 });
 
-
 app.get("/editprofile", function (req, res) {
+  if (!loggedInUser) {
+    res.redirect('/login');
+    return;
+  }
+  
   res.render("editprofile", {
     user: JSON.stringify({
       username: loggedInUser?.username,
@@ -195,17 +230,14 @@ app.get("/helpScout", function (req, res) {
     })
   });
 });
-
 app.get("/scoutSignupRequest", function (req, res) {
   res.render("scoutSignupRequest");
 });
-
 app.get("/error", function (req, res) {
   res.render("error", {
     error: currentError
   });
 });
-
 app.get("/UploadVideo", function (req, res) {
   res.render("UploadVideo", {
     user: JSON.stringify({
@@ -214,6 +246,7 @@ app.get("/UploadVideo", function (req, res) {
     }),
   });
 });
+
 
 app.get("/getmeeting", function (req, res) {
   console.log(loggedInUser.role)
@@ -274,6 +307,7 @@ app.get("/requestmeeting", function (req, res) {
   console.log(loggedInUser.reqs);
 });
 
+
 app.get("/ProfilePageScout", function (req, res) {
   console.log(loggedInUser.role)
 
@@ -319,7 +353,11 @@ app.get("/ProfilePage", async (req, res) => {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
+
         message: loggedInUser?.message,
+
+        overall_rate: loggedInUser?.overall_rate,
+
       }),
       Urls: urls,
     });
@@ -331,8 +369,154 @@ app.get("/ProfilePage", async (req, res) => {
   }
 });
 
+app.get("/homePage", async (req, res) => {
+  const allUrls = [];
+  const filterByLikes = req.query.filterByLikes;
+
+  let databaseVideos = [];
+  if (filterByLikes) {
+    databaseVideos = await Video.find({
+      like_count: { $gt: filterByLikes }
+    });
+  } else {
+    databaseVideos = await Video.find();
+  }
+
+  const { BlobServiceClient } = require("@azure/storage-blob");
+  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
+  const config = require('./config');
+  const accountName = config.getStorageAccountName();
+
+  try {
+    for await (let video of databaseVideos) {
+      console.log('vid:');
+      console.log(JSON.stringify(video));
+
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${video.video_name}`;
+      const email = video.video_name.split('_')[0];
+      const user = await User.findOne({ email });
+      if (!user) {
+        currentError = "Something went wrong when fetching videos."
+        res.redirect("/error");
+        return;
+      }
+      allUrls.push({
+        key: user?.username,
+        value: url,
+        video_name: video.video_name,
+        like_count: video?.like_count ?? 0,
+      });
+    }
+
+    res.render('homePage', {
+      user: JSON.stringify({
+        username: loggedInUser?.username,
+        email: loggedInUser?.email,
+      }),
+      allUrls: allUrls,
+    });
+  } catch (err) {
+    currentError = "Something went wrong when fetching videos in the home page."
+    res.redirect("/error");
+    return;
+  }
+});
+app.get("/homePageScout", async (req, res) => {
+  const allUrls = [];
+
+  const { BlobServiceClient } = require("@azure/storage-blob");
+  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
+  const config = require('./config');
+  const accountName = config.getStorageAccountName();
+
+  try {
+    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat();
+    for await (let blob of blobs) {
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
+      
+      const email = blob.name.split('_')[0];
+      const user = await User.findOne({ email });
+      if (!user) {
+        currentError = "Something went wrong when fetching videos."
+        res.redirect("/error");
+        return;
+      }
+
+      const video = await Video.findOne({ video_name: blob.name });
+      allUrls.push({
+        key: user?.username,
+        value: url,
+        video_name: blob.name,
+      });
+      console.log(allUrls[0]);
+    }
+
+    res.render('homePageScout', {
+      user: JSON.stringify({
+        username: loggedInUser?.username,
+        email: loggedInUser?.email,
+      }),
+      allUrls: allUrls,
+    });
+  } catch (err) {
+    currentError = "Something went wrong when fetching videos in the home page."
+    res.redirect("/error");
+    return;
+  }
+});
+
+app.get("/likeVideo", async function (req, res) {
+  const video = await Video.findOne({video_name: req.query.video_name});
+  if (!video) {
+    currentError = "Something went wrong when liking video in the home page."
+    res.redirect("/error");
+    return;
+  }
+
+  video.like_count = (video.like_count === null || video.like_count === undefined) ? 1 : video.like_count + 1;
+  await video.save();
+
+  res.redirect("/homePage");
+  return;
+});
+
+
+
+app.get("/rateVideo", async function (req, res) {
+  console.log("---");
+
+  const user = await User.findOne({username: req.query.username});
+  if (!user) {
+    currentError = "Something went wrong when rating video in the home page."
+    res.redirect("/error");
+    return;
+  }
+
+  user.rate = (user.rate === null || user.rate === undefined) ? 0 : Number(user.rate) + Number(req.query.rate_score);
+  user.rate_count = (user.rate_count === null || user.rate_count === undefined) ? 0 : Number(user.rate_count) + 1;
+
+  user.overall_rate= (user.rate === null || user.rate === undefined) ? 0 : Number(user.rate)/ Number(user.rate_count);
+
+  await user.save();
+
+  res.redirect("/homePageScout");
+  return;
+});
+
+
 app.get("/informationEdit", function (req, res) {
   res.render("informationEdit", {
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+
+    })
+  });
+});
+app.get("/informationEditScout", function (req, res) {
+  res.render("informationEditScout", {
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
@@ -367,10 +551,40 @@ app.get("/information", function (req, res) {
     })
   });
 });
+app.get("/informationScout", function (req, res) {
+  console.log(loggedInUser.role)
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("informationScout", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      age: loggedInUser?.age,
+      scoutposition: loggedInUser?.scoutposition,
+      club: loggedInUser?.club,
+      biographydescription: loggedInUser?.biographydescription,
+    })
+  });
+});
 
 
 
-//POST
+
+/* ****** */
+
+/* ****** */
+
+/* ****** */
+
 app.post("/register", async (req, res) => {
   console.log("inside post funct");
   const existingUser = await User.findOne({ email: req.body.email });
@@ -398,8 +612,10 @@ const inMemoryStorage = multer.memoryStorage()
 const uploadStrategy = multer({ storage: inMemoryStorage }).single('video_input');
 
 app.post("/uploadVideo", uploadStrategy, async (req, res) => {
+  
   const name = loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   await uploadFile(req, name);
+
 
   const newVideo = new Video({
     email: loggedInUser.email,
@@ -408,11 +624,10 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
   });
 
   await newVideo.save();
+
   setTimeout(() => res.redirect("/ProfilePage"), 2500);
 })
-
 //****************************************** */
-
 app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
   const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   await uploadFile(req, ppname);
@@ -426,7 +641,6 @@ app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
   await newVideo.save();
   res.redirect("/ProfilePage");
 })
-
 app.post("/scoutSignupRequest", async (req, res) => {
   const name = req.body.sname;
   const email = req.body.semail;
@@ -517,7 +731,6 @@ app.post("/help",  async (req, res) => {
   })
 
 })
-
 app.post("/helpScout",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -540,6 +753,7 @@ app.post("/helpScout",  async (req, res) => {
   })
 
 })
+
 app.post("/accept",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   const requester = req.body.requester;
@@ -595,6 +809,7 @@ app.post("/reject",  async (req, res) => {
     console.log(error);
   })
 })
+
 app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -671,7 +886,21 @@ app.post("/editProfileScout", function (req, res) {
   })
 })
 
+app.get("/logout", function (req, res) {
+  loggedInUser = null;
+  res.redirect("/login");
+})
+app.get("/deleteUser", function (req, res) {
+  
+  User.deleteOne({ email: loggedInUser?.email }).then(function () {
+    console.log("User deleted");
+    loggedInUser = null;
+    res.redirect("/login");
 
+  }).catch(function (error) {
+    console.log(error); // Failure
+  });
+});
 
 app.post("/informationEdit", async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
@@ -715,18 +944,49 @@ app.post("/informationEdit", async (req, res) => {
     console.log(error);
   })
 })
-///////////
 
 
+app.post("/informationEditScout", async (req, res) => {
 
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+  const scoutposition = req.body.scoutposition;
+  const club = req.body.club;
+  const age = req.body.age;
+  //diger
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    foundUser.username = username;
+    foundUser.email = email;
+    foundUser.password = password;
+    foundUser.age = age;
+    foundUser.scoutposition = scoutposition;
+    foundUser.club = club;
+    
+
+    console.log("trying to update password");
+    await foundUser.save();
+
+    loggedInUser = foundUser;
+    res.redirect("/informationScout");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
+});
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
-//let port = process.env.PORT;
-//if (port == null || port == "") {
-//port = 3000;
-//}
-//app.listen(port);
+
+
+
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+port = 3000;
+}
+app.listen(port);
+
 app.listen(3000, function () {
-  console.log("server on 3000");
+ console.log("server on 3000");
 });
