@@ -941,10 +941,10 @@ app.get("/deleteUser", function (req, res) {
 });
 
 /**
- 	 * Save  accounts' username,password, email, phone and other information to the database.
+ 	 * Save accounts' username,password, email, phone and other information to the database.
  	 * With the help of loggedInUser, the user is checked whether it exist in the database or not. 
- 	 * After the user id found with matching email, the newly entered information varibales is set as the user's information.
- 	 * After the save process, user redirected to information page.
+ 	 * After the user is found with matching email, the newly entered information varibales is set as the user's information.
+ 	 * After the save process, user is redirected to information page.
  	 */
 
 app.post("/informationEdit", async (req, res) => {
@@ -990,6 +990,13 @@ app.post("/informationEdit", async (req, res) => {
   })
 })
 
+
+/**
+ 	 * Save scouts' username,password, email, phone and other information to the database.
+ 	 * With the help of loggedInUser, the scout is checked whether it exist in the database or not. 
+ 	 * After the scout is found with matching email, the newly entered information varibales is set as the scout's information.
+ 	 * After the save process, scout is redirected to information scout page.
+ 	 */
 
 app.post("/informationEditScout", async (req, res) => {
 
