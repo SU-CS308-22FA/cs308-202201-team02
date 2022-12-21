@@ -156,6 +156,15 @@ app.get("/login", function (req, res) {
   res.render("login");
 });
 
+app.get('/users',(req,res,next)=>{
+  const searchField = req.query.username;
+  User.find({username:{$regex: searchField,$options: '$i'}})
+    .then(data=>{
+      res.send(data);
+    })
+
+})
+
 app.get("/editprofile", function (req, res) {
   res.render("editprofile", {
     user: JSON.stringify({
@@ -484,9 +493,14 @@ foundUser.save();
 
 console.log(findResult)
 
-  res.redirect("/profilePageScout");
+  res.redirect("/ProfilePageScout");
 
 })
+
+
+
+
+
 app.post("/help",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
