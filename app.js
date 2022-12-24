@@ -156,11 +156,44 @@ app.get("/login", function (req, res) {
   res.render("login");
 });
 
-app.get('/users',(req,res,next)=>{
+app.get('/profilep',async(req,res,next)=>{
   const searchField = req.query.username;
+  const uid = req.body.username;
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  const findResult = await User.findOne({
+    username: searchField,
+
+  });
+console.log(findResult);
+  let jwtToken = null;
+
+  jwtToken = jwt.sign({
+    email: findResult.email,
+    username: findResult.username,
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+
   User.find({username:{$regex: searchField,$options: '$i'}})
     .then(data=>{
-      res.send(data);
+      res.render("profilep", {
+        token: jwtToken,
+
+     user: JSON.stringify({
+      username: findResult.username,
+      email: findResult.email,
+      reqs: findResult.reqs,
+      accreqs: findResult.accreqs,
+
+    }),
+  //  reqs: data.reqs,
+
+
+
+  })
+//    res.send(data);
+    console.log(req.query);
+//  res.render('profilep', { title: 'profile', user: data,  });
     })
 
 })
