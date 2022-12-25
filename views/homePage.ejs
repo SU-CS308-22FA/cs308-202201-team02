@@ -1,0 +1,76 @@
+<%- include('partials/profileheader') %>
+
+  <body>
+    <div class="navigation">
+      <div class="logo">
+        <input type="image" src="images/logo.jpg" width=110>
+        <a href="#"></a>
+      </div>
+      <div class="navigation-search-container">
+        <i class="fa fa-search"></i>
+        <input class="search-field" type="text" placeholder="Search">
+        <div class="search-container">
+          <div class="search-container-box">
+            <div class="search-results">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navigation-icons">
+        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
+        <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
+      </div>
+    </div>
+
+    <div class="profile-page">
+      <div class="page-header header-filter" data-parallax="true"></div>
+      <div class="main user homePageContent">
+        <div class="filterActionsContainer">
+          <div class="filterActions">
+            <a href="/homePage?filterByLikes=5" class="filterButton"> >5 likes </a>
+            <a href="/homePage?filterByLikes=10" class="filterButton"> >10 likes </a>
+          </div>
+        </div>
+        <h3 class="title" id="nameField"> Name </h3>
+        <h6>Striker</h6>
+        <p>Football Player. 18 years old. I love football</p>
+        <a href="/editprofile">Edit Profile</a>
+        <% for(const item of allUrls) { %>
+          <div class="row" style="display: block;margin: 0 auto; margin-bottom: 30px; margin-top: 10px; max-width: 500px;">
+            <div class="videoContainer">
+              <div>
+                <h3 class="title">
+                  <%= item.key %>
+                </h3>
+                <video width="400" controls>
+                  <source src="<%= item.value %>" type="video/mp4">
+                  Your browser does not support HTML video.
+                </video>
+                <div class="videoLikeContainer">
+                  <a class="navigation-link" href="/likeVideo?video_name=<%= item.video_name %>"><i class="fa"  style="color:red">&#xf004;</i></a>
+                  <span style="margin-left: 10px;"><%= item.like_count %> likes</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% } %>
+
+      </div>
+    </div>
+
+
+  
+
+  </body>
+
+
+
+  <script>
+    var user = JSON.parse(`<%-user%>`);
+    document.getElementById("nameField").innerHTML = user.username;
+  </script>

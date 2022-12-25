@@ -16,9 +16,14 @@
 
       </div>
 
+
       <div class="navigation-icons">
-        <a class="navigation-link" href="#"><i class="fa fa-home"></i></a>
+
+
+
+        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
         <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
+
         <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
         <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
         <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
@@ -54,13 +59,19 @@
 
                   <div class="name">
                     <h3 class="title" id="nameField"> Name </h3>
+                    <i class="material-icons">star</i>
+                    <h6 > User Score: </h6>
+                    <h7 id="overall_rate"> </h7>
+                    <br>
+                    <br>
                     <h6>Striker</h6>
                   </div>
                 </div>
               </div>
             </div>
             <div class="description text-center">
-              <p>Football Player. 18 years old. I love football</p>
+              <h5 class="message" id="message"> </h5>
+              <p id="message"></p>
               <a href="/editprofile">Edit Profile</a>
             </div>
             <div class="row">
@@ -111,6 +122,7 @@
   <script>
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
+    document.getElementById("message").innerHTML = user.message;
 
-
+    document.getElementById("overall_rate").innerHTML = user.overall_rate;
   </script>
