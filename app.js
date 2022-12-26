@@ -365,8 +365,21 @@ exports.homeRoutes = (req, res) => {
 
 }
 app.get("/ranking", (req, res) => {
+
+
 User.find({}, (err, tasks) => {
+
+  for(var i = 0; i < tasks.length; i++) {
+        for(var j=i+1; j < tasks.length; j++) {
+            if(tasks[i].overall_rate < tasks[j].overall_rate) {
+                var temp = tasks[i];
+                tasks[i] = tasks[j];
+                tasks[j] = temp;
+            }
+        }
+    }
   res.render("ranking.ejs", { User: tasks });
+
   });
   });
 app.get("/getmeeting", function (req, res) {
