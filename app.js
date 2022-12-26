@@ -8,7 +8,7 @@ const { check, validationResult } = require("express-validator");
 const Joi = require("joi");
 const { ROLE } = require('./middleware/rolelist')
 const uploadFile = require("./services/upload");
-
+const axios = require('axios');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
@@ -352,7 +352,23 @@ app.get("/UploadVideo", function (req, res) {
     }),
   });
 });
+exports.homeRoutes = (req, res) => {
+    // Make a get request to /api/users
+    axios.get('http://localhost:3000/api/users')
+        .then(function(response){
+            res.render('index', { users : response.data });
+        })
+        .catch(err =>{
+            res.send(err);
+        })
 
+
+}
+app.get("/ranking", (req, res) => {
+User.find({}, (err, tasks) => {
+  res.render("ranking.ejs", { User: tasks });
+  });
+  });
 app.get("/getmeeting", function (req, res) {
   console.log(loggedInUser.role)
 

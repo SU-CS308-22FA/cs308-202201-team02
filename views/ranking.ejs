@@ -1,0 +1,97 @@
+<%- include('partials/profileheader') %>
+
+  <body>
+    <div class="navigation">
+      <div class="logo">
+        <input type="image" src="images/logo.jpg" width="110">
+        <a href="#"></a>
+      </div>
+      <div class="navigation-search-container">
+        <i class="fa fa-search"></i>
+        <input class="search-field" type="text" placeholder="Search">
+        <div class="search-container">
+          <div class="search-container-box">
+            <div class="search-results">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navigation-icons">
+        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
+
+        <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
+        <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
+
+    </div>
+    </div>
+
+    <div class="profile-page">
+
+
+
+
+          <div class="container">
+
+
+
+
+
+
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <center>
+                <div>
+                  <form action="/" method="POST">
+                    <center>
+                      <h2>TOP 10</h2>
+                    </center>
+                                  <table class="table">
+                                      <thead class="thead-dark">
+                                          <tr>
+                                              <th>Ranking</th>
+                                              <th>Username</th>
+                                              <th>Overall Rate</th>
+                                              <th>Main Poosition</th>
+
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                          <%- include('include/_show') %>
+                                      </tbody>
+
+                                  </table>
+                              </form>
+
+
+                </div>
+
+
+
+
+            </center>
+
+
+
+
+
+          </div>
+
+
+
+
+    </div>
+
+  </body>
+  <script>
+
+
+
+
+  </script>
