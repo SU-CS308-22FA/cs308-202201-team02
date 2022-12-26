@@ -410,6 +410,7 @@ app.get("/homePage", async (req, res) => {
         value: url,
         video_name: video.video_name,
         like_count: video?.like_count ?? 0,
+        section_info: video?.section_info ?? "other"
       });
     }
 
