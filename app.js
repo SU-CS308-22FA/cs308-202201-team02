@@ -235,7 +235,7 @@ app.get('/profilep',async(req,res,next)=>{
 
 
   } catch (err) {
-    currentError = "Something went wrong when fetching videos."
+    currentError = "User not exist."
     res.redirect("/error");
     return;
   }
@@ -293,7 +293,7 @@ app.get('/informationp',async(req,res,next)=>{
 
 
   } catch (err) {
-    currentError = "Something went wrong when fetching videos."
+    currentError = "User not exist."
     res.redirect("/error");
     return;
   }
