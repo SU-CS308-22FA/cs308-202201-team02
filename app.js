@@ -153,6 +153,10 @@ const videosSchema = new mongoose.Schema({
     default: 0,
     // required: [true, "Please check your data entry, no name specified"],
   },
+
+  section_info: {
+    type:String,
+  }
 })
 
 const scoutReq = new mongoose.Schema({
@@ -406,6 +410,7 @@ app.get("/homePage", async (req, res) => {
         value: url,
         video_name: video.video_name,
         like_count: video?.like_count ?? 0,
+        section_info: video?.section_info ?? "other"
       });
     }
 
@@ -639,8 +644,10 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
   const newVideo = new Video({
     email: loggedInUser.email,
     video_name: name,
+    section_info: req.body.sections
     //created_at: req.body.created_at,
   });
+  console.log(req.body.sections);
 
   await newVideo.save();
 
@@ -1040,13 +1047,13 @@ app.post("/informationEditScout", async (req, res) => {
 
 
 
-
+/*
 let port = process.env.PORT;
 if (port == null || port == "") {
 port = 3000;
 }
 app.listen(port);
-
+*/
 app.listen(3000, function () {
  console.log("server on 3000");
 });

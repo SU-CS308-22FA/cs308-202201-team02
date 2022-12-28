@@ -20,7 +20,7 @@
 
       <div class="navigation-icons">
         <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
-        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
         <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
         <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
         <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
@@ -52,8 +52,10 @@
                   Your browser does not support HTML video.
                 </video>
                 <div class="videoLikeContainer">
-                  <a class="navigation-link" href="/likeVideo?video_name=<%= item.video_name %>"><i class="fa"  style="color:red">&#xf004;</i></a>
+                  <a class="navigation-link" href="/likeVideo?video_name=<%= item.video_name %>"><i class="fa"  style="color:#245b16">&#xf004;</i></a>
                   <span style="margin-left: 10px;"><%= item.like_count %> likes</span>
+                  <span>, Type: <%= item.section_info %></span>
+
                 </div>
               </div>
             </div>

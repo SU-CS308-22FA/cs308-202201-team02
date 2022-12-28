@@ -18,7 +18,7 @@
 
       <div class="navigation-icons">
         <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
-        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
         <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
         <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
         <br>
@@ -30,17 +30,31 @@
     <div class="pageContainer">
 
       <div class="container" style="margin: 0 auto; text-align: center;">
+        <br>
+
         <form action="/uploadVideo" method="POST" class="form" name="form" id="my_form" enctype="multipart/form-data">
+          
+          <label for="section_info">Select Type: </label>
+          <select name="sections">
+            <option value="Shooting">Shooting</option>
+            <option value="Passing and Receiving">Passing and Receiving</option>
+            <option value="Dribbling">Dribbling</option>
+            <option value="Heading">Heading</option>
+            <option value="Touch and Ball Control">Touch and Ball Control</option>
+            <option value="Skills and Tricks">Skills and Tricks</option>
+            <option value="Running Off the Ball">Running Off the Ball</option>
+            <option value="Other">Other</option>
+          </select>
+          
           <div style= "text-align: center">
             <img src="images/upload-video.png" width="300" height="400"/>
-
             <br>
             <label for="video_input">Select a video to upload: </label>
-
             <input id="file-picker" type="file" name="video_input">
           </div>
           <button type="submit">Upload</button>
         </form>
+
       </div>
     </div>
   </body>
