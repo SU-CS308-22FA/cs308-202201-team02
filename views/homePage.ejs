@@ -32,8 +32,27 @@
       <div class="main user homePageContent">
         <div class="filterActionsContainer">
           <div class="filterActions">
-            <a href="/homePage?filterByLikes=5" class="filterButton"> >5 likes </a>
-            <a href="/homePage?filterByLikes=10" class="filterButton"> >10 likes </a>
+            <a href="/homePage?filterByLikes=5&filterByType=<%=filterByType%>" class="filterButton"> >5 likes </a>
+            <a href="/homePage?filterByLikes=10&filterByType=<%=filterByType%>" class="filterButton"> >10 likes </a>
+
+            <div style="margin-top: 10px;">
+              <label for="section_info">Select Type: </label>
+              <select name="sections" onchange="onSelectChange(this.value)">
+                <option value=""></option>
+                <option value="Shooting" <%=filterByType=='Shooting' ? "selected" : "" %> >Shooting</option>
+                <option value="Passing_and_Receiving" <%=filterByType=='Passing_and_Receiving' ? "selected" : "" %>
+                  >Passing and Receiving</option>
+                <option value="Dribbling" <%=filterByType=='Dribbling' ? "selected" : "" %> >Dribbling</option>
+                <option value="Heading" <%=filterByType=='Heading' ? "selected" : "" %> >Heading</option>
+                <option value="Touch_and_Ball_Control" <%=filterByType=='Touch_and_Ball_Control' ? "selected" : "" %>
+                  >Touch and Ball Control</option>
+                <option value="Skills_and_Tricks" <%=filterByType=='Skills_and_Tricks' ? "selected" : "" %> >Skills and
+                  Tricks</option>
+                <option value="Running_Off_the_Ball" <%=filterByType=='Running_Off_the_Ball' ? "selected" : "" %> >Running
+                  Off the Ball</option>
+                <option value="Other" <%=filterByType=='Other' ? "selected" : "" %> >Other</option>
+              </select>
+            </div>
           </div>
         </div>
         <h3 class="title" id="nameField"> Name </h3>
@@ -41,7 +60,8 @@
         <p>Football Player. 18 years old. I love football</p>
         <a href="/editprofile">Edit Profile</a>
         <% for(const item of allUrls) { %>
-          <div class="row" style="display: block;margin: 0 auto; margin-bottom: 30px; margin-top: 10px; max-width: 500px;">
+          <div class="row"
+            style="display: block;margin: 0 auto; margin-bottom: 30px; margin-top: 10px; max-width: 500px;">
             <div class="videoContainer">
               <div>
                 <h3 class="title">
@@ -52,8 +72,11 @@
                   Your browser does not support HTML video.
                 </video>
                 <div class="videoLikeContainer">
-                  <a class="navigation-link" href="/likeVideo?video_name=<%= item.video_name %>"><i class="fa"  style="color:#245b16">&#xf004;</i></a>
-                  <span style="margin-left: 10px;"><%= item.like_count %> likes</span>
+                  <a class="navigation-link" href="/likeVideo?video_name=<%= item.video_name %>"><i class="fa"
+                      style="color:#245b16">&#xf004;</i></a>
+                  <span style="margin-left: 10px;">
+                    <%= item.like_count %> likes
+                  </span>
                   <span>, Type: <%= item.section_info %></span>
 
                 </div>
@@ -64,17 +87,16 @@
 
       </div>
     </div>
-
-
     </div>
-
   </body>
 
-
-
   <script>
+    console.log(`<%-filterByType%>`);
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
 
+    function onSelectChange(e) {
+      window.location = "/homePage?filterByType=" + e + "&filterByLikes=" + `<%-filterByLikes%>`;
+    }
 
   </script>
