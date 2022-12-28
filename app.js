@@ -221,6 +221,7 @@ app.get('/profilep',async(req,res,next)=>{
           username: findResult.username,
           email: findResult.email,
           bio: findResult.message,
+          role: findResult.role,
 
           overall_rate: findResult.overall_rate,
         }),
@@ -413,14 +414,14 @@ app.get("/requestmeeting", function (req, res) {
 
 
   let jwtToken = null;
-  if (loggedInUser.role !== ROLE.BASIC) {
+
     jwtToken = jwt.sign({
       email: loggedInUser.email,
       username: loggedInUser.username
     }, "mohit_pandey_1996", {
       expiresIn: 300000
     });
-  }
+
 
   res.render("requestmeeting",{
     token: jwtToken,
@@ -958,6 +959,7 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
+
 
 app.post("/informationEdit", async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');

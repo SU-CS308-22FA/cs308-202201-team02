@@ -61,13 +61,14 @@
                   <div class="name">
 
                     <h3 class="title" id="nameField" name= "nameField"> Name </h3>
-
+                    <% if (user.role === "basic" ){%>
                     <i class="material-icons">star</i>
                     <h6 > User Score: </h6>
                     <h7 id="overall_rate"> </h7>
                     <br>
                     <br>
                     <h6>Striker</h6>
+              <% } %>
                   </div>
                 </div>
               </div>
@@ -80,12 +81,14 @@
               <div class="col-md-6 ml-auto mr-auto">
                 <div class="profile-tabs">
                   <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
+                    <% if (user.role === "basic" ){%>
                     <li class="nav-item">
                       <a class="nav-link active" href="#" role="tab" data-toggle="tab">
                         <i class="material-icons">videocam</i>
                         Videos
                       </a>
                     </li>
+              <%    }%>
                     <li class="nav-item">
 
                       <div class="navigation-search-container">
@@ -117,6 +120,7 @@
                   <div class="row" style="display: block;
                   margin: 0 auto;">
                     <video width="400" controls >
+
                       <source src="<%= url %>" type="video/mp4">
                       Your browser does not support HTML video.
                     </video>
@@ -139,6 +143,6 @@
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
     document.getElementById("message").innerHTML = user.message;
-
+    document.getElementById("ROLE").innerHTML = user.role;
     document.getElementById("overall_rate").innerHTML = user.overall_rate;
   </script>

@@ -63,48 +63,58 @@
                         </div>
 
                         </form>
-                        <ul>
-
-                        <% const cars = ["Saab", "Volvo", "BMW"];%>
-                        <% for(let i = 0; i < reqs.length; i++){ %>
-                            <li><%= reqs[i] %></li>
-                        <% } %>
-                        </ul
-
-                      <br>
-                      <br>
-
-
-
 
                 </div>
-
-
-
-
+            </center>
+            <center>
+              <h2>Sent requests</h2>
             </center>
 
+            <ul>
+            <% for(let i = 0; i < reqs.length; i++){ %>
+                <li><%= reqs[i] %></li>
+            <% } %>
+
+            </ul
+
+          <br>
+          <br>
+
+            <center>
+              <h2>Accepted requests</h2>
+            </center>
+            <table>
+              <tr>
+                <td><label for="reqs">
+                        <br>
+                        <br>
+
+                    </label>
+                </td>
+                <br>
+
+                <ul>
+                <% for(let i = 0; i < accreqs.length; i++){ %>
+                    <li><%= accreqs[i] %></li>
+                <% } %>
+                </ul
+
+            </tr>
+                        </table>
 
 
 
           </div>
-
-
-
 
     </div>
 
   </body>
   <script>
     localStorage.setItem('token', "<%= JSON.stringify(token) %>");
-
     // BURAYI DUZENLE
-
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
     document.getElementById("fullName").innerHTML = user.fullName;
     document.getElementById("reqs").innerHTML = getArray(user.reqs);
-
-
-
+    document.getElementById("accreqs").innerHTML = getArray(user.accreqs);
   </script>
