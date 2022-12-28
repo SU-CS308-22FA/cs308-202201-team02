@@ -38,6 +38,10 @@
   cursor:pointer;
 }
 
+select {
+  -webkit-appearance: auto !important;
+}
+
 .i {
   justify-content: center;
   padding: 5px;

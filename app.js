@@ -375,16 +375,23 @@ app.get("/ProfilePage", async (req, res) => {
 
 app.get("/homePage", async (req, res) => {
   const allUrls = [];
-  const filterByLikes = req.query.filterByLikes;
+  const filterByLikes = req.query.filterByLikes ?? "";
+  const filterByType = req.query.filterByType ?? "";
 
-  let databaseVideos = [];
+  let filterObj = {};
   if (filterByLikes) {
-    databaseVideos = await Video.find({
-      like_count: { $gt: filterByLikes }
-    });
-  } else {
-    databaseVideos = await Video.find();
+    filterObj = {
+      ...filterObj, like_count: { $gt: filterByLikes }
+    };
+  } 
+  
+  if (filterByType) {
+    filterObj = {
+      ...filterObj, section_info: filterByType
+    };
   }
+
+  let databaseVideos = await Video.find(filterObj);
 
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
@@ -394,9 +401,6 @@ app.get("/homePage", async (req, res) => {
 
   try {
     for await (let video of databaseVideos) {
-      console.log('vid:');
-      console.log(JSON.stringify(video));
-
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${video.video_name}`;
       const email = video.video_name.split('_')[0];
       const user = await User.findOne({ email });
@@ -410,7 +414,7 @@ app.get("/homePage", async (req, res) => {
         value: url,
         video_name: video.video_name,
         like_count: video?.like_count ?? 0,
-        section_info: video?.section_info ?? "other"
+        section_info: (video?.section_info ?? "other").replaceAll("_", " "),
       });
     }
 
@@ -420,6 +424,8 @@ app.get("/homePage", async (req, res) => {
         email: loggedInUser?.email,
       }),
       allUrls: allUrls,
+      filterByLikes,
+      filterByType
     });
   } catch (err) {
     currentError = "Something went wrong when fetching videos in the home page."
