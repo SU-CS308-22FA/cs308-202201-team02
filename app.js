@@ -341,14 +341,19 @@ app.get("/ProfilePage", async (req, res) => {
 
   try {
     const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.email });
-    const urls = [];
-
+    const data = [];
+    let i = 0;
 
     for await (let blob of blobs) {
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
-      urls.push(url);
+      data.push({
+        i: i,
+        url: url,
+        name: blob.name,
+      });
+      i+=1;
     }
-
+    
     res.render('ProfilePage', {
       user: JSON.stringify({
         username: loggedInUser?.username,
@@ -359,7 +364,7 @@ app.get("/ProfilePage", async (req, res) => {
         overall_rate: loggedInUser?.overall_rate,
 
       }),
-      Urls: urls,
+      data: data,
     });
 
   } catch (err) {
@@ -575,6 +580,7 @@ app.post("/register", async (req, res) => {
 });
 
 const multer = require('multer');
+const { response } = require("express");
 const inMemoryStorage = multer.memoryStorage()
 const uploadStrategy = multer({ storage: inMemoryStorage }).single('video_input');
 
@@ -868,6 +874,18 @@ app.get("/deleteUser", function (req, res) {
   });
 });
 
+app.post("/deleteVideo", function (req, res) {
+  Video.deleteOne({ video_name: req.body.video_name }).then(function () {
+    console.log("Video deleted");
+    res.redirect("/profilePage");
+
+  }).catch(function (error) {
+    console.log(error); // Failure
+  });
+});
+
+
+
 app.post("/informationEdit", async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
@@ -913,12 +931,6 @@ app.post("/informationEdit", async (req, res) => {
 
 
 
-// set port for heroku deployment
-let port = process.env.PORT;
-if (port == null || port == "") {
-port = 3000;
-}
-app.listen(port);
 
 
 
