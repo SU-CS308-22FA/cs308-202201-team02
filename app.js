@@ -105,7 +105,7 @@ const userSchema = new mongoose.Schema({
      reqs:[{
        type: String,
      }],
-     accreqs :[{
+     accreqs:[{
        type: String,
      }],
      rejreqs:[{
@@ -130,6 +130,11 @@ const userSchema = new mongoose.Schema({
     club: String,
 
     scoutposition : String,
+
+    favorites:[{
+      type: String,
+    }],
+   
 
     });
 
@@ -568,6 +573,31 @@ app.get("/homePageScout", async (req, res) => {
     return;
   }
 });
+/*app.get("/saveuser", function (req, res) {
+  let jwtToken = null;
+  console.log("save butonu basıldı");
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+
+
+  res.render("saveuser",{
+    token: jwtToken,
+
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      favorites: loggedInUser?.favorites,
+    }),
+    favorites: loggedInUser.favorites,
+
+
+  });
+  console.log(loggedInUser.favorites);
+});*/
 
 /**
  	 * Save the like of the video of the user in an async approach after defining
@@ -750,6 +780,7 @@ app.post("/register", async (req, res) => {
 });
 
 const multer = require('multer');
+const { array } = require("joi");
 const inMemoryStorage = multer.memoryStorage()
 const uploadStrategy = multer({ storage: inMemoryStorage }).single('video_input');
 
@@ -851,6 +882,26 @@ console.log(findResult)
   res.redirect("/ProfilePageScout");
 
 })
+app.post("/saveuser",  async (req, res) => {
+  const uid = req.body.username;
+  const findResult = await User.findOne({
+    username: uid,
+
+  });
+  console.log(findResult);
+User.findOne({ email: loggedInUser?.email }).then(async function (foundUser){
+findResult.favorites.push(foundUser.username);
+foundUser.favorites.push(findResult.username);
+
+findResult.save();
+foundUser.save();
+})
+
+console.log(findResult)
+
+  res.redirect("/ProfilePageScout");
+
+})
 
 
 
@@ -901,6 +952,7 @@ app.post("/helpScout",  async (req, res) => {
   })
 
 })
+
 
 app.post("/editProfile",  async (req, res) => {
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
@@ -991,6 +1043,7 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
+
 
 
 app.post("/informationEdit", async (req, res) => {
