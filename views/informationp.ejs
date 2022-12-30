@@ -45,12 +45,13 @@
                   </div>
                   <div class="name">
                     <h3 class="title" id="nameField"> Name </h3>
+                    <% if (user.role !== "scout" ){%>
                     <h6>Striker</h6>
                   </div>
                 </div>
               </div>
             </div>
-            <% if (user.role === "scout" ){%>
+
             <div class="description text-center">
               <p>Football Player. 18 years old. I love football</p>
 
@@ -61,7 +62,7 @@
                 <div class="profile-tabs">
                   <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
                     <li class="nav-item">
-                    <% if (user.role === "basic" ){%>
+                    <% if (user.role !== "scout" ){%>
 
                       <div class="navigation-search-container">
                         <form action="/profilep" method="GET" class="form" id="form">
@@ -99,7 +100,7 @@
             <center>
               <h2>Information Table</h2>
             </center>
-            <% if (user.role === "basic" ){%>
+            <% if (user.role !== "scout" ){%>
             <br>
             <br>
 
@@ -254,6 +255,10 @@
     document.getElementById("foot").innerHTML = user.foot;
     document.getElementById("main_Position").innerHTML = user.main_Position;
     document.getElementById("pace").innerHTML = user.pace;
+    document.getElementById("biographydescription") = user.biographydescription;
+    document.getElementById("age") = user.age;
+    document.getElementById("club") = user.club;
+    document.getElementById("scoutposition") = user.scoutposition;
 
     document.getElementById("message").innerHTML = user.message;
 

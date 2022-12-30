@@ -81,7 +81,7 @@
               <div class="col-md-6 ml-auto mr-auto">
                 <div class="profile-tabs">
                   <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
-                    <% if (user.role === "basic" ){%>
+                    <% if (user.role !== "scout" ){%>
                     <li class="nav-item">
                       <a class="nav-link active" href="#" role="tab" data-toggle="tab">
                         <i class="material-icons">videocam</i>

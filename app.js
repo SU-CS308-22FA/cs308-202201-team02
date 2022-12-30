@@ -222,6 +222,9 @@ app.get('/profilep',async(req,res,next)=>{
           email: findResult.email,
           bio: findResult.message,
           role: findResult.role,
+          age: findResult.age,
+          club: findResult.club,
+          scoutposition: findResult.scoutposition,
 
           overall_rate: findResult.overall_rate,
         }),
@@ -282,10 +285,15 @@ app.get('/informationp',async(req,res,next)=>{
           pace : findResult.pace,
           fullName: findResult.fullName,
           overall_rate: findResult.overall_rate,
+          age: findResult.age,
+          club: findResult.club,
+          scoutposition: findResult.scoutposition,
+          biographydescription: findResult.biographydescription,
         }),
 
       //  reqs: data.reqs,
       })
+      console.log(findResult.scoutposition);
     //    res.send(data);
         console.log(req.query);
     //  res.render('profilep', { title: 'profile', user: data,  });
@@ -300,6 +308,30 @@ app.get('/informationp',async(req,res,next)=>{
   }
 
 })
+app.get("/informationScout", function (req, res) {
+  console.log(loggedInUser.role)
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("informationScout", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      age: loggedInUser?.age,
+      scoutposition: loggedInUser?.scoutposition,
+      club: loggedInUser?.club,
+      biographydescription: loggedInUser?.biographydescription,
+    })
+  });
+});
 
 app.get("/editprofile", function (req, res) {
   res.render("editprofile", {
