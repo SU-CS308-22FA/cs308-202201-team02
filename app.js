@@ -230,12 +230,14 @@ app.get('/profilep',async(req,res,next)=>{
           age: findResult.age,
           club: findResult.club,
           scoutposition: findResult.scoutposition,
+          
 
           overall_rate: findResult.overall_rate,
         }),
         Urls: urls,
       //  reqs: data.reqs,
       })
+      
     //    res.send(data);
         console.log(req.query);
     //  res.render('profilep', { title: 'profile', user: data,  });
@@ -420,6 +422,28 @@ User.find({}, (err, tasks) => {
 
   });
   });
+app.get("/savedpage", (req, res) => {
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username,
+
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("savedpage", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      favorites: loggedInUser?.favorites,
+    }),
+      reqs: loggedInUser.favorites,
+  });
+});
 app.get("/getmeeting", function (req, res) {
   console.log(loggedInUser.role)
 
@@ -573,31 +597,6 @@ app.get("/homePageScout", async (req, res) => {
     return;
   }
 });
-/*app.get("/saveuser", function (req, res) {
-  let jwtToken = null;
-  console.log("save butonu basıldı");
-    jwtToken = jwt.sign({
-      email: loggedInUser.email,
-      username: loggedInUser.username
-    }, "mohit_pandey_1996", {
-      expiresIn: 300000
-    });
-
-
-  res.render("saveuser",{
-    token: jwtToken,
-
-    user: JSON.stringify({
-      username: loggedInUser?.username,
-      email: loggedInUser?.email,
-      favorites: loggedInUser?.favorites,
-    }),
-    favorites: loggedInUser.favorites,
-
-
-  });
-  console.log(loggedInUser.favorites);
-});*/
 
 /**
  	 * Save the like of the video of the user in an async approach after defining

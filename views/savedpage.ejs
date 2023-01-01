@@ -1,0 +1,85 @@
+<%- include('partials/profileheader') %>
+
+  <body>
+    <div class="navigation">
+      <div class="logo">
+        <input type="image" src="images/logo.jpg" width="110">
+        <a href="#"></a>
+      </div>
+      <div class="navigation-search-container">
+        <i class="fa fa-search"></i>
+
+        <form action="/profilep" method="GET" class="form" id="form">
+          <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
+          <button>Search</button>
+            </form>
+
+      </div>
+
+      <div class="navigation-icons">
+        <a class="navigation-link" href="/homePageScout"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="/ranking"><i class="fa fa-star"></i></a>
+        <a class="navigation-link" href="/savedpage"><i class="fa fa-bookmark"></i></a>
+        <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/profilePageScout"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
+
+    </div>
+    </div>
+
+    <div class="profile-page">
+          <div class="container">
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <center>
+                <div>
+                  <form action="/" method="POST">
+                    <center>
+                      <h2>Saved User</h2>
+                    </center>
+                                  <table class="table">
+                                      <thead class="thead-dark">
+                                          <tr>
+                                              <th>Username</th>
+
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                            <% for(let i = 0; i < favorites.length; i++){ %>
+                                                <li><%= favorites[i] %></li>
+                                            <% } %>
+                                      </tbody>
+
+                                  </table>
+                              </form>
+
+
+                </div>
+
+
+
+
+            </center>
+
+
+
+
+
+          </div>
+
+
+
+
+    </div>
+
+  </body>
+  <script>
+    localStorage.setItem('token', "<%= JSON.stringify(token) %>");
+    var user = JSON.parse(`<%-user%>`);
+    document.getElementById("favorites").innerHTML = getArray(user.favorites);
+
+
+  </script>
