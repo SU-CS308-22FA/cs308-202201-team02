@@ -485,7 +485,7 @@ app.get("/savedpage", (req, res) => {
       email: loggedInUser?.email,
       favorites: loggedInUser?.favorites,
     }),
-      reqs: loggedInUser.favorites,
+      favorites: loggedInUser.favorites,
   });
 });
 app.get("/getmeeting", function (req, res) {
@@ -824,6 +824,7 @@ app.post("/register", async (req, res) => {
 
 const multer = require('multer');
 const { array } = require("joi");
+const { query } = require("express");
 const inMemoryStorage = multer.memoryStorage()
 const uploadStrategy = multer({ storage: inMemoryStorage }).single('video_input');
 
@@ -949,7 +950,7 @@ console.log(findResult)
   res.redirect("/ProfilePageScout");
 
 })
-app.post("/saveuser",  async (req, res) => {
+/*app.post("/saveuser",  async (req, res) => {
   const uid = req.body.username;
   const findResult = await User.findOne({
     username: uid,
@@ -968,8 +969,25 @@ console.log(findResult)
 
   res.redirect("/ProfilePageScout");
 
+})*/
+app.post("/saveuser",  async (req, res) => {
+  const username = req.body.username;
+  const chosenUser = await User.findOne({
+    username: username,
+
+  });
+  console.log(chosenUser);
+User.findOne({ username: loggedInUser?.username }).then(async function (loggedInUser){
+loggedInUser.favorites.push(chosenUser?.username);
+
+loggedInUser.save();
 })
 
+console.log(loggedInUser)
+
+  res.redirect("/ProfilePageScout");
+
+})
 
 
 
