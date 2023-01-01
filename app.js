@@ -177,6 +177,7 @@ const Scout = new mongoose.model("scoutReq",scoutReq );
 
 
 var loggedInUser = null;
+var chosenUser = null;
 var currentError = "";
 
 app.get("/", function (req, res) {
@@ -185,7 +186,7 @@ app.get("/", function (req, res) {
 app.get("/login", function (req, res) {
   res.render("login");
 });
-app.get('/profilep',async(req,res,next)=>{
+/*app.get('/profilep',async(req,res,next)=>{
   const searchField = req.query.username;
   const uid = req.body.username;
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
@@ -251,8 +252,51 @@ app.get('/profilep',async(req,res,next)=>{
     return;
   }
 
-})
+})*/
+app.get('/profilep',async(req,res,next)=>{
+  
+  const { BlobServiceClient } = require("@azure/storage-blob");
+  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
+  const config = require('./config');
+  const accountName = config.getStorageAccountName();
+  const urls = [];
+  try {
+    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: chosenUser?.email });
+    const urls = [];
 
+
+    for await (let blob of blobs) {
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
+      urls.push(url);
+    }
+    console.log(chosenUser);
+    let jwtToken = null;
+
+      jwtToken = jwt.sign({
+        email: chosenUser.email,
+        username: chosenUser.username,
+        }, "mohit_pandey_1996", {
+          expiresIn: 300000
+        });
+        res.render('profilep', {
+          user: JSON.stringify({
+            username: chosenUser?.username,
+            email: chosenUser?.email,
+            bio: chosenUser?.message,
+            overall_rate: chosenUser?.overall_rate,
+    
+          }),
+          Urls: urls,
+        });
+    
+      } catch (err) {
+        currentError = "Something went wrong when fetching videos."
+        res.redirect("/error");
+        return;
+      }
+
+})
 
 
 app.get('/informationp',async(req,res,next)=>{
@@ -859,6 +903,30 @@ app.post("/login", function (req, res) {
     currentError = "login error."
     res.redirect("/error");
   })
+})
+app.post("/search", function (req, res) {
+  const username = req.body.username;
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  
+  User.findOne({ username: username }).then(function (foundUser) {
+    if (!foundUser) {
+      currentError = "no user with this username."
+      res.redirect("/error");
+    } else {
+      if (foundUser.role === 'basic') {
+        chosenUser = foundUser;
+        console.log(chosenUser);
+        res.redirect("/profilep");
+      } else if (findResult.role === 'scout') {
+        chosenUser = foundUser;
+        res.redirect("/ProfilePageScout");
+      }
+    }
+  }).catch(function (e) {
+    currentError = "search error."
+    res.redirect("/error");
+  })
+  
 })
 app.post("/requestmeeting",  async (req, res) => {
   const uid = req.body.username;
