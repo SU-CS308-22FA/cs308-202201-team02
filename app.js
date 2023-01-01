@@ -972,11 +972,6 @@ console.log(findResult)
 })*/
 app.post("/saveuser",  async (req, res) => {
   const username = req.body.username;
-  const chosenUser = await User.findOne({
-    username: username,
-
-  });
-  console.log(chosenUser);
 User.findOne({ username: loggedInUser?.username }).then(async function (loggedInUser){
 loggedInUser.favorites.push(chosenUser?.username);
 
