@@ -36,7 +36,7 @@
 
             <center>
                 <div>
-                  <form action="/" method="POST">
+                  
                     <center>
                       <h2>Saved User</h2>
                     </center>
@@ -48,13 +48,18 @@
                                           </tr>
                                       </thead>
                                       <tbody>
+                                        <tr>
+                                          <th>
                                             <% for(let i = 0; i < favorites.length; i++){ %>
-                                                <li><%= favorites[i] %></li>
+                                                <li> <a href="/profilep?username=<%=favorites[i]%>/"> <%= favorites[i] %> </a></li>
+                                              
                                             <% } %>
+                                          </th>
+                                          </tr>
                                       </tbody>
 
                                   </table>
-                              </form>
+                  
 
 
                 </div>

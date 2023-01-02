@@ -299,6 +299,7 @@ app.get('/profilep',async(req,res,next)=>{
 })
 
 
+
 app.get('/informationp',async(req,res,next)=>{
   const searchField = req.query.username;
   const uid = req.body.username;
@@ -757,6 +758,7 @@ app.get("/ProfilePage", async (req, res) => {
     return;
   }
 });
+
 
 app.get("/informationEdit", function (req, res) {
   res.render("informationEdit", {
