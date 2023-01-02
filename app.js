@@ -162,6 +162,10 @@ const videosSchema = new mongoose.Schema({
 
   section_info: {
     type:String,
+  },
+
+  video_title:{
+    type:String,
   }
 })
 
@@ -428,7 +432,8 @@ app.get("/homePage", async (req, res) => {
         value: url,
         video_name: video.video_name,
         like_count: video?.like_count ?? 0,
-        section_info: (video?.section_info ?? "other").replaceAll("_", " "),
+        section_info: (video?.section_info ?? "Other").replaceAll("_", " "),
+        video_title: video?.video_title ?? "Template Title",
       });
     }
 
@@ -657,7 +662,8 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
   const newVideo = new Video({
     email: loggedInUser.email,
     video_name: name,
-    section_info: req.body.sections
+    section_info: req.body.sections,
+    video_title: req.body.video_title
     //created_at: req.body.created_at,
   });
   console.log(req.body.sections);
@@ -889,31 +895,6 @@ app.post("/editProfile",  async (req, res) => {
     console.log(error);
   })
 })
-/*
-app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
-  const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-  await uploadFile(req, ppname);
-
-
-
-  const newVideo = new Video({
-    email: loggedInUser.email,
-    video_name: ppname,
-  });
-
-  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
-    console.log("vvvv");
-    console.log(foundUser);
-    foundUser.ppname = ppname;
-  
-  await foundUser.save();
-  res.redirect("/ProfilePage");
-  }).catch(function (error) {
-    console.log("EDIT error"); // Fail
-    console.log(error);
-  })
-})
-*/
 
 app.post("/editProfileScout", function (req, res) {
   const username = req.body.username;
@@ -967,8 +948,6 @@ app.get("/deleteUser", function (req, res) {
  	 */
 
 app.post("/informationEdit", async (req, res) => {
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
@@ -1054,13 +1033,13 @@ app.post("/informationEditScout", async (req, res) => {
 
 
 
-
+/*
 let port = process.env.PORT;
 if (port == null || port == "") {
 port = 3000;
 }
 app.listen(port);
-
+*/
 app.listen(3000, function () {
  console.log("server on 3000");
 });
