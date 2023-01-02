@@ -130,6 +130,10 @@ const userSchema = new mongoose.Schema({
 
   scoutposition : String,
 
+  ppname: {
+    type: String,
+    default:"*",
+  },
 
 });
 
@@ -342,11 +346,17 @@ app.get("/ProfilePage", async (req, res) => {
   const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
   const config = require('./config');
   const accountName = config.getStorageAccountName();
-
   try {
     const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.email });
+    const ppblobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.ppname });
     const urls = [];
+    const ppurl= [];
 
+    for await (let ppblob of ppblobs) {
+      const urlpp = `https://${accountName}.blob.core.windows.net/${containerName}/${ppblob.name}`;
+      ppurl.push(urlpp)
+    }
+    lastPp=ppurl[0];
 
     for await (let blob of blobs) {
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
@@ -357,13 +367,13 @@ app.get("/ProfilePage", async (req, res) => {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
-
         message: loggedInUser?.message,
-
         overall_rate: loggedInUser?.overall_rate,
-
+        ppname: loggedInUser?.ppname
       }),
+
       Urls: urls,
+      lastPp: lastPp
     });
 
   } catch (err) {
@@ -460,8 +470,9 @@ app.get("/homePageScout", async (req, res) => {
         key: user?.username,
         value: url,
         video_name: blob.name,
+        like_count: video?.like_count ?? 0,
+        section_info: (video?.section_info ?? "other").replaceAll("_", " "),
       });
-      console.log(allUrls[0]);
     }
 
     res.render('homePageScout', {
@@ -470,6 +481,8 @@ app.get("/homePageScout", async (req, res) => {
         email: loggedInUser?.email,
       }),
       allUrls: allUrls,
+      filterByLikes,
+      filterByType
     });
   } catch (err) {
     currentError = "Something went wrong when fetching videos in the home page."
@@ -659,20 +672,7 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
 
   setTimeout(() => res.redirect("/ProfilePage"), 2500);
 })
-//****************************************** */
-app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
-  const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-  await uploadFile(req, ppname);
 
-  const newVideo = new Video({
-    email: loggedInUser.email,
-    video_name: ppname,
-    //created_at: req.body.created_at,
-  });
-
-  await newVideo.save();
-  res.redirect("/ProfilePage");
-})
 /**
 	 * Save scout accounts' name, email, and request message to the databse in scoutrequest colletion.
 	 * Finally, redirect user to login page.
@@ -870,7 +870,6 @@ app.post("/reject",  async (req, res) => {
 })
 
 app.post("/editProfile",  async (req, res) => {
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
   const username = req.body.username;
   const password = req.body.password;
@@ -879,8 +878,6 @@ app.post("/editProfile",  async (req, res) => {
   const message = req.body.message;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
-    console.log("ff");
-    console.log(foundUser);
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
@@ -892,13 +889,6 @@ app.post("/editProfile",  async (req, res) => {
 
 
     loggedInUser = foundUser;
-  //  await uploadFile(req, photoName);
-  //  const newVideo = new Video({
-  //    email: loggedInUser.email,
-  //    video_name: photoName,
-      //created_at: req.body.created_at,
-  //  });
-  //  await newVideo.save();
     res.redirect("/ProfilePage");
   }).catch(function (error) {
     console.log("EDIT error"); // Fail
@@ -909,15 +899,27 @@ app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
   const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   await uploadFile(req, ppname);
 
+
+
   const newVideo = new Video({
     email: loggedInUser.email,
     video_name: ppname,
-    //created_at: req.body.created_at,
   });
 
-  await newVideo.save();
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    console.log("vvvv");
+    console.log(foundUser);
+    foundUser.ppname = ppname;
+  
+  await foundUser.save();
   res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
 })
+
+
 app.post("/editProfileScout", function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
@@ -949,6 +951,7 @@ app.get("/logout", function (req, res) {
   loggedInUser = null;
   res.redirect("/login");
 })
+
 app.get("/deleteUser", function (req, res) {
   
   User.deleteOne({ email: loggedInUser?.email }).then(function () {
@@ -1011,7 +1014,10 @@ app.post("/informationEdit", async (req, res) => {
   })
 })
 
-
+app.get("/profile", function (req, res) {
+  loggedInUser = null;
+  res.redirect("/login");
+})
 /**
  	 * Save scouts' username,password, email, phone and other information to the database.
  	 * With the help of loggedInUser, the scout is checked whether it exist in the database or not. 
@@ -1053,13 +1059,13 @@ app.post("/informationEditScout", async (req, res) => {
 
 
 
-
+/*
 let port = process.env.PORT;
 if (port == null || port == "") {
 port = 3000;
 }
 app.listen(port);
-
+*/
 app.listen(3000, function () {
  console.log("server on 3000");
 });
