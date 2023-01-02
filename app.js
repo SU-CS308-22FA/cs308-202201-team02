@@ -130,10 +130,12 @@ const userSchema = new mongoose.Schema({
 
   scoutposition : String,
 
+  /*
   ppname: {
     type: String,
     default:"*",
   },
+  */
 
 });
 
@@ -348,15 +350,17 @@ app.get("/ProfilePage", async (req, res) => {
   const accountName = config.getStorageAccountName();
   try {
     const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.email });
-    const ppblobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.ppname });
+    //const ppblobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.ppname });
     const urls = [];
-    const ppurl= [];
+    //const ppurl= [];
 
+    /*
     for await (let ppblob of ppblobs) {
       const urlpp = `https://${accountName}.blob.core.windows.net/${containerName}/${ppblob.name}`;
       ppurl.push(urlpp)
     }
     lastPp=ppurl[0];
+    */
 
     for await (let blob of blobs) {
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
@@ -369,11 +373,11 @@ app.get("/ProfilePage", async (req, res) => {
         email: loggedInUser?.email,
         message: loggedInUser?.message,
         overall_rate: loggedInUser?.overall_rate,
-        ppname: loggedInUser?.ppname
+        //ppname: loggedInUser?.ppname
       }),
 
       Urls: urls,
-      lastPp: lastPp
+      //lastPp: lastPp
     });
 
   } catch (err) {
@@ -415,7 +419,7 @@ app.get("/homePage", async (req, res) => {
       const email = video.video_name.split('_')[0];
       const user = await User.findOne({ email });
       if (!user) {
-        currentError = "Something went wrong when fetching videos."
+        currentError = "Something went wrong when fetching videos.11"
         res.redirect("/error");
         return;
       }
@@ -613,14 +617,6 @@ app.get("/informationScout", function (req, res) {
   });
 });
 
-
-
-
-/* ****** */
-
-/* ****** */
-
-/* ****** */
 /**
 	 * Save user username, passwords, email and biographydescription to the database.
 	 * If there is alreadey existing user with the entered email then, it will return error.
@@ -893,6 +889,7 @@ app.post("/editProfile",  async (req, res) => {
     console.log(error);
   })
 })
+/*
 app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
   const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   await uploadFile(req, ppname);
@@ -916,7 +913,7 @@ app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
     console.log(error);
   })
 })
-
+*/
 
 app.post("/editProfileScout", function (req, res) {
   const username = req.body.username;
@@ -1057,13 +1054,13 @@ app.post("/informationEditScout", async (req, res) => {
 
 
 
-
+/*
 let port = process.env.PORT;
 if (port == null || port == "") {
 port = 3000;
 }
 app.listen(port);
-
+*/
 app.listen(3000, function () {
  console.log("server on 3000");
 });
