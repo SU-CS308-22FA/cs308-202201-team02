@@ -1,5 +1,6 @@
 <%- include('partials/profileheader') %>
 
+
   <body>
     <div class="navigation">
       <div class="logo">
@@ -18,8 +19,10 @@
 
       <div class="navigation-icons">
         <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+
         <a class="navigation-link" href="/ranking"><i class="fa fa-star"></i></a>
         <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
+
 
         <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
         <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
@@ -35,11 +38,6 @@
 
           <div class="container">
 
-
-
-
-
-
             <br>
             <br>
             <br>
@@ -48,66 +46,72 @@
             <center>
                 <div>
 
-                    <form action="/getmeeting" method="POST" class="form" id="form">
+
                       <center>
                         <h2>Requests</h2>
                       </center>
                       <table>
-
-
                         <tr>
                           <td><label for="reqs">
                                   <br>
                                   <br>
-
                               </label>
                           </td>
                           <br>
                           <ul>
                           <% for(let i = 0; i < reqs.length; i++){ %>
                               <li><%= reqs[i] %></li>
+
+                              <form action="/accept" method="post">
+                                <button type="submit" name ="requester" id="requester" value= <%= reqs[i] %> >Accept</button>
+                              </form>
+                              <form action="/reject" method="post">
+                                <button type="submit" name ="rejected" id="rejected" value= <%= reqs[i] %> >Reject</button>
+                              </form>
                           <% } %>
                           </ul
-
                       </tr>
-                                  </table>
+                      </table>
+
+                                  <center>
+                                    <h2>Accepted requests</h2>
+                                  </center>
+                                  <table>
+
+
+                                    <tr>
+                                      <td><label for="reqs">
+                                              <br>
+                                              <br>
+
+                                          </label>
+                                      </td>
+                                      <br>
+
+                                      <ul>
+                                      <% for(let i = 0; i < accreqs.length; i++){ %>
+                                          <li><%= accreqs[i] %></li>
+                                      <% } %>
+                                      </ul
+
+                                  </tr>
+                                              </table>
+
+
                       <br>
                       <br>
-
-
-                  </form>
-
                 </div>
-
-
-
-
             </center>
-
-
-
-
-
           </div>
-
-
-
-
     </div>
-
   </body>
   <script>
     localStorage.setItem('token', "<%= JSON.stringify(token) %>");
-
     // BURAYI DUZENLE
-
     var user = JSON.parse(`<%-user%>`);
 
     document.getElementById("nameField").innerHTML = user.username;
     document.getElementById("fullName").innerHTML = user.fullName;
-    document.getElementById("reqs").innerHTML = user.reqs;
-
-
-
-
+    //document.getElementById("reqs").innerHTML = user.reqs;
+  //  document.getElementById("accreqs").innerHTML = user.accreqs;
   </script>

@@ -17,12 +17,10 @@
       </div>
 
       <div class="navigation-icons">
-        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="/homePageScout"><i class="fa fa-home"></i></a>
         <a class="navigation-link" href="/ranking"><i class="fa fa-star"></i></a>
-        <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
-
-        <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
-        <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/requestmeeting"><i class="fa fa-envelope"></i></a>     
+        <a class="navigation-link" href="/profilePageScout"><i class="fa fa-user"></i></a>
         <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
 
     </div>
@@ -63,34 +61,48 @@
                         </div>
 
                         </form>
-                        <ul>
-
-                        <% const cars = ["Saab", "Volvo", "BMW"];%>
-                        <% for(let i = 0; i < reqs.length; i++){ %>
-                            <li><%= reqs[i] %></li>
-                        <% } %>
-                        </ul
-
-                      <br>
-                      <br>
-
-
-
 
                 </div>
-
-
-
-
+            </center>
+            <center>
+              <h2>Sent requests</h2>
             </center>
 
+            <ul>
+            <% for(let i = 0; i < reqs.length; i++){ %>
+                <li><%= reqs[i] %></li>
+            <% } %>
+            
+            </ul
 
+          <br>
+          <br>
 
+            <center>
+              <h2>Accepted requests</h2>
+            </center>
+            <table>
+              <tr>
+                <td><label for="reqs">
+                        <br>
+                        <br>
+
+                    </label>
+                </td>
+                <br>
+
+                <ul>
+                <% for(let i = 0; i < accreqs.length; i++){ %>
+                    <li><%= accreqs[i] %></li>
+                <% } %>
+                </ul
+
+            </tr>
+                        </table>
+                        
+            
 
           </div>
-
-
-
 
     </div>
 
@@ -104,6 +116,7 @@
     document.getElementById("nameField").innerHTML = user.username;
     document.getElementById("fullName").innerHTML = user.fullName;
     document.getElementById("reqs").innerHTML = getArray(user.reqs);
+    document.getElementById("accreqs").innerHTML = getArray(user.accreqs);
 
 
 
