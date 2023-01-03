@@ -1,0 +1,287 @@
+<%- include('partials/profileheader') %>
+
+  <body>
+    <div class="navigation">
+      <div class="logo">
+        <input type="image" src="images/logo.jpg" width="110">
+        <a href="#"></a>
+      </div>
+      <div class="navigation-search-container">
+        <i class="fa fa-search"></i>
+
+        <form action="/profilep" method="GET" class="form" id="form">
+          <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
+          <button>Search</button>
+            </form>
+
+      </div>
+
+      <div class="navigation-icons">
+        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="/ranking"><i class="fa fa-star"></i></a>
+        <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
+
+        <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
+        <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
+
+
+
+    </div>
+    </div>
+
+    <div class="profile-page">
+
+      <div class="page-header header-filter" data-parallax="true"></div>
+      <div class="main main-raised">
+        <div class="profile-content">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6 ml-auto mr-auto">
+                <div class="profile">
+                  <div class="avatar">
+                    <img src="https://i.pinimg.com/236x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt="Avatar"
+                      class="avatar">
+                  </div>
+                  <div class="name">
+                    <h3 class="title" id="nameField"> Name </h3>
+                    <h6>Striker</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="description text-center">
+              <p>Football Player. 18 years old. I love football</p>
+
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 ml-auto mr-auto">
+                <div class="profile-tabs">
+                  <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
+                    <li class="nav-item">
+
+                      <div class="navigation-search-container">
+
+
+                        <form action="/profilep" method="GET" class="form" id="form">
+                          <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
+                          <button > Search </button>
+                          <a class="nav-link" data-toggle="tab">
+
+                           <i class="material-icons">videocam</i>
+                            Videos
+                          </a>
+
+                            </form>
+
+                      </div>
+
+
+
+                    </li>
+
+                    <li class="nav-item">
+
+                      <a class="nav-link active" href="#" role="tab" data-toggle="tab">
+                        <i class="material-icons">ballot</i>
+                        Information
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!--
+              <form action="/information" method="post"></form>
+              <div>
+                <br>
+                <br>
+
+                <p align="right">
+                  <input type="button" value="Edit" />
+                </p>
+
+                <table style="width: 10px;"  >
+                  <style>
+                    table, th, td {
+                      border:1px solid black;
+
+                    }
+                    </style>
+                    <br>
+                    <br>
+                    <br>
+
+                  <tr>
+                    <th>Full Name</th>
+                  <tr>
+
+                  </tr>
+                    <th>Height</th>
+                  </tr>
+
+                  </tr>
+                    <th>Weight</th>
+                  </tr>
+
+                  </tr>
+                    <th>Nationality</th>
+                  </tr>
+
+                  </tr>
+                    <th>Foot</th>
+                  </tr>
+
+                  </tr>
+                    <th>Main Position</th>
+                  </tr>
+
+                  </tr>
+                    <th>Pace (m/s)</th>
+                  </tr>
+
+                  <td>
+                    <tr>
+                      <td> <input type="height" name="height" required /> </td>
+                      <td> <input type="weight" name="weight" required /> </td>
+                      <td> <input type="nationality" name="nationality" required /> </td>
+                      <td> <input type="foot" name="foot" required /> </td>
+                      <td> <input type="mainposition" name="mainposition" required /> </td>
+                      <td> <input type="pace" name="pace" required /> </td>
+                    </tr>
+                  </td>
+
+
+                </table>
+
+              </div>
+            -->
+
+            <br>
+            <br>
+            <center>
+              <h2>Information Table</h2>
+            </center>
+
+            <br>
+            <br>
+
+            <center>
+                <div>
+
+                    <form action="/information" method="POST" class="form" id="form">
+                      <table>
+
+                        <tr>
+                          <td><label for="fullName">
+                                  Full Name
+                              </label>
+                          </td>
+                          <td>  <p type="text" id="fullName" ></p></td>
+
+                      </tr>
+                      <tr>
+                          <td><label for="height">
+                                  Height
+                              </label>
+                          </td>
+                          <td>  <p type="text" id="height" ></p></td>
+                      </tr>
+                      <tr>
+                        <td><label for="weight">
+                                Weight
+                            </label>
+                        </td>
+                        <td>  <p type="text" id="weight" ></p></td>
+                    </tr>
+                    <tr>
+                      <td><label for="nationality">
+                              Nationality
+                          </label>
+                      </td>
+                      <td>  <p type="text" id="nationality" ></p></td>
+                  </tr>
+                  <tr>
+                    <td><label for="foot">
+                            Foot
+                        </label>
+                    </td>
+                    <td>  <p type="text" id="foot" ></p></td>
+                </tr>
+                <tr>
+                  <td><label for="main_Position">
+                          Main Position
+                      </label>
+                  </td>
+                  <td>  <p type="text" id="main_Position" ></p></td>
+              </tr>
+                  <tr>
+                    <td><label for="pace">
+                            Pace
+                        </label>
+                    </td>
+                    <td>  <p type="text" id="pace" ></p></td>
+                </tr>
+                    </table>
+                      <br>
+                      <br>
+
+
+                  </form>
+
+                </div>
+
+
+
+
+            </center>
+
+
+
+
+            <div class="tab-content tab-space">
+              <div class="tab-pane active text-center gallery" id="videos">
+                <div class="row">
+                  <div class="col-md-3 ml-auto">
+                    <!--<video width="320" height="240" autoplay muted>
+                                <source src="https://pin.it/2aVDHgF" type="video/mp4">
+                                Your browser does not support the video tag.
+                                </video>-->
+
+                  </div>
+                  <div class="col-md-3 mr-auto"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </body>
+  <script>
+    localStorage.setItem('token', "<%= JSON.stringify(token) %>");
+
+    // BURAYI DUZENLE
+
+    var user = JSON.parse(`<%-user%>`);
+
+    document.getElementById("nameField").innerHTML = user.username;
+    document.getElementById("fullName").innerHTML = user.fullName;
+    document.getElementById("height").innerHTML = user.height;
+    document.getElementById("weight").innerHTML = user.weight;
+    document.getElementById("nationality").innerHTML = user.nationality;
+    document.getElementById("foot").innerHTML = user.foot;
+    document.getElementById("main_Position").innerHTML = user.main_Position;
+    document.getElementById("pace").innerHTML = user.pace;
+
+    document.getElementById("message").innerHTML = user.message;
+
+    document.getElementById("overall_rate").innerHTML = user.overall_rate;
+
+
+  </script>

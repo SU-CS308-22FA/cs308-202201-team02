@@ -8,21 +8,27 @@
       </div>
       <div class="navigation-search-container">
         <i class="fa fa-search"></i>
-        <input class="search-field" type="text" placeholder="Search" />
-        <div class="search-container">
-          <div class="search-container-box">
-            <div class="search-results"></div>
-          </div>
-        </div>
+
+        <form action="/profilep" method="GET" class="form" id="form">
+          <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
+          <button>Search</button>
+            </form>
+
       </div>
 
       <div class="navigation-icons">
+
+        
+        <a class="navigation-link" href="/ranking"><i class="fa fa-star"></i></a>
+       
+
         <a class="navigation-link" href="/homePageScout"><i class="fa fa-home"></i></a>
         <a class="navigation-link" href="/requestmeeting"><i class="fa fa-envelope"></i></a>
         <a class="navigation-link" href="/ProfilePageScout"><i class="fa fa-user"></i></a>
         <br>
         <a class="navigation-link" href="/logout" style="color: white;"><i class="fa fa-sign-out"></i></a>
 
+        
       </div>
     </div>
 
@@ -40,10 +46,10 @@
       </div>
 
       <div class="container">
-      
+
       <div class="container" style="margin: 0 auto;">
         <form action="/editProfileScout" method="POST" class="form" id="form">
-         
+
 
           <div class="form-control">
             <br />
@@ -56,7 +62,7 @@
             </div>
             <small>Error message</small>
           </div>
-    
+
           <div class="form-control">
             <div style="display: flex; flex-direction: row">
               <label for="email" style="width: 130px; margin-top: 10px">Email</label>
@@ -77,6 +83,7 @@
             <small>Error message</small>
           </div>
 
+
         <div class="form-control">
           <div style="display: flex; flex-direction: row">
             <label for="biographydescription" style="width: 130px; margin-top: 10px">Biography</label>
@@ -84,7 +91,7 @@
             <i class="fas fa-check-circle"></i>
             <i class="fas fa-exclamation-circle"></i>
           </div>
-          
+
         </div>
           <button>Save</button>
         </form>
@@ -92,5 +99,5 @@
     </div>
 
     <script src="js/profilePageEdit.js"></script>
-  
+
   </body>

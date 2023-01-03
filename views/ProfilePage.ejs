@@ -16,11 +16,17 @@
 
       </div>
 
+
       <div class="navigation-icons">
 
-       
+
+
 
         <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="/ranking"><i class="fa fa-star"></i></a>
+
+      
+
         <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
 
         <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
@@ -71,7 +77,9 @@
               </div>
             </div>
             <div class="description text-center">
-              <h5 class="message" id="message"> </h5> </h5>
+
+              <h5 class="message" id="message"> </h5>
+
               <p id="message"></p>
               <a href="/editprofile">Edit Profile</a>
             </div>
@@ -123,11 +131,14 @@
   <script>
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
+    document.getElementById("message").innerHTML = user.message;
+
 
     document.getElementById("message").innerHTML = user.message;
    
 
     document.getElementById("overall_rate").innerHTML = user.overall_rate;
+
 
 
 

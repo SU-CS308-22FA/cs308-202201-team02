@@ -8,16 +8,23 @@
       </div>
       <div class="navigation-search-container">
         <i class="fa fa-search"></i>
-        <form action="/ProfilePage" method="GET" class="form" id="form">
+
+        <form action="/profilep" method="GET" class="form" id="form">
           <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
           <button>Search</button>
             </form>
 
       </div>
 
+
       <div class="navigation-icons">
-        <a class="navigation-link" href="#"><i class="fa fa-home"></i></a>
+
+
+
+        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="/ranking"><i class="fa fa-star"></i></a>
         <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
+
         <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
         <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
         <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
@@ -40,7 +47,11 @@
 
                       <div class="row" style="display: block;
                       margin: 0 auto;">
-
+                        <% for(const url of Urls) {%>
+                          <% if(url.startsWith("https://talentland.blob.core.windows.net/videos/P")){%>
+                            <%console.log("a")%>
+                              <img src="<%url%>" type="image/png">
+                        <% }} %>
                       </div>
 
                     </div>
@@ -48,15 +59,22 @@
 
 
                   <div class="name">
-                    <h3 class="title" id="nameField"> Name </h3>
+
+                    <h3 class="title" id="nameField" name= "nameField"> Name </h3>
+
+                    <i class="material-icons">star</i>
+                    <h6 > User Score: </h6>
+                    <h7 id="overall_rate"> </h7>
+                    <br>
+                    <br>
                     <h6>Striker</h6>
                   </div>
                 </div>
               </div>
             </div>
             <div class="description text-center">
-              <p>Football Player. 18 years old. I love football</p>
-              <a href="/editprofile">Edit Profile</a>
+              <h5 class="message" id="message"> </h5>
+              <p id="message"></p>
             </div>
             <div class="row">
               <div class="col-md-6 ml-auto mr-auto">
@@ -69,10 +87,24 @@
                       </a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="/information" role="tab" data-toggle="tab">
-                        <i class="material-icons">ballot</i>
-                        Information
-                      </a>
+
+                      <div class="navigation-search-container">
+
+
+                        <form action="/informationp" method="GET" class="form" id="form">
+                          <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
+                          <button >Search</button>
+                          <a class="nav-link"  data-toggle="tab">
+                            <i class="material-icons">ballot</i>
+                            Information
+                          </a>
+
+                            </form>
+
+                      </div>
+
+
+
                     </li>
                   </ul>
                 </div>
@@ -81,7 +113,15 @@
 
             <div class="tab-content tab-space">
               <div class="tab-pane active text-center gallery" id="videos">
-
+                <% for(const url of Urls) { %>
+                  <div class="row" style="display: block;
+                  margin: 0 auto;">
+                    <video width="400" controls >
+                      <source src="<%= url %>" type="video/mp4">
+                      Your browser does not support HTML video.
+                    </video>
+                  </div>
+                <% } %>
               </div>
             </div>
           </div>
@@ -96,9 +136,9 @@
 
 
   <script>
-  localStorage.setItem('token', "<%= JSON.stringify(token) %>");
-   var user = JSON.parse(`<%-user%>`);
-   document.getElementById("nameField").innerHTML = user.username;
+    var user = JSON.parse(`<%-user%>`);
+    document.getElementById("nameField").innerHTML = user.username;
+    document.getElementById("message").innerHTML = user.message;
 
-
+    document.getElementById("overall_rate").innerHTML = user.overall_rate;
   </script>
