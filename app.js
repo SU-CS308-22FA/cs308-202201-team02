@@ -460,12 +460,12 @@ app.get("/homePageScout", async (req, res) => {
 });
 
 /**
- 	 * Save the like of the video of the user in an async approach after defining
- 	 * With the help of the condition the we checked wheter video ok or not.
- 	 * If not (!) redirected error.
-	 * After return the if the like count equals null or undefined video like count defined as 1 else video like count incereas 1.
-	 * Redirected to homePage after all.
- 	 */
+    * Save the like of the video of the user in an async approach after defining
+    * With the help of the condition the we checked wheter video ok or not.
+    * If not (!) redirected error.
+    * After return the if the like count equals null or undefined video like count defined as 1 else video like count incereas 1.
+    * Redirected to homePage after all.
+    */
 
 app.get("/likeVideo", async function (req, res) {
   const video = await Video.findOne({video_name: req.query.video_name});
@@ -483,13 +483,13 @@ app.get("/likeVideo", async function (req, res) {
 });
 
 /**
- 	 * Save the rate of the user in an async approach after defining.
+    * Save the rate of the user in an async approach after defining.
    * Check whether rate null or undefined.
    * After add rate and rate score for the total rate.
    * Increment rate count by 1 for every click.
    * Calculate overall rate with rate divided by rate count.
-	 * Redirected to homePage after all.
- 	 */
+    * Redirected to homePage after all.
+    */
 
 app.get("/rateVideo", async function (req, res) {
   console.log("---");
@@ -582,10 +582,10 @@ app.get("/informationScout", function (req, res) {
 });
 
 /**
-	 * Save user username, passwords, email and biographydescription to the database.
-	 * If there is alreadey existing user with the entered email then, it will return error.
-	 * Finally, redirect user to login page.
-	 */
+    * Save user username, passwords, email and biographydescription to the database.
+    * If there is alreadey existing user with the entered email then, it will return error.
+    * Finally, redirect user to login page.
+    */
 app.post("/register", async (req, res) => {
   console.log("inside post funct");
   const existingUser = await User.findOne({ email: req.body.email });
@@ -632,9 +632,9 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
 })
 
 /**
-	 * Save scout accounts' name, email, and request message to the databse in scoutrequest colletion.
-	 * Finally, redirect user to login page.
-	 */
+    * Save scout accounts' name, email, and request message to the databse in scoutrequest colletion.
+    * Finally, redirect user to login page.
+    */
 app.post("/scoutSignupRequest", async (req, res) => {
   const name = req.body.sname;
   const email = req.body.semail;
@@ -655,11 +655,11 @@ app.post("/scoutSignupRequest", async (req, res) => {
 })
 
 /**
- 	 * Save  accounts' password, email to database.
- 	 * With the help of loggedInUser the user has checked that exist or not. 
- 	 * The type of the user checked(scout or normal user).
- 	 * After user account type check the scout redirected to ProfilePageScout and normal user redirected to Profilepage.
- 	 */
+    * Save  accounts' password, email to database.
+    * With the help of loggedInUser the user has checked that exist or not. 
+    * The type of the user checked(scout or normal user).
+    * After user account type check the scout redirected to ProfilePageScout and normal user redirected to Profilepage.
+    */
 
 app.post("/login", function (req, res) {
   const email = req.body.email;
@@ -687,19 +687,19 @@ app.post("/login", function (req, res) {
   })
 })
 /**
-	 * Get username of the account that requested meeting.
-	 * Find related user using findone function and send username as a variable.
-	 * Save requested meeting account username to scout account reqs.
-	 * Save scout account username that request meeting to user account reqs.
-	 * Finally, redirect user to login page.
-	 */
+    * Get username of the account that requested meeting.
+    * Find related user using findone function and send username as a variable.
+    * Save requested meeting account username to scout account reqs.
+    * Save scout account username that request meeting to user account reqs.
+    * Finally, redirect user to login page.
+    */
 app.post("/requestmeeting",  async (req, res) => {
   const uid = req.body.username;
   const findResult = await User.findOne({
     username: uid,
   });
 User.findOne({ email: loggedInUser?.email }).then(async function (foundUser){
-	
+   
 findResult.reqs.push(foundUser.username);
 foundUser.reqs.push(findResult.username);
 
@@ -713,12 +713,12 @@ console.log(findResult)
 
 })
 /**
-	 * Get help message of the user to save it to the database.
-	 * Using findone function to find loggedin user.
-	 * Save message to the found user message area in database.
-	 * Give error if there. is a problim in saving.
-	 * Finally, redirect user to the profilepage.
-	 */
+    * Get help message of the user to save it to the database.
+    * Using findone function to find loggedin user.
+    * Save message to the found user message area in database.
+    * Give error if there. is a problim in saving.
+    * Finally, redirect user to the profilepage.
+    */
 app.post("/help",  async (req, res) => {
   const message = req.body.message;
 
@@ -739,12 +739,12 @@ app.post("/help",  async (req, res) => {
 })
 
 /**
-	 * Get username of the account that requested meeting.
-	 * Find related user using findone function and send username as a variable.
-	 * Save requested meeting account username to scout account reqs.
-	 * Save scout account username that request meeting to user account reqs.
-	 * Finally, redirect user to scout profile page.
-	 */
+    * Get username of the account that requested meeting.
+    * Find related user using findone function and send username as a variable.
+    * Save requested meeting account username to scout account reqs.
+    * Save scout account username that request meeting to user account reqs.
+    * Finally, redirect user to scout profile page.
+    */
 
 app.post("/helpScout",  async (req, res) => {
   const message = req.body.message;
@@ -882,11 +882,11 @@ app.get("/deleteUser", function (req, res) {
 });
 
 /**
- 	 * Save accounts' username,password, email, phone and other information to the database.
- 	 * With the help of loggedInUser, the user is checked whether it exist in the database or not. 
- 	 * After the user is found with matching email, the newly entered information varibales is set as the user's information.
- 	 * After the save process, user is redirected to information page.
- 	 */
+    * Save accounts' username,password, email, phone and other information to the database.
+    * With the help of loggedInUser, the user is checked whether it exist in the database or not. 
+    * After the user is found with matching email, the newly entered information varibales is set as the user's information.
+    * After the save process, user is redirected to information page.
+    */
 
 app.post("/informationEdit", async (req, res) => {
   const username = req.body.username;
@@ -934,11 +934,11 @@ app.get("/profile", function (req, res) {
   res.redirect("/login");
 })
 /**
- 	 * Save scouts' username,password, email, phone and other information to the database.
- 	 * With the help of loggedInUser, the scout is checked whether it exist in the database or not. 
- 	 * After the scout is found with matching email, the newly entered information varibales is set as the scout's information.
- 	 * After the save process, scout is redirected to information scout page.
- 	 */
+    * Save scouts' username,password, email, phone and other information to the database.
+    * With the help of loggedInUser, the scout is checked whether it exist in the database or not. 
+    * After the scout is found with matching email, the newly entered information varibales is set as the scout's information.
+    * After the save process, scout is redirected to information scout page.
+    */
 
 app.post("/informationEditScout", async (req, res) => {
 
