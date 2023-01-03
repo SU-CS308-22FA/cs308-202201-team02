@@ -8,7 +8,7 @@ const Joi = require("joi");
 const { ROLE } = require('./middleware/rolelist')
 const uploadFile = require("./services/upload");
 
-const axios = require('axios');
+
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -81,48 +81,6 @@ const userSchema = new mongoose.Schema({
   fullName: String,
   message : String,
 
-
-   biographydescription: {
-    type: String,
-   },
-   requests: [
-     {
-         request: { type: mongoose.Schema.Types.ObjectId, ref: 'request' },
-       post: String,
-       timeInPost: String,
-   }
-    ],
-     reqs:[{
-       type: String,
-     }],
-     accreqs :[{
-       type: String,
-     }],
-     rejreqs:[{
-       type: String,
-     }],
-     rate: {
-     type: Number,
-     default:0,
-    },
-
-    rate_count: {
-     type: Number,
-     default:0,
-    },
-    overall_rate: {
-     type: Number,
-     default:0,
-     $round: [ "$overallrate", 2 ]
-    },
-    age : String,
-
-    club: String,
-
-    scoutposition : String,
-
-    });
-
   biographydescription: {
   type: String,
   },
@@ -162,7 +120,6 @@ const userSchema = new mongoose.Schema({
   scoutposition : String,
 });
 
-
 //Videos schema
 const videosSchema = new mongoose.Schema({
   email: {
@@ -174,12 +131,6 @@ const videosSchema = new mongoose.Schema({
     type: String,
     min: 3,
     required: [true, "Please check your data entry, no name specified"],
-  },
-  like_count: {
-    type: Number,
-    min: 0,
-    default: 0,
-    // required: [true, "Please check your data entry, no name specified"],
   },
 
   like_count: {
@@ -218,126 +169,6 @@ app.get("/login", function (req, res) {
   res.render("login");
 });
 
-app.get('/profilep',async(req,res,next)=>{
-  const searchField = req.query.username;
-  const uid = req.body.username;
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-  const findResult = await User.findOne({
-    username: searchField,
-  });
-  const { BlobServiceClient } = require("@azure/storage-blob");
-  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
-  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
-  const config = require('./config');
-  const accountName = config.getStorageAccountName();
-  const urls = [];
-  try {
-    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: findResult.email });
-    const urls = [];
-
-
-    for await (let blob of blobs) {
-      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
-      urls.push(url);
-    }
-    console.log(findResult);
-      let jwtToken = null;
-
-      jwtToken = jwt.sign({
-        email: findResult.email,
-        username: findResult.username,
-        }, "mohit_pandey_1996", {
-          expiresIn: 300000
-        });
-
-      User.find({username:{$regex: searchField,$options: '$i'}})
-        .then(data=>{
-          res.render("profilep", {
-            token: jwtToken,
-
-         user: JSON.stringify({
-          username: findResult.username,
-          email: findResult.email,
-          bio: findResult.message,
-
-          overall_rate: findResult.overall_rate,
-        }),
-        Urls: urls,
-      //  reqs: data.reqs,
-      })
-    //    res.send(data);
-        console.log(req.query);
-    //  res.render('profilep', { title: 'profile', user: data,  });
-        })
-
-
-
-  } catch (err) {
-    currentError = "User not exist."
-    res.redirect("/error");
-    return;
-  }
-
-})
-
-
-
-app.get('/informationp',async(req,res,next)=>{
-  const searchField = req.query.username;
-  const uid = req.body.username;
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-  const findResult = await User.findOne({
-    username: searchField,
-  });
-
-  try {
-
-    console.log(findResult);
-      let jwtToken = null;
-
-      jwtToken = jwt.sign({
-        email: findResult.email,
-        username: findResult.username,
-        }, "mohit_pandey_1996", {
-          expiresIn: 300000
-        });
-
-      User.find({username:{$regex: searchField,$options: '$i'}})
-        .then(data=>{
-          res.render("informationp", {
-            token: jwtToken,
-
-         user: JSON.stringify({
-          username: findResult.username,
-          email: findResult.email,
-          bio: findResult.message,
-          height : findResult.height,
-          weight : findResult.weight,
-          nationality : findResult.nationality,
-          foot : findResult.foot,
-          main_Position : findResult.main_Position,
-          pace : findResult.pace,
-          fullName: findResult.fullName,
-          overall_rate: findResult.overall_rate,
-        }),
-
-      //  reqs: data.reqs,
-      })
-    //    res.send(data);
-        console.log(req.query);
-    //  res.render('profilep', { title: 'profile', user: data,  });
-        })
-
-
-
-  } catch (err) {
-    currentError = "User not exist."
-    res.redirect("/error");
-    return;
-  }
-
-})
-
 app.get("/logout", function (req, res) {
   loggedInUser = null;
   res.redirect("/login");
@@ -353,7 +184,6 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
-
 
 app.get("/editprofile", function (req, res) {
   if (!loggedInUser) {
@@ -409,37 +239,7 @@ app.get("/UploadVideo", function (req, res) {
     }),
   });
 });
-exports.homeRoutes = (req, res) => {
-    // Make a get request to /api/users
-    axios.get('http://localhost:3000/api/users')
-        .then(function(response){
-            res.render('index', { users : response.data });
-        })
-        .catch(err =>{
-            res.send(err);
-        })
 
-
-}
-app.get("/ranking", (req, res) => {
-
-
-User.find({}, (err, tasks) => {
-
-  for(var i = 0; i < tasks.length; i++) {
-        for(var j=i+1; j < tasks.length; j++) {
-            if(tasks[i].overall_rate < tasks[j].overall_rate) {
-                var temp = tasks[i];
-                tasks[i] = tasks[j];
-                tasks[j] = temp;
-            }
-        }
-    }
-  res.render("ranking.ejs", { User: tasks });
-
-
-  });
-  });
 
 app.get("/getmeeting", function (req, res) {
   console.log(loggedInUser.role)
@@ -497,159 +297,6 @@ app.get("/requestmeeting", function (req, res) {
 });
 
 
-app.get("/homePage", async (req, res) => {
-  const allUrls = [];
-  const filterByLikes = req.query.filterByLikes;
-
-  let databaseVideos = [];
-  if (filterByLikes) {
-    databaseVideos = await Video.find({
-      like_count: { $gt: filterByLikes }
-    });
-  } else {
-    databaseVideos = await Video.find();
-  }
-
-  const { BlobServiceClient } = require("@azure/storage-blob");
-  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
-  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
-  const config = require('./config');
-  const accountName = config.getStorageAccountName();
-
-  try {
-    for await (let video of databaseVideos) {
-      console.log('vid:');
-      console.log(JSON.stringify(video));
-
-      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${video.video_name}`;
-      const email = video.video_name.split('_')[0];
-      const user = await User.findOne({ email });
-      if (!user) {
-        currentError = "Something went wrong when fetching videos."
-        res.redirect("/error");
-        return;
-      }
-      allUrls.push({
-        key: user?.username,
-        value: url,
-        video_name: video.video_name,
-        like_count: video?.like_count ?? 0,
-      });
-    }
-
-    res.render('homePage', {
-      user: JSON.stringify({
-        username: loggedInUser?.username,
-        email: loggedInUser?.email,
-      }),
-      allUrls: allUrls,
-    });
-  } catch (err) {
-    currentError = "Something went wrong when fetching videos in the home page."
-    res.redirect("/error");
-    return;
-  }
-});
-
-app.get("/homePageScout", async (req, res) => {
-  const allUrls = [];
-
-  const { BlobServiceClient } = require("@azure/storage-blob");
-  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
-  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
-  const config = require('./config');
-  const accountName = config.getStorageAccountName();
-
-  try {
-    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat();
-    for await (let blob of blobs) {
-      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
-
-      const email = blob.name.split('_')[0];
-      const user = await User.findOne({ email });
-      if (!user) {
-        currentError = "Something went wrong when fetching videos."
-        res.redirect("/error");
-        return;
-      }
-
-      const video = await Video.findOne({ video_name: blob.name });
-      allUrls.push({
-        key: user?.username,
-        value: url,
-        video_name: blob.name,
-      });
-      console.log(allUrls[0]);
-    }
-
-    res.render('homePageScout', {
-      user: JSON.stringify({
-        username: loggedInUser?.username,
-        email: loggedInUser?.email,
-      }),
-      allUrls: allUrls,
-    });
-  } catch (err) {
-    currentError = "Something went wrong when fetching videos in the home page."
-    res.redirect("/error");
-    return;
-  }
-});
-
-/**
- 	 * Save the like of the video of the user in an async approach after defining
- 	 * With the help of the condition the we checked wheter video ok or not.
- 	 * If not (!) redirected error.
-	 * After return the if the like count equals null or undefined video like count defined as 1 else video like count incereas 1.
-	 * Redirected to homePage after all.
- 	 */
-
-app.get("/likeVideo", async function (req, res) {
-  const video = await Video.findOne({video_name: req.query.video_name});
-  if (!video) {
-    currentError = "Something went wrong when liking video in the home page."
-    res.redirect("/error");
-    return;
-  }
-
-  video.like_count = (video.like_count === null || video.like_count === undefined) ? 1 : video.like_count + 1;
-  await video.save();
-
-  res.redirect("/homePage");
-  return;
-});
-
-/**
- 	 * Save the rate of the user in an async approach after defining.
-   * Check whether rate null or undefined.
-   * After add rate and rate score for the total rate.
-   * Increment rate count by 1 for every click.
-   * Calculate overall rate with rate divided by rate count.
-	 * Redirected to homePage after all.
- 	 */
-
-app.get("/rateVideo", async function (req, res) {
-  console.log("---");
-
-  const user = await User.findOne({username: req.query.username});
-  if (!user) {
-    currentError = "Something went wrong when rating video in the home page."
-    res.redirect("/error");
-    return;
-  }
-
-  user.rate = (user.rate === null || user.rate === undefined) ? 0 : Number(user.rate) + Number(req.query.rate_score);
-  user.rate_count = (user.rate_count === null || user.rate_count === undefined) ? 0 : Number(user.rate_count) + 1;
-
-  user.overall_rate= (user.rate === null || user.rate === undefined) ? 0 : Number(user.rate)/ Number(user.rate_count);
-
-  await user.save();
-
-  res.redirect("/homePageScout");
-  return;
-});
-
-
 app.get("/ProfilePageScout", function (req, res) {
 
   let jwtToken = null;
@@ -678,9 +325,6 @@ app.get("/ProfilePage", async (req, res) => {
   const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
   const config = require('./config');
   const accountName = config.getStorageAccountName();
-
-  const urls = [];
-
   try {
     const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.email });
     const urls = [];
@@ -694,15 +338,8 @@ app.get("/ProfilePage", async (req, res) => {
       user: JSON.stringify({
         username: loggedInUser?.username,
         email: loggedInUser?.email,
-
-        bio: loggedInUser?.message,
-
-        overall_rate: loggedInUser?.overall_rate,
-
-
         message: loggedInUser?.message,
         overall_rate: loggedInUser?.overall_rate,
-
       }),
 
       Urls: urls,
@@ -776,6 +413,85 @@ app.get("/homePage", async (req, res) => {
     return;
   }
 });
+
+app.get("/ranking", (req, res) => {
+
+
+User.find({}, (err, tasks) => {
+
+  for(var i = 0; i < tasks.length; i++) {
+        for(var j=i+1; j < tasks.length; j++) {
+            if(tasks[i].overall_rate < tasks[j].overall_rate) {
+                var temp = tasks[i];
+                tasks[i] = tasks[j];
+                tasks[j] = temp;
+            }
+        }
+    }
+  res.render("ranking.ejs", { User: tasks });
+
+  });
+  });
+app.get('/informationp',async(req,res,next)=>{
+  const searchField = req.query.username;
+  const uid = req.body.username;
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  const findResult = await User.findOne({
+    username: searchField,
+  });
+
+  try {
+
+    console.log(findResult);
+      let jwtToken = null;
+
+      jwtToken = jwt.sign({
+        email: findResult.email,
+        username: findResult.username,
+        }, "mohit_pandey_1996", {
+          expiresIn: 300000
+        });
+
+      User.find({username:{$regex: searchField,$options: '$i'}})
+        .then(data=>{
+          res.render("informationp", {
+            token: jwtToken,
+
+         user: JSON.stringify({
+          username: findResult.username,
+          email: findResult.email,
+          bio: findResult.message,
+          height : findResult.height,
+          weight : findResult.weight,
+          nationality : findResult.nationality,
+          foot : findResult.foot,
+          main_Position : findResult.main_Position,
+          pace : findResult.pace,
+          fullName: findResult.fullName,
+          overall_rate: findResult.overall_rate,
+          age: findResult.age,
+          club: findResult.club,
+          scoutposition: findResult.scoutposition,
+          biographydescription: findResult.biographydescription,
+        }),
+
+      //  reqs: data.reqs,
+      })
+      console.log(findResult.scoutposition);
+    //    res.send(data);
+        console.log(req.query);
+    //  res.render('profilep', { title: 'profile', user: data,  });
+        })
+
+
+
+  } catch (err) {
+    currentError = "User not exist."
+    res.redirect("/error");
+    return;
+  }
+
+})
 app.get("/homePageScout", async (req, res) => {
   const allUrls = [];
 
@@ -944,13 +660,11 @@ app.get("/informationScout", function (req, res) {
   });
 });
 
-
 /**
     * Save user username, passwords, email and biographydescription to the database.
     * If there is alreadey existing user with the entered email then, it will return error.
     * Finally, redirect user to login page.
     */
-
 app.post("/register", async (req, res) => {
   console.log("inside post funct");
   const existingUser = await User.findOne({ email: req.body.email });
@@ -1074,16 +788,9 @@ await foundUser.save();
 
 console.log(findResult)
 
-  res.redirect("/ProfilePageScout");
+  res.redirect("/profilePageScout");
 
 })
-
-
-
-
-
-
-
 /**
     * Get help message of the user to save it to the database.
     * Using findone function to find loggedin user.
@@ -1091,7 +798,6 @@ console.log(findResult)
     * Give error if there. is a problim in saving.
     * Finally, redirect user to the profilepage.
     */
-
 app.post("/help",  async (req, res) => {
   const message = req.body.message;
 
@@ -1351,6 +1057,6 @@ port = 3000;
 }
 app.listen(port);
 
-//app.listen(3000, function () {
- //console.log("server on 3000");
-//});
+app.listen(3000, function () {
+ console.log("server on 3000");
+});
