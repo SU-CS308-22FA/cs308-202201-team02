@@ -1,4 +1,3 @@
-//require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -73,32 +72,24 @@ const userSchema = new mongoose.Schema({
     enum: ["basic", "scout"]
   },
   height :  String,
-
   message : String,
-
   weight : String,
-
   nationality : String,
-
   foot : String,
-
   main_Position : String,
-
   pace : String,
-
   fullName: String,
-
   message : String,
 
-   biographydescription: {
-    type: String,
-   },
-   requests: [
-     {
-         request: { type: mongoose.Schema.Types.ObjectId, ref: 'request' },
-       post: String,
-       timeInPost: String,
-   }
+  biographydescription: {
+  type: String,
+  },
+  requests: [
+    {
+        request: { type: mongoose.Schema.Types.ObjectId, ref: 'request' },
+      post: String,
+      timeInPost: String,
+  }
 ],
  reqs:[{
    type: String,
@@ -125,18 +116,8 @@ const userSchema = new mongoose.Schema({
     $round: [ "$overallrate", 2 ] 
   },
   age : String,
-
   club: String,
-
   scoutposition : String,
-
-  /*
-  ppname: {
-    type: String,
-    default:"*",
-  },
-  */
-
 });
 
 //Videos schema
@@ -144,7 +125,6 @@ const videosSchema = new mongoose.Schema({
   email: {
     type: String,
     min: 3,
-    //required: [true, "Please check your data entry, no email specified"],
   },
 
   video_name: {
@@ -157,7 +137,6 @@ const videosSchema = new mongoose.Schema({
     type: Number,
     min: 0,
     default: 0,
-    // required: [true, "Please check your data entry, no name specified"],
   },
 
   section_info: {
@@ -288,11 +267,8 @@ app.get("/getmeeting", function (req, res) {
       reqs: loggedInUser.reqs,
       accreqs: loggedInUser.accreqs,
   });
-  console.log(loggedInUser.reqs);
 });
 app.get("/requestmeeting", function (req, res) {
-  console.log(loggedInUser.role)
-
   let jwtToken = null;
   if (loggedInUser.role !== ROLE.BASIC) {
     jwtToken = jwt.sign({
@@ -318,13 +294,10 @@ app.get("/requestmeeting", function (req, res) {
     accreqs: loggedInUser.accreqs,
     
   });
-  console.log(loggedInUser.reqs);
 });
 
 
 app.get("/ProfilePageScout", function (req, res) {
-  console.log(loggedInUser.role)
-
 
   let jwtToken = null;
   if (loggedInUser.role !== ROLE.BASIC) {
@@ -354,17 +327,7 @@ app.get("/ProfilePage", async (req, res) => {
   const accountName = config.getStorageAccountName();
   try {
     const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.email });
-    //const ppblobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.ppname });
     const urls = [];
-    //const ppurl= [];
-
-    /*
-    for await (let ppblob of ppblobs) {
-      const urlpp = `https://${accountName}.blob.core.windows.net/${containerName}/${ppblob.name}`;
-      ppurl.push(urlpp)
-    }
-    lastPp=ppurl[0];
-    */
 
     for await (let blob of blobs) {
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
@@ -377,11 +340,9 @@ app.get("/ProfilePage", async (req, res) => {
         email: loggedInUser?.email,
         message: loggedInUser?.message,
         overall_rate: loggedInUser?.overall_rate,
-        //ppname: loggedInUser?.ppname
       }),
 
       Urls: urls,
-      //lastPp: lastPp
     });
 
   } catch (err) {
@@ -557,7 +518,6 @@ app.get("/informationEdit", function (req, res) {
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
-
     })
   });
 });
@@ -566,7 +526,6 @@ app.get("/informationEditScout", function (req, res) {
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
-
     })
   });
 });
@@ -664,7 +623,6 @@ app.post("/uploadVideo", uploadStrategy, async (req, res) => {
     video_name: name,
     section_info: req.body.sections,
     video_title: req.body.video_title
-    //created_at: req.body.created_at,
   });
   console.log(req.body.sections);
 
@@ -689,8 +647,6 @@ app.post("/scoutSignupRequest", async (req, res) => {
     username: name,
     email: email,
     smessage: message,
-
-    //created_at: req.body.created_at,
   });
 
   await newReq.save();
@@ -739,12 +695,9 @@ app.post("/login", function (req, res) {
 	 */
 app.post("/requestmeeting",  async (req, res) => {
   const uid = req.body.username;
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   const findResult = await User.findOne({
     username: uid,
-
   });
-  console.log(findResult);
 User.findOne({ email: loggedInUser?.email }).then(async function (foundUser){
 	
 findResult.reqs.push(foundUser.username);
@@ -767,13 +720,9 @@ console.log(findResult)
 	 * Finally, redirect user to the profilepage.
 	 */
 app.post("/help",  async (req, res) => {
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-
   const message = req.body.message;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
-    console.log("ff");
-    console.log(foundUser);
     foundUser.message = message;
 // bak
 
@@ -814,22 +763,17 @@ app.post("/helpScout",  async (req, res) => {
 })
 
 app.post("/accept",  async (req, res) => {
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   const requester = req.body.requester;
   console.log(requester);
   const findResult = await User.findOne({
     username: requester,
   });
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
-  //console.log("ff");
-
-
     foundUser.accreqs.push(requester);
     findResult.accreqs.push(foundUser.username);
 
     foundUser.reqs.splice(requester);
     findResult.reqs.splice(foundUser.username);
-
 
      await foundUser.save();
      await findResult.save();
@@ -843,14 +787,12 @@ app.post("/accept",  async (req, res) => {
   })
 })
 app.post("/reject",  async (req, res) => {
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   const rejected = req.body.rejected;
   console.log(rejected);
   const findResult = await User.findOne({
     username: rejected,
   });
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
-  //console.log("ff");
     console.log(foundUser);
     foundUser.rejreqs.push(rejected);
     findResult.rejreqs.push(foundUser.username);
@@ -886,7 +828,6 @@ app.post("/editProfile",  async (req, res) => {
 
     console.log("trying to update password");
     await foundUser.save();
-
 
     loggedInUser = foundUser;
     res.redirect("/ProfilePage");
@@ -1015,9 +956,6 @@ app.post("/informationEditScout", async (req, res) => {
     foundUser.age = age;
     foundUser.scoutposition = scoutposition;
     foundUser.club = club;
-    
-
-    console.log("trying to update password");
     await foundUser.save();
 
     loggedInUser = foundUser;
@@ -1031,15 +969,12 @@ app.post("/informationEditScout", async (req, res) => {
 //name ve password name olarak görünüyor
 
 
-
-
-/*
 let port = process.env.PORT;
 if (port == null || port == "") {
 port = 3000;
 }
 app.listen(port);
-*/
+
 app.listen(3000, function () {
  console.log("server on 3000");
 });
