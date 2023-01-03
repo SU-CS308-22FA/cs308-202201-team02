@@ -17,9 +17,9 @@
       </div>
 
       <div class="navigation-icons">
-        <a class="navigation-link" href="#"><i class="fa fa-home"></i></a>
-        <a class="navigation-link" href="#"><i class="fa fa-envelope"></i></a>
-        <a class="navigation-link" href="#"><i class="fa fa-video-camera"></i></a>
+        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
         <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
         <br>
         <a class="navigation-link" href="/logout" style="color: white;"><i class="fa fa-sign-out"></i></a>
@@ -36,25 +36,18 @@
           <li><a href="/help">Help</a></li>
           <br />
           <hr />
+          <!--/**
+ 	        * On click delete button user acoount will be deleted
+ 	        */-->
           <li><a href="#" onclick="javascript:deleteUser()">Delete Account</a></li>
         </ul>
       </div>
 
       <div class="container">
 
-        <div class="container" style="margin: 0 auto;">
-          <form action="/uploadPhoto" method="POST" class="form" name="form" enctype="multipart/form-data" style="margin: 0 auto;">
-            <div >
-              <br>
-              <label for="video_input">Select a photo to upload: </label>
-              <input id="file-picker" type="file" name="video_input">
-            </div>
-            <button type="submit">Upload</button>
-          </form>
-        </div>
-
         <form action="/editProfile" method="POST" class="form" id="form">
 
+          
           <div class="form-control">
             <br />
             <div style="display: flex; flex-direction: row">
@@ -94,7 +87,7 @@
             >
             <input
               type="text" placeholder="eg. 05xx xxx xx xx"
-              name="phone" pattern="05\d\d\s\d\d\d\s\d\d\s\d\d" required
+              name="phone" required
             />
             <i class="fas fa-check-circle"></i>
             <i class="fas fa-exclamation-circle"></i>
@@ -102,6 +95,19 @@
           <small>Error message</small>
         </div>
 
+          <div  class="form-control" >
+            <div style="display: flex; flex-direction: row">
+              <label for="messageedit" style="width: 130px; margin-top: 10px"
+                > message </label 
+                >
+              <input
+                type="text" placeholder="I love football" 
+                name="message" required
+              />
+      
+            </div>
+            
+          </div>
 
           <button>Save</button>
         </form>
