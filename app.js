@@ -169,6 +169,49 @@ app.get("/login", function (req, res) {
   res.render("login");
 });
 
+
+app.get('/profilep',async(req,res,next)=>{
+  const searchField = req.query.username;
+  const uid = req.body.username;
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  const findResult = await User.findOne({
+    username: searchField,
+
+  });
+console.log(findResult);
+  let jwtToken = null;
+
+  jwtToken = jwt.sign({
+    email: findResult.email,
+    username: findResult.username,
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+
+  User.find({username:{$regex: searchField,$options: '$i'}})
+    .then(data=>{
+      res.render("profilep", {
+        token: jwtToken,
+
+     user: JSON.stringify({
+      username: findResult.username,
+      email: findResult.email,
+      reqs: findResult.reqs,
+      accreqs: findResult.accreqs,
+
+    }),
+  //  reqs: data.reqs,
+
+
+
+  })
+//    res.send(data);
+    console.log(req.query);
+//  res.render('profilep', { title: 'profile', user: data,  });
+    })
+
+})
+
 app.get("/logout", function (req, res) {
   loggedInUser = null;
   res.redirect("/login");
@@ -184,6 +227,7 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
+
 
 app.get("/editprofile", function (req, res) {
   if (!loggedInUser) {
@@ -709,9 +753,16 @@ await foundUser.save();
 
 console.log(findResult)
 
-  res.redirect("/profilePageScout");
+  res.redirect("/ProfilePageScout");
 
 })
+
+
+
+
+
+
+
 /**
     * Get help message of the user to save it to the database.
     * Using findone function to find loggedin user.
@@ -719,6 +770,7 @@ console.log(findResult)
     * Give error if there. is a problim in saving.
     * Finally, redirect user to the profilepage.
     */
+
 app.post("/help",  async (req, res) => {
   const message = req.body.message;
 
