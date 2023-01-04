@@ -665,7 +665,7 @@ app.get("/informationScout", function (req, res) {
     * If there is alreadey existing user with the entered email then, it will return error.
     * Finally, redirect user to login page.
     */
-app.post("/", async (req, res) => {
+app.post("/register", async (req, res) => {
   console.log("inside post funct");
   const existingUser = await User.findOne({ email: req.body.email });
   if (existingUser) {
