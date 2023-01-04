@@ -157,7 +157,7 @@ const videosSchema = new mongoose.Schema({
     type:String,
   }
 })
-
+//
 const scoutReq = new mongoose.Schema({
   username: String,
   email: String,
