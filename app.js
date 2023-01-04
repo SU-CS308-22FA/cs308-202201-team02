@@ -157,6 +157,9 @@ const videosSchema = new mongoose.Schema({
     default: 0,
     // required: [true, "Please check your data entry, no name specified"],
   },
+  comment: [{
+    type: String,
+  }],
 
 })
 
