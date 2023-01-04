@@ -47,10 +47,10 @@
 
                       <div class="row" style="display: block;
                       margin: 0 auto;">
-                        <% for(const url of Urls) {%>
-                          <% if(url.startsWith("https://talentland.blob.core.windows.net/videos/P")){%>
+                        <% for(const blob of data) {%>
+                          <% if(blob.url.startsWith("https://talentland.blob.core.windows.net/videos/P")){%>
                             <%console.log("a")%>
-                              <img src="<%url%>" type="image/png">
+                              <img src="<%blob.url%>" type="image/png">
                         <% }} %>
                       </div>
 
@@ -98,11 +98,24 @@
 
             <div class="tab-content tab-space">
               <div class="tab-pane active text-center gallery" id="videos">
-                <% for(const url of Urls) { %>
+                <% for(const blob of data) { %>
                   <div class="row" style="display: block;
                   margin: 0 auto;">
+                  
+                  <div class="pageContainer">
+                    <div class="content">
+                      <ul>
+                           
+                        <form method="POST"action="/deleteVideo">
+                          <div style="display: none;"><input type="hidden" name="video_name" id="video_name" value="<%= blob.name %>"><input/></div>
+                          
+                          <button type="submit">Delete Video</button>
+                        </form>
+                      </ul>
+                    </div>
+                  
                     <video width="400" controls >
-                      <source src="<%= url %>" type="video/mp4">
+                      <source src="<%= blob.url %>" type="video/mp4">
                       Your browser does not support HTML video.
                     </video>
                   </div>
