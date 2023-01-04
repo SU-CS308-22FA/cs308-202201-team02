@@ -1,0 +1,77 @@
+.homePageContent {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 30px;
+  padding-bottom: 50px;
+}
+
+.videoContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  box-shadow: 0 16px 24px 2px #245b16, 0 6px 30px 5px #245b16, 0 8px 10px -5px #245b16;
+}
+
+.videoInfoContainer {
+  width: 300px;
+}
+
+.videoLikeContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+
+.star_rating{
+  user-select: none;
+}
+.star{
+  font-size: 3rem;
+  color: #0c0c0b;
+  background-color: unset;
+  border: none;
+}
+.star:hover{
+  cursor:pointer;
+}
+
+select {
+  -webkit-appearance: auto !important;
+}
+
+.i {
+  justify-content: center;
+  padding: 5px;
+
+  margin-left: 30px;
+  color: #fdfdfd;
+  text-decoration: none;
+  font-size: 22px;
+}
+
+.filterActionsContainer {
+  display: flex;
+  flex-direction: row-reverse;
+  padding-right: 10px;
+}
+
+.filterActions {
+  display: flex;
+  flex-direction: column;
+}
+
+.filterButton {
+  background-color: #245b16;
+	border: 2px solid #245b16;
+	border-radius: 4px;
+	color: #fff;
+	display: block;
+	font-family: inherit;
+	font-size: 16px;
+	padding: 10px;
+	margin-top: 20px;
+}
+

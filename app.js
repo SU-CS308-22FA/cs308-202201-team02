@@ -1,4 +1,3 @@
-//require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -8,13 +7,14 @@ const { check, validationResult } = require("express-validator");
 const Joi = require("joi");
 const { ROLE } = require('./middleware/rolelist')
 const uploadFile = require("./services/upload");
-const axios = require('axios');
+
+
+
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
 var jwt = require('jsonwebtoken');
-
 
 const app = express();
 
@@ -38,16 +38,12 @@ mongoose.connect("mongodb+srv://bengisutepe:EFqoy3lDdvVodrPE@cluster0.emaofpz.mo
   .catch((err) => {
     console.error(`Error connecting to the database. n${err}`);
   })
-
-
 //SCHEMAS
 
 const requestsSchema = new mongoose.Schema({
    name: String,
    status: String,
-
   });
-
 const request = mongoose.model("request", requestsSchema);
 //User schema
 const userSchema = new mongoose.Schema({
@@ -76,20 +72,13 @@ const userSchema = new mongoose.Schema({
     enum: ["basic", "scout"]
   },
   height :  String,
-
-
+  message : String,
   weight : String,
-
   nationality : String,
-
   foot : String,
-
   main_Position : String,
-
   pace : String,
-
   fullName: String,
-
   message : String,
 
    biographydescription: {
@@ -143,7 +132,6 @@ const videosSchema = new mongoose.Schema({
   email: {
     type: String,
     min: 3,
-    //required: [true, "Please check your data entry, no email specified"],
   },
 
   video_name: {
@@ -151,20 +139,25 @@ const videosSchema = new mongoose.Schema({
     min: 3,
     required: [true, "Please check your data entry, no name specified"],
   },
+
   like_count: {
     type: Number,
     min: 0,
     default: 0,
-    // required: [true, "Please check your data entry, no name specified"],
   },
   comment: [{
     type: String,
   }],
 
+  section_info: {
+    type:String,
+  },
+
+  video_title:{
+    type:String,
+  }
 })
 
-//const secret = "Thisisourlittlesecret.";
-//userSchema.plugin(encrypt, {secret: secret},['password'] );
 const scoutReq = new mongoose.Schema({
   username: String,
   email: String,
@@ -173,10 +166,7 @@ const scoutReq = new mongoose.Schema({
 });
 const User = new mongoose.model("User", userSchema);
 const Video = new mongoose.model("Video", videosSchema);
-
-
 const Scout = new mongoose.model("scoutReq",scoutReq );
-
 
 
 var loggedInUser = null;
@@ -189,6 +179,7 @@ app.get("/", function (req, res) {
 app.get("/login", function (req, res) {
   res.render("login");
 });
+
 /*app.get('/profilep',async(req,res,next)=>{
   const searchField = req.query.username;
   const uid = req.body.username;
@@ -293,7 +284,7 @@ app.get('/profilep',async(req,res,next)=>{
           Urls: urls,
         });
     
-      } catch (err) {
+      catch (err) {
         currentError = "Something went wrong when fetching videos."
         res.redirect("/error");
         return;
@@ -301,7 +292,21 @@ app.get('/profilep',async(req,res,next)=>{
 
 })
 
+app.get("/logout", function (req, res) {
+  loggedInUser = null;
+  res.redirect("/login");
+})
 
+app.get("/deleteUser", function (req, res) {
+  User.deleteOne({ email: loggedInUser?.email }).then(function () {
+    console.log("User deleted");
+    loggedInUser = null;
+    res.redirect("/login");
+
+  }).catch(function (error) {
+    console.log(error); // Failure
+  });
+});
 
 app.get('/informationp',async(req,res,next)=>{
   const searchField = req.query.username;
@@ -388,7 +393,12 @@ app.get("/informationScout", function (req, res) {
   });
 });
 
+
 app.get("/editprofile", function (req, res) {
+  if (!loggedInUser) {
+    res.redirect('/login');
+    return;
+  }
   res.render("editprofile", {
     user: JSON.stringify({
       username: loggedInUser?.username,
@@ -421,17 +431,14 @@ app.get("/helpScout", function (req, res) {
     })
   });
 });
-
 app.get("/scoutSignupRequest", function (req, res) {
   res.render("scoutSignupRequest");
 });
-
 app.get("/error", function (req, res) {
   res.render("error", {
     error: currentError
   });
 });
-
 app.get("/UploadVideo", function (req, res) {
   res.render("UploadVideo", {
     user: JSON.stringify({
@@ -440,18 +447,7 @@ app.get("/UploadVideo", function (req, res) {
     }),
   });
 });
-exports.homeRoutes = (req, res) => {
-    // Make a get request to /api/users
-    axios.get('http://localhost:3000/api/users')
-        .then(function(response){
-            res.render('index', { users : response.data });
-        })
-        .catch(err =>{
-            res.send(err);
-        })
 
-
-}
 app.get("/ranking", (req, res) => {
 
 
@@ -492,6 +488,7 @@ app.get("/savedpage", (req, res) => {
       favorites: loggedInUser.favorites,
   });
 });
+
 app.get("/getmeeting", function (req, res) {
   console.log(loggedInUser.role)
 
@@ -513,20 +510,19 @@ app.get("/getmeeting", function (req, res) {
       username: loggedInUser?.username,
       email: loggedInUser?.email,
       reqs: loggedInUser?.reqs,
+      accreqs: loggedInUser?.accreqs,
     }),
       reqs: loggedInUser.reqs,
+      accreqs: loggedInUser.accreqs,
   });
-  console.log(loggedInUser.reqs);
 });
 app.get("/requestmeeting", function (req, res) {
-  console.log(loggedInUser.role)
-
-
   let jwtToken = null;
 
     jwtToken = jwt.sign({
       email: loggedInUser.email,
-      username: loggedInUser.username
+      username: loggedInUser.username,
+
     }, "mohit_pandey_1996", {
       expiresIn: 300000
     });
@@ -539,26 +535,90 @@ app.get("/requestmeeting", function (req, res) {
       username: loggedInUser?.username,
       email: loggedInUser?.email,
       reqs: loggedInUser?.reqs,
+      accreqs: loggedInUser?.accreqs,
+
     }),
     reqs: loggedInUser.reqs,
-
+    accreqs: loggedInUser.accreqs,
 
   });
-  console.log(loggedInUser.reqs);
+});
+
+
+app.get("/ProfilePageScout", function (req, res) {
+
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
+
+  res.render("ProfilePageScout", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      biographydescription: loggedInUser?.biographydescription,
+    })
+  });
+});
+
+app.get("/ProfilePage", async (req, res) => {
+  const { BlobServiceClient, logger } = require("@azure/storage-blob");
+  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
+  const config = require('./config');
+  const accountName = config.getStorageAccountName();
+  try {
+    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: loggedInUser?.email });
+    const urls = [];
+
+    for await (let blob of blobs) {
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
+      urls.push(url);
+    }
+
+    res.render('ProfilePage', {
+      user: JSON.stringify({
+        username: loggedInUser?.username,
+        email: loggedInUser?.email,
+        message: loggedInUser?.message,
+        overall_rate: loggedInUser?.overall_rate,
+      }),
+
+      Urls: urls,
+    });
+
+  } catch (err) {
+    currentError = "Something went wrong when fetching videos."
+    res.redirect("/error");
+    return;
+  }
 });
 
 app.get("/homePage", async (req, res) => {
   const allUrls = [];
-  const filterByLikes = req.query.filterByLikes;
+  const filterByLikes = req.query.filterByLikes ?? "";
+  const filterByType = req.query.filterByType ?? "";
 
-  let databaseVideos = [];
+  let filterObj = {};
   if (filterByLikes) {
-    databaseVideos = await Video.find({
-      like_count: { $gt: filterByLikes }
-    });
-  } else {
-    databaseVideos = await Video.find();
+    filterObj = {
+      ...filterObj, like_count: { $gt: filterByLikes }
+    };
   }
+
+  if (filterByType) {
+    filterObj = {
+      ...filterObj, section_info: filterByType
+    };
+  }
+
+  let databaseVideos = await Video.find(filterObj);
 
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
@@ -568,14 +628,11 @@ app.get("/homePage", async (req, res) => {
 
   try {
     for await (let video of databaseVideos) {
-      console.log('vid:');
-      console.log(JSON.stringify(video));
-
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${video.video_name}`;
       const email = video.video_name.split('_')[0];
       const user = await User.findOne({ email });
       if (!user) {
-        currentError = "Something went wrong when fetching videos."
+        currentError = "Something went wrong when fetching videos.11"
         res.redirect("/error");
         return;
       }
@@ -584,6 +641,8 @@ app.get("/homePage", async (req, res) => {
         value: url,
         video_name: video.video_name,
         like_count: video?.like_count ?? 0,
+        section_info: (video?.section_info ?? "Other").replaceAll("_", " "),
+        video_title: video?.video_title ?? "Template Title",
       });
     }
 
@@ -593,6 +652,8 @@ app.get("/homePage", async (req, res) => {
         email: loggedInUser?.email,
       }),
       allUrls: allUrls,
+      filterByLikes,
+      filterByType
     });
   } catch (err) {
     currentError = "Something went wrong when fetching videos in the home page."
@@ -600,6 +661,25 @@ app.get("/homePage", async (req, res) => {
     return;
   }
 });
+
+app.get("/ranking", (req, res) => {
+
+
+User.find({}, (err, tasks) => {
+
+  for(var i = 0; i < tasks.length; i++) {
+        for(var j=i+1; j < tasks.length; j++) {
+            if(tasks[i].overall_rate < tasks[j].overall_rate) {
+                var temp = tasks[i];
+                tasks[i] = tasks[j];
+                tasks[j] = temp;
+            }
+        }
+    }
+  res.render("ranking.ejs", { User: tasks });
+
+  });
+  });
 
 app.get("/homePageScout", async (req, res) => {
   const allUrls = [];
@@ -628,8 +708,9 @@ app.get("/homePageScout", async (req, res) => {
         key: user?.username,
         value: url,
         video_name: blob.name,
+        like_count: video?.like_count ?? 0,
+        section_info: (video?.section_info ?? "other").replaceAll("_", " "),
       });
-      console.log(allUrls[0]);
     }
 
     res.render('homePageScout', {
@@ -647,12 +728,12 @@ app.get("/homePageScout", async (req, res) => {
 });
 
 /**
- 	 * Save the like of the video of the user in an async approach after defining
- 	 * With the help of the condition the we checked wheter video ok or not.
- 	 * If not (!) redirected error.
-	 * After return the if the like count equals null or undefined video like count defined as 1 else video like count incereas 1.
-	 * Redirected to homePage after all.
- 	 */
+    * Save the like of the video of the user in an async approach after defining
+    * With the help of the condition the we checked wheter video ok or not.
+    * If not (!) redirected error.
+    * After return the if the like count equals null or undefined video like count defined as 1 else video like count incereas 1.
+    * Redirected to homePage after all.
+    */
 
 app.get("/likeVideo", async function (req, res) {
   const video = await Video.findOne({video_name: req.query.video_name});
@@ -670,13 +751,13 @@ app.get("/likeVideo", async function (req, res) {
 });
 
 /**
- 	 * Save the rate of the user in an async approach after defining.
+    * Save the rate of the user in an async approach after defining.
    * Check whether rate null or undefined.
    * After add rate and rate score for the total rate.
    * Increment rate count by 1 for every click.
    * Calculate overall rate with rate divided by rate count.
-	 * Redirected to homePage after all.
- 	 */
+    * Redirected to homePage after all.
+    */
 
 app.get("/rateVideo", async function (req, res) {
   console.log("---");
@@ -700,31 +781,14 @@ app.get("/rateVideo", async function (req, res) {
 });
 
 
-app.get("/ProfilePageScout", function (req, res) {
-  console.log(loggedInUser.role)
-
-
-  let jwtToken = null;
-  if (loggedInUser.role !== ROLE.BASIC) {
-    jwtToken = jwt.sign({
-      email: loggedInUser.email,
-      username: loggedInUser.username
-    }, "mohit_pandey_1996", {
-      expiresIn: 300000
-    });
-  }
-
-  res.render("ProfilePageScout", {
-    token: jwtToken,
+app.get("/informationEdit", function (req, res) {
+  res.render("informationEdit", {
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
-      biographydescription: loggedInUser?.biographydescription,
     })
   });
 });
-
-
 
 app.get("/ProfilePage", async (req, res) => {
   const { BlobServiceClient } = require("@azure/storage-blob");
@@ -762,13 +826,11 @@ app.get("/ProfilePage", async (req, res) => {
   }
 });
 
-
-app.get("/informationEdit", function (req, res) {
-  res.render("informationEdit", {
+app.get("/informationEditScout", function (req, res) {
+  res.render("informationEditScout", {
     user: JSON.stringify({
       username: loggedInUser?.username,
       email: loggedInUser?.email,
-
     })
   });
 });
@@ -799,11 +861,36 @@ app.get("/information", function (req, res) {
     })
   });
 });
+app.get("/informationScout", function (req, res) {
+  console.log(loggedInUser.role)
+  let jwtToken = null;
+  if (loggedInUser.role !== ROLE.BASIC) {
+    jwtToken = jwt.sign({
+      email: loggedInUser.email,
+      username: loggedInUser.username
+    }, "mohit_pandey_1996", {
+      expiresIn: 300000
+    });
+  }
 
+  res.render("informationScout", {
+    token: jwtToken,
+    user: JSON.stringify({
+      username: loggedInUser?.username,
+      email: loggedInUser?.email,
+      age: loggedInUser?.age,
+      scoutposition: loggedInUser?.scoutposition,
+      club: loggedInUser?.club,
+      biographydescription: loggedInUser?.biographydescription,
+    })
+  });
+});
 
-
-
-//POST
+/**
+    * Save user username, passwords, email and biographydescription to the database.
+    * If there is alreadey existing user with the entered email then, it will return error.
+    * Finally, redirect user to login page.
+    */
 app.post("/register", async (req, res) => {
   console.log("inside post funct");
   const existingUser = await User.findOne({ email: req.body.email });
@@ -817,7 +904,6 @@ app.post("/register", async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-
     biographydescription: req.body.biographydescription,
 
   });
@@ -834,35 +920,28 @@ const inMemoryStorage = multer.memoryStorage()
 const uploadStrategy = multer({ storage: inMemoryStorage }).single('video_input');
 
 app.post("/uploadVideo", uploadStrategy, async (req, res) => {
+
   const name = loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   await uploadFile(req, name);
+
 
   const newVideo = new Video({
     email: loggedInUser.email,
     video_name: name,
-    //created_at: req.body.created_at,
+    section_info: req.body.sections,
+    video_title: req.body.video_title
   });
+  console.log(req.body.sections);
 
   await newVideo.save();
+
   setTimeout(() => res.redirect("/ProfilePage"), 2500);
 })
 
-//****************************************** */
-
-app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
-  const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-  await uploadFile(req, ppname);
-
-  const newVideo = new Video({
-    email: loggedInUser.email,
-    video_name: ppname,
-    //created_at: req.body.created_at,
-  });
-
-  await newVideo.save();
-  res.redirect("/ProfilePage");
-})
-
+/**
+    * Save scout accounts' name, email, and request message to the databse in scoutrequest colletion.
+    * Finally, redirect user to login page.
+    */
 app.post("/scoutSignupRequest", async (req, res) => {
   const name = req.body.sname;
   const email = req.body.semail;
@@ -875,8 +954,6 @@ app.post("/scoutSignupRequest", async (req, res) => {
     username: name,
     email: email,
     smessage: message,
-
-    //created_at: req.body.created_at,
   });
 
   await newReq.save();
@@ -884,6 +961,12 @@ app.post("/scoutSignupRequest", async (req, res) => {
   res.redirect("/login");
 })
 
+/**
+    * Save  accounts' password, email to database.
+    * With the help of loggedInUser the user has checked that exist or not.
+    * The type of the user checked(scout or normal user).
+    * After user account type check the scout redirected to ProfilePageScout and normal user redirected to Profilepage.
+    */
 
 app.post("/login", function (req, res) {
   const email = req.body.email;
@@ -910,6 +993,7 @@ app.post("/login", function (req, res) {
     res.redirect("/error");
   })
 })
+
 app.post("/search", function (req, res) {
   const username = req.body.username;
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
@@ -934,47 +1018,35 @@ app.post("/search", function (req, res) {
   })
   
 })
+
+/**
+    * Get username of the account that requested meeting.
+    * Find related user using findone function and send username as a variable.
+    * Save requested meeting account username to scout account reqs.
+    * Save scout account username that request meeting to user account reqs.
+    * Finally, redirect user to login page.
+    */
+
 app.post("/requestmeeting",  async (req, res) => {
   const uid = req.body.username;
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   const findResult = await User.findOne({
     username: uid,
-
   });
-  console.log(findResult);
 User.findOne({ email: loggedInUser?.email }).then(async function (foundUser){
+
 findResult.reqs.push(foundUser.username);
 foundUser.reqs.push(findResult.username);
 
-findResult.save();
-foundUser.save();
+await findResult.save();
+await foundUser.save();
 })
 
 console.log(findResult)
 
-  res.redirect("/ProfilePageScout");
+  res.redirect("/profilePageScout");
 
 })
-/*app.post("/saveuser",  async (req, res) => {
-  const uid = req.body.username;
-  const findResult = await User.findOne({
-    username: uid,
 
-  });
-  console.log(findResult);
-User.findOne({ email: loggedInUser?.email }).then(async function (foundUser){
-findResult.favorites.push(foundUser.username);
-foundUser.favorites.push(findResult.username);
-
-findResult.save();
-foundUser.save();
-})
-
-console.log(findResult)
-
-  res.redirect("/ProfilePageScout");
-
-})*/
 app.post("/saveuser",  async (req, res) => {
   const username = req.body.username;
 User.findOne({ username: loggedInUser?.username }).then(async function (loggedInUser){
@@ -989,19 +1061,19 @@ console.log(loggedInUser)
 
 })
 
-
-
-
+/**
+    * Get help message of the user to save it to the database.
+    * Using findone function to find loggedin user.
+    * Save message to the found user message area in database.
+    * Give error if there. is a problim in saving.
+    * Finally, redirect user to the profilepage.
+    */
 app.post("/help",  async (req, res) => {
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-
   const message = req.body.message;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
-    console.log("ff");
-    console.log(foundUser);
     foundUser.message = message;
-
+// bak
 
     console.log("trying to update password");
     await foundUser.save();
@@ -1015,18 +1087,19 @@ app.post("/help",  async (req, res) => {
 
 })
 
-app.post("/helpScout",  async (req, res) => {
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+/**
+    * Get username of the account that requested meeting.
+    * Find related user using findone function and send username as a variable.
+    * Save requested meeting account username to scout account reqs.
+    * Save scout account username that request meeting to user account reqs.
+    * Finally, redirect user to scout profile page.
+    */
 
+app.post("/helpScout",  async (req, res) => {
   const message = req.body.message;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
-    console.log("ff");
-    console.log(foundUser);
     foundUser.message = message;
-
-
-    console.log("trying to update password");
     await foundUser.save();
 
     loggedInUser = foundUser;
@@ -1039,53 +1112,82 @@ app.post("/helpScout",  async (req, res) => {
 })
 
 
+app.post("/accept",  async (req, res) => {
+  const requester = req.body.requester;
+  console.log(requester);
+  const findResult = await User.findOne({
+    username: requester,
+  });
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    foundUser.accreqs.push(requester);
+    findResult.accreqs.push(foundUser.username);
+
+    foundUser.reqs.splice(requester);
+    findResult.reqs.splice(foundUser.username);
+
+     await foundUser.save();
+     await findResult.save();
+     console.log(foundUser);
+
+
+    res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("accept error"); // Fail
+    console.log(error);
+  })
+})
+app.post("/reject",  async (req, res) => {
+  const rejected = req.body.rejected;
+  console.log(rejected);
+  const findResult = await User.findOne({
+    username: rejected,
+  });
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    console.log(foundUser);
+    foundUser.rejreqs.push(rejected);
+    findResult.rejreqs.push(foundUser.username);
+
+    foundUser.reqs.splice(rejected);
+    findResult.reqs.splice(foundUser.username);
+
+    await foundUser.save();
+    await findResult.save();
+
+
+    res.redirect("/ProfilePage");
+  }).catch(function (error) {
+    console.log("reject error"); // Fail
+    console.log(error);
+  })
+})
+
+
 app.post("/editProfile",  async (req, res) => {
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
 
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
   const phone = req.body.phone;
+  const message = req.body.message;
 
   User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
-    console.log("ff");
-    console.log(foundUser);
     foundUser.username = username;
     foundUser.email = email;
     foundUser.password = password;
     foundUser.phone = phone;
-
+    foundUser.message = message;
 
     console.log("trying to update password");
     await foundUser.save();
 
     loggedInUser = foundUser;
-  //  await uploadFile(req, photoName);
-  //  const newVideo = new Video({
-  //    email: loggedInUser.email,
-  //    video_name: photoName,
-      //created_at: req.body.created_at,
-  //  });
-  //  await newVideo.save();
     res.redirect("/ProfilePage");
   }).catch(function (error) {
     console.log("EDIT error"); // Fail
     console.log(error);
   })
 })
-app.post("/uploadPhoto", uploadStrategy, async (req, res) => {
-  const ppname = 'P' + loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-  await uploadFile(req, ppname);
 
-  const newVideo = new Video({
-    email: loggedInUser.email,
-    video_name: ppname,
-    //created_at: req.body.created_at,
-  });
-
-  await newVideo.save();
-  res.redirect("/ProfilePage");
-})
 app.post("/editProfileScout", function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
@@ -1113,27 +1215,14 @@ app.post("/editProfileScout", function (req, res) {
   })
 })
 
-app.get("/logout", function (req, res) {
-  loggedInUser = null;
-  res.redirect("/login");
-})
-
-app.get("/deleteUser", function (req, res) {
-  User.deleteOne({ email: loggedInUser?.email }).then(function () {
-    console.log("User deleted");
-    loggedInUser = null;
-    res.redirect("/login");
-
-  }).catch(function (error) {
-    console.log(error); // Failure
-  });
-});
-
-
+/**
+    * Save accounts' username,password, email, phone and other information to the database.
+    * With the help of loggedInUser, the user is checked whether it exist in the database or not.
+    * After the user is found with matching email, the newly entered information varibales is set as the user's information.
+    * After the save process, user is redirected to information page.
+    */
 
 app.post("/informationEdit", async (req, res) => {
-  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
@@ -1166,13 +1255,7 @@ app.post("/informationEdit", async (req, res) => {
     await foundUser.save();
 
     loggedInUser = foundUser;
-  //  await uploadFile(req, photoName);
-  //  const newVideo = new Video({
-  //    email: loggedInUser.email,
-  //    video_name: photoName,
-      //created_at: req.body.created_at,
-  //  });
-  //  await newVideo.save();
+
     res.redirect("/information");
   }).catch(function (error) {
     console.log("EDIT error"); // Fail
@@ -1180,16 +1263,54 @@ app.post("/informationEdit", async (req, res) => {
   })
 })
 
+app.get("/profile", function (req, res) {
+  loggedInUser = null;
+  res.redirect("/login");
+})
+/**
+    * Save scouts' username,password, email, phone and other information to the database.
+    * With the help of loggedInUser, the scout is checked whether it exist in the database or not.
+    * After the scout is found with matching email, the newly entered information varibales is set as the scout's information.
+    * After the save process, scout is redirected to information scout page.
+    */
 
+app.post("/informationEditScout", async (req, res) => {
 
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+  const scoutposition = req.body.scoutposition;
+  const club = req.body.club;
+  const age = req.body.age;
+  //diger
+  User.findOne({ email: loggedInUser?.email }).then(async function (foundUser) {
+    foundUser.username = username;
+    foundUser.email = email;
+    foundUser.password = password;
+    foundUser.age = age;
+    foundUser.scoutposition = scoutposition;
+    foundUser.club = club;
+    await foundUser.save();
+
+    loggedInUser = foundUser;
+    res.redirect("/informationScout");
+  }).catch(function (error) {
+    console.log("EDIT error"); // Fail
+    console.log(error);
+  })
+});
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
 
-//let port = process.env.PORT;
-//if (port == null || port == "") {
-//port = 3000;
-//}
-//app.listen(port);
+
+
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+port = 3000;
+}
+app.listen(port);
+
 app.listen(3000, function () {
-  console.log("server on 3000");
+ console.log("server on 3000");
 });

@@ -17,14 +17,16 @@
       </div>
 
       <div class="navigation-icons">
-        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="/homePageScout"><i class="fa fa-home"></i></a>
         <a class="navigation-link" href="/ranking"><i class="fa fa-star"></i></a>
-        <a class="navigation-link" href="/savedpage"><i class="fa fa-bookmark"></i></a>
-        <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
 
-        <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
-        <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
+        <a class="navigation-link" href="/savedpage"><i class="fa fa-bookmark"></i></a>
+        <a class="navigation-link" href="/requestmeeting"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/profilePageScout"><i class="fa fa-user"></i></a>
+   <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
       </div>
+
+ 
     </div>
 
     <div class="profile-page">
@@ -45,7 +47,9 @@
                   <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=3"><i class="fa"  style="color:rgb(0, 0, 0)">&#xf005;</i></a>
                   <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=4"><i class="fa"  style="color:rgb(0, 0, 0)">&#xf005;</i></a>
                   <a class="scout-rate" href="/rateVideo?username=<%= item.key %>&rate_score=5"><i class="fa"  style="color:rgb(0, 0, 0)">&#xf005;</i></a>
+
                 </h3>
+
                 <video width="400" controls>
                   <source src="<%= item.value %>" type="video/mp4">
                   Your browser does not support HTML video.
@@ -63,7 +67,8 @@
     </div>
 
 
-
+    </div>
+    
 
   </body>
 
@@ -73,4 +78,6 @@
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
 
+
   </script>
+

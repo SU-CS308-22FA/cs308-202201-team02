@@ -1,5 +1,6 @@
 <%- include('partials/profileheader') %>
 
+
   <body>
     <div class="navigation">
       <div class="logo">
@@ -18,8 +19,10 @@
 
       <div class="navigation-icons">
         <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
+
         <a class="navigation-link" href="/ranking"><i class="fa fa-star"></i></a>
         <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
+
 
         <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
         <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
@@ -58,6 +61,7 @@
                           <ul>
                           <% for(let i = 0; i < reqs.length; i++){ %>
                               <li><%= reqs[i] %></li>
+
                               <form action="/accept" method="post">
                                 <button type="submit" name ="requester" id="requester" value= <%= reqs[i] %> >Accept</button>
                               </form>
@@ -83,6 +87,7 @@
                                           </label>
                                       </td>
                                       <br>
+
 
                                       <ul>
                                       <% for(let i = 0; i < accreqs.length; i++){ %>
