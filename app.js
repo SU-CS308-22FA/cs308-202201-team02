@@ -1050,14 +1050,19 @@ console.log(findResult)
 app.post("/saveuser",  async (req, res) => {
   const username = req.body.username;
 User.findOne({ username: loggedInUser?.username }).then(async function (loggedInUser){
-loggedInUser.favorites.push(chosenUser?.username);
+  if (loggedInUser.role !== ROLE.BASIC) {
+    loggedInUser.favorites.push(chosenUser?.username);
 
-loggedInUser.save();
+    loggedInUser.save();
+    res.redirect("/ProfilePageScout");
+  }else {
+    currentError = "Only scout can save"
+      res.redirect("/error");
+      return;
+  }
 })
 
 console.log(loggedInUser)
-
-  res.redirect("/ProfilePageScout");
 
 })
 
@@ -1305,11 +1310,11 @@ app.post("/informationEditScout", async (req, res) => {
 
 
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-port = 3000;
-}
-app.listen(port);
+//let port = process.env.PORT;
+//if (port == null || port == "") {
+//port = 3000;
+//}
+//app.listen(port);
 
 app.listen(3000, function () {
  console.log("server on 3000");
