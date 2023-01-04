@@ -15,21 +15,30 @@ class PythonOrgSearch(unittest.TestCase):
 
     def test_search_in_talentland(self):
         driver = self.driver
-        time.sleep(2)
+        time.sleep(1)
 
         driver.get("https://talentland1.herokuapp.com/login")
         self.assertIn("TALENT LAND", driver.title)
         email = driver.find_element(By.NAME, "email")
         password = driver.find_element(By.NAME, "password")
-        email.send_keys("try@gmail.com")
-        time.sleep(2)
-        password.send_keys("try")
-        time.sleep(2)
+        email.send_keys("deneme1@gmail.com")
+        time.sleep(1)
+        password.send_keys("123")
+        time.sleep(1)
         password.send_keys(Keys.RETURN)
         
         
-        time.sleep(2)
+        time.sleep(1)
         self.assertIn("username", driver.page_source)
+
+        driver.find_element(By.LINK_TEXT, "Edit Profile").click()
+        time.sleep(1)
+
+        driver.find_element(By.LINK_TEXT, "Delete Account").click()
+
+        self.assertIn("email", driver.page_source)
+        time.sleep(3)
+
 
     def tearDown(self):
         self.driver.close()
