@@ -45,7 +45,7 @@
                   </div>
                   <div class="name">
                     <h3 class="title" id="nameField"> Name </h3>
-                    <% if (user.role !== "scout" ){%>
+
                     <h6>Striker</h6>
                   </div>
                 </div>
@@ -56,13 +56,13 @@
               <p>Football Player. 18 years old. I love football</p>
 
             </div>
-<%}%>
+
             <div class="row">
               <div class="col-md-6 ml-auto mr-auto">
                 <div class="profile-tabs">
                   <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
                     <li class="nav-item">
-                    <% if (user.role !== "scout" ){%>
+
 
                       <div class="navigation-search-container">
                         <form action="/profilep" method="GET" class="form" id="form">
@@ -74,7 +74,7 @@
                           </a>
                             </form>
                       </div>
-                      <% } %>
+
 
                     </li>
 
@@ -100,7 +100,7 @@
             <center>
               <h2>Information Table</h2>
             </center>
-            <% if (user.role !== "scout" ){%>
+
             <br>
             <br>
 
@@ -173,47 +173,6 @@
 
 
             </center>
-
-
- <% } %>
-  <% if (user.role === "scout" ){%>
- <center>
-     <div>
-         <form action="/informationScout" method="POST" class="form" id="form">
-             <table>
-                 <tr>
-                   <td><label for="age"> Age </label></td>
-                   <td><p type="text" id="age" ></p></td>
-                 </tr>
-                 <tr>
-                   <td><label for="club"> Club </label></td>
-                   <td><p type="text" id="club" ></p></td>
-                 </tr>
-                 <tr>
-                     <td><label for="scoutposition"> Position/Role </label></td>
-                     <td><p type="text" id="scoutposition" ></p></td>
-                 </tr>
-               </table>
-               <style>
-                 table, th, td {
-                     border: 2px solid #245b16;
-                 }
-                 th, td {
-                     padding-top: 10px;
-                     padding-bottom: 20px;
-                     padding-left: 30px;
-                     padding-right: 40px;
-                 }
-                 </style>
-           <br>
-           <br>
-       </form>
-
-     </div>
-
- </center>
- <%}%>
-
 
 
 
