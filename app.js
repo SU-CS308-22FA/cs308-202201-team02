@@ -1160,14 +1160,19 @@ console.log(findResult)
 app.post("/saveuser",  async (req, res) => {
   const username = req.body.username;
 User.findOne({ username: loggedInUser?.username }).then(async function (loggedInUser){
-loggedInUser.favorites.push(chosenUser?.username);
+  if (loggedInUser.role !== ROLE.BASIC) {
+    loggedInUser.favorites.push(chosenUser?.username);
 
-loggedInUser.save();
+    loggedInUser.save();
+    res.redirect("/ProfilePageScout");
+  }else {
+    currentError = "Only scout can save a user"
+      res.redirect("/error");
+      return;
+  }
 })
 
 console.log(loggedInUser)
-
-  res.redirect("/ProfilePageScout");
 
 })
 
@@ -1411,6 +1416,7 @@ app.post("/informationEditScout", async (req, res) => {
 });
 //registerdan submitlenen seyi catchleriz
 //name ve password name olarak görünüyor
+
 
 
 
