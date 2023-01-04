@@ -284,7 +284,7 @@ app.get('/profilep',async(req,res,next)=>{
           Urls: urls,
         });
     
-      catch (err) {
+      }catch (err) {
         currentError = "Something went wrong when fetching videos."
         res.redirect("/error");
         return;
@@ -1305,11 +1305,11 @@ app.post("/informationEditScout", async (req, res) => {
 
 
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-port = 3000;
-}
-app.listen(port);
+//let port = process.env.PORT;
+//if (port == null || port == "") {
+//port = 3000;
+//}
+//app.listen(port);
 
 app.listen(3000, function () {
  console.log("server on 3000");
