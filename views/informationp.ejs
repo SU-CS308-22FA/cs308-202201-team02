@@ -9,7 +9,7 @@
       <div class="navigation-search-container">
         <i class="fa fa-search"></i>
 
-        <form action="/profilep" method="GET" class="form" id="form">
+        <form action="/search" method="POST" class="form" id="form">
           <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
           <button>Search</button>
             </form>
@@ -45,39 +45,36 @@
                   </div>
                   <div class="name">
                     <h3 class="title" id="nameField"> Name </h3>
+                    <% if (user.role !== "scout" ){%>
                     <h6>Striker</h6>
                   </div>
                 </div>
               </div>
             </div>
+
             <div class="description text-center">
               <p>Football Player. 18 years old. I love football</p>
 
             </div>
-
+<%}%>
             <div class="row">
               <div class="col-md-6 ml-auto mr-auto">
                 <div class="profile-tabs">
                   <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
                     <li class="nav-item">
+                    <% if (user.role !== "scout" ){%>
 
                       <div class="navigation-search-container">
-
-
                         <form action="/profilep" method="GET" class="form" id="form">
                           <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
                           <button > Search </button>
                           <a class="nav-link" data-toggle="tab">
-
                            <i class="material-icons">videocam</i>
                             Videos
                           </a>
-
                             </form>
-
                       </div>
-
-
+                      <% } %>
 
                     </li>
 
@@ -94,77 +91,16 @@
             </div>
 
             <!--
-              <form action="/information" method="post"></form>
-              <div>
-                <br>
-                <br>
 
-                <p align="right">
-                  <input type="button" value="Edit" />
-                </p>
-
-                <table style="width: 10px;"  >
-                  <style>
-                    table, th, td {
-                      border:1px solid black;
-
-                    }
-                    </style>
-                    <br>
-                    <br>
-                    <br>
-
-                  <tr>
-                    <th>Full Name</th>
-                  <tr>
-
-                  </tr>
-                    <th>Height</th>
-                  </tr>
-
-                  </tr>
-                    <th>Weight</th>
-                  </tr>
-
-                  </tr>
-                    <th>Nationality</th>
-                  </tr>
-
-                  </tr>
-                    <th>Foot</th>
-                  </tr>
-
-                  </tr>
-                    <th>Main Position</th>
-                  </tr>
-
-                  </tr>
-                    <th>Pace (m/s)</th>
-                  </tr>
-
-                  <td>
-                    <tr>
-                      <td> <input type="height" name="height" required /> </td>
-                      <td> <input type="weight" name="weight" required /> </td>
-                      <td> <input type="nationality" name="nationality" required /> </td>
-                      <td> <input type="foot" name="foot" required /> </td>
-                      <td> <input type="mainposition" name="mainposition" required /> </td>
-                      <td> <input type="pace" name="pace" required /> </td>
-                    </tr>
-                  </td>
-
-
-                </table>
-
-              </div>
             -->
 
             <br>
             <br>
+
             <center>
               <h2>Information Table</h2>
             </center>
-
+            <% if (user.role !== "scout" ){%>
             <br>
             <br>
 
@@ -239,6 +175,46 @@
             </center>
 
 
+ <% } %>
+  <% if (user.role === "scout" ){%>
+ <center>
+     <div>
+         <form action="/informationScout" method="POST" class="form" id="form">
+             <table>
+                 <tr>
+                   <td><label for="age"> Age </label></td>
+                   <td><p type="text" id="age" ></p></td>
+                 </tr>
+                 <tr>
+                   <td><label for="club"> Club </label></td>
+                   <td><p type="text" id="club" ></p></td>
+                 </tr>
+                 <tr>
+                     <td><label for="scoutposition"> Position/Role </label></td>
+                     <td><p type="text" id="scoutposition" ></p></td>
+                 </tr>
+               </table>
+               <style>
+                 table, th, td {
+                     border: 2px solid #245b16;
+                 }
+                 th, td {
+                     padding-top: 10px;
+                     padding-bottom: 20px;
+                     padding-left: 30px;
+                     padding-right: 40px;
+                 }
+                 </style>
+           <br>
+           <br>
+       </form>
+
+     </div>
+
+ </center>
+ <%}%>
+
+
 
 
             <div class="tab-content tab-space">
@@ -255,6 +231,7 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -278,6 +255,10 @@
     document.getElementById("foot").innerHTML = user.foot;
     document.getElementById("main_Position").innerHTML = user.main_Position;
     document.getElementById("pace").innerHTML = user.pace;
+    document.getElementById("biographydescription") = user.biographydescription;
+    document.getElementById("age") = user.age;
+    document.getElementById("club") = user.club;
+    document.getElementById("scoutposition") = user.scoutposition;
 
     document.getElementById("message").innerHTML = user.message;
 

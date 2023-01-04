@@ -10,7 +10,7 @@
       <div class="navigation-search-container">
         <i class="fa fa-search"></i>
 
-        <form action="/profilep" method="GET" class="form" id="form">
+        <form action="/search" method="POST" class="form" id="form">
           <input id="username_field" type="text" placeholder="Please enter username" name="username" required />
           <button>Search</button>
             </form>
@@ -88,6 +88,7 @@
                                       </td>
                                       <br>
 
+
                                       <ul>
                                       <% for(let i = 0; i < accreqs.length; i++){ %>
                                           <li><%= accreqs[i] %></li>
@@ -109,7 +110,6 @@
     localStorage.setItem('token', "<%= JSON.stringify(token) %>");
     // BURAYI DUZENLE
     var user = JSON.parse(`<%-user%>`);
-
     document.getElementById("nameField").innerHTML = user.username;
     document.getElementById("fullName").innerHTML = user.fullName;
     //document.getElementById("reqs").innerHTML = user.reqs;

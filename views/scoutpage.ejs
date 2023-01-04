@@ -17,15 +17,13 @@
       </div>
 
       <div class="navigation-icons">
-
-
-        <a class="navigation-link" href="/homePageScout"><i class="fa fa-home"></i></a>
+        <a class="navigation-link" href="/homePage"><i class="fa fa-home"></i></a>
         <a class="navigation-link" href="/ranking"><i class="fa fa-star"></i></a>
-        <a class="navigation-link" href="/savedpage"><i class="fa fa-bookmark"></i></a>
-         <a class="navigation-link" href="/requestmeeting"><i class="fa fa-envelope"></i></a>
+        <a class="navigation-link" href="/getmeeting"><i class="fa fa-envelope"></i></a>
 
-        <a class="navigation-link" href="/ProfilePageScout"><i class="fa fa-user"></i></a>
-        <a class="navigation-link" href="/logout" ><i class="fa fa-sign-out"></i></a>
+        <a class="navigation-link" href="/uploadVideo"><i class="fa fa-video-camera"></i></a>
+        <a class="navigation-link" href="/profilePage"><i class="fa fa-user"></i></a>
+        <a class="navigation-link" href="/logout"><i class="fa fa-sign-out"></i></a>
 
     </div>
     </div>
@@ -52,23 +50,6 @@
                 </div>
               </div>
             </div>
-            <div class="description text-center">
-              <a href="/editprofileScout">Edit Profile</a>
-            </div>
-            <div class="row">
-              <div class="col-md-6 ml-auto mr-auto">
-                <div class="profile-tabs">
-                  <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
-                    <li class="nav-item">
-                      <a class="nav-link" href="/informationSCout" role="tab" data-toggle="tab">
-                        <i class="material-icons">ballot</i>
-                        Information
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
 
 
           </div>
@@ -82,7 +63,8 @@
 
   <script>
     localStorage.setItem('token', "<%= JSON.stringify(token) %>");
-    // var token = localStorage.getItem('token')
+     var token = localStorage.getItem('token')
+
     var user = JSON.parse(`<%-user%>`);
     document.getElementById("nameField").innerHTML = user.username;
     document.getElementById("biographydescriptionField").innerHTML = user.biographydescription;
