@@ -105,7 +105,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default:0,
   },
-   
+
    rate_count: {
     type: Number,
     default:0,
@@ -113,7 +113,7 @@ const userSchema = new mongoose.Schema({
    overall_rate: {
     type: Number,
     default:0,
-    $round: [ "$overallrate", 2 ] 
+    $round: [ "$overallrate", 2 ]
   },
   age : String,
   club: String,
@@ -190,7 +190,7 @@ app.get("/editprofile", function (req, res) {
     res.redirect('/login');
     return;
   }
-  
+
   res.render("editprofile", {
     user: JSON.stringify({
       username: loggedInUser?.username,
@@ -292,7 +292,7 @@ app.get("/requestmeeting", function (req, res) {
     }),
     reqs: loggedInUser.reqs,
     accreqs: loggedInUser.accreqs,
-    
+
   });
 });
 
@@ -362,8 +362,8 @@ app.get("/homePage", async (req, res) => {
     filterObj = {
       ...filterObj, like_count: { $gt: filterByLikes }
     };
-  } 
-  
+  }
+
   if (filterByType) {
     filterObj = {
       ...filterObj, section_info: filterByType
@@ -505,7 +505,7 @@ app.get("/homePageScout", async (req, res) => {
     const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat();
     for await (let blob of blobs) {
       const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
-      
+
       const email = blob.name.split('_')[0];
       const user = await User.findOne({ email });
       if (!user) {
@@ -692,7 +692,7 @@ const inMemoryStorage = multer.memoryStorage()
 const uploadStrategy = multer({ storage: inMemoryStorage }).single('video_input');
 
 app.post("/uploadVideo", uploadStrategy, async (req, res) => {
-  
+
   const name = loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
   await uploadFile(req, name);
 
@@ -735,7 +735,7 @@ app.post("/scoutSignupRequest", async (req, res) => {
 
 /**
     * Save  accounts' password, email to database.
-    * With the help of loggedInUser the user has checked that exist or not. 
+    * With the help of loggedInUser the user has checked that exist or not.
     * The type of the user checked(scout or normal user).
     * After user account type check the scout redirected to ProfilePageScout and normal user redirected to Profilepage.
     */
@@ -778,7 +778,7 @@ app.post("/requestmeeting",  async (req, res) => {
     username: uid,
   });
 User.findOne({ email: loggedInUser?.email }).then(async function (foundUser){
-   
+
 findResult.reqs.push(foundUser.username);
 foundUser.reqs.push(findResult.username);
 
@@ -949,7 +949,7 @@ app.get("/logout", function (req, res) {
 })
 
 app.get("/deleteUser", function (req, res) {
-  
+
   User.deleteOne({ email: loggedInUser?.email }).then(function () {
     console.log("User deleted");
     loggedInUser = null;
@@ -962,7 +962,7 @@ app.get("/deleteUser", function (req, res) {
 
 /**
     * Save accounts' username,password, email, phone and other information to the database.
-    * With the help of loggedInUser, the user is checked whether it exist in the database or not. 
+    * With the help of loggedInUser, the user is checked whether it exist in the database or not.
     * After the user is found with matching email, the newly entered information varibales is set as the user's information.
     * After the save process, user is redirected to information page.
     */
@@ -1014,7 +1014,7 @@ app.get("/profile", function (req, res) {
 })
 /**
     * Save scouts' username,password, email, phone and other information to the database.
-    * With the help of loggedInUser, the scout is checked whether it exist in the database or not. 
+    * With the help of loggedInUser, the scout is checked whether it exist in the database or not.
     * After the scout is found with matching email, the newly entered information varibales is set as the scout's information.
     * After the save process, scout is redirected to information scout page.
     */
@@ -1051,11 +1051,11 @@ app.post("/informationEditScout", async (req, res) => {
 
 
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-port = 3000;
-}
-app.listen(port);
+//let port = process.env.PORT;
+//if (port == null || port == "") {
+//port = 3000;
+//}
+//app.listen(port);
 
 app.listen(3000, function () {
  console.log("server on 3000");
