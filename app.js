@@ -123,7 +123,7 @@ const userSchema = new mongoose.Schema({
     favorites:[{
       type: String,
     }],
-   
+
 
     });
 
@@ -225,14 +225,14 @@ app.get("/login", function (req, res) {
           age: findResult.age,
           club: findResult.club,
           scoutposition: findResult.scoutposition,
-          
+
 
           overall_rate: findResult.overall_rate,
         }),
         Urls: urls,
       //  reqs: data.reqs,
       })
-      
+
     //    res.send(data);
         console.log(req.query);
     //  res.render('profilep', { title: 'profile', user: data,  });
@@ -248,7 +248,7 @@ app.get("/login", function (req, res) {
 
 })*/
 app.get('/profilep',async(req,res,next)=>{
-  
+
   const { BlobServiceClient } = require("@azure/storage-blob");
   const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
   const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
@@ -279,18 +279,66 @@ app.get('/profilep',async(req,res,next)=>{
             email: chosenUser?.email,
             bio: chosenUser?.message,
             overall_rate: chosenUser?.overall_rate,
-    
+
           }),
           Urls: urls,
         });
-    
-      catch (err) {
-        currentError = "Something went wrong when fetching videos."
-        res.redirect("/error");
-        return;
-      }
+}
 
-})
+catch (err) {
+ currentError = "User not exist."
+ res.redirect("/error");
+ return;
+}
+});
+app.get('/scoutprofilep',async(req,res,next)=>{
+
+  const { BlobServiceClient } = require("@azure/storage-blob");
+  const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
+  const config = require('./config');
+  const accountName = config.getStorageAccountName();
+  const urls = [];
+  try {
+    const blobs = blobServiceClient.getContainerClient(containerName).listBlobsFlat({ prefix: chosenUser?.email });
+    const urls = [];
+
+
+    for await (let blob of blobs) {
+      const url = `https://${accountName}.blob.core.windows.net/${containerName}/${blob.name}`;
+      urls.push(url);
+    }
+    console.log(chosenUser);
+    let jwtToken = null;
+
+      jwtToken = jwt.sign({
+        email: chosenUser.email,
+        username: chosenUser.username,
+        }, "mohit_pandey_1996", {
+          expiresIn: 300000
+        });
+
+        res.render('scoutprofilep', {
+                token: jwtToken,
+          user: JSON.stringify({
+            username: chosenUser?.username,
+            email: chosenUser?.email,
+            bio: chosenUser?.message,
+            overall_rate: chosenUser?.overall_rate,
+
+          }),
+          Urls: urls,
+        });
+}
+
+catch (err) {
+ currentError = "User not exist."
+ res.redirect("/error");
+ return;
+}
+});
+
+
 
 app.get("/logout", function (req, res) {
   loggedInUser = null;
@@ -307,8 +355,7 @@ app.get("/deleteUser", function (req, res) {
     console.log(error); // Failure
   });
 });
-
-app.get('/informationp',async(req,res,next)=>{
+app.get('/scoutinformationp',async(req,res,next)=>{
   const searchField = req.query.username;
   const uid = req.body.username;
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
@@ -330,11 +377,12 @@ app.get('/informationp',async(req,res,next)=>{
 
       User.find({username:{$regex: searchField,$options: '$i'}})
         .then(data=>{
-          res.render("informationp", {
+          res.render("scoutinformationp", {
             token: jwtToken,
 
          user: JSON.stringify({
           username: findResult.username,
+
           email: findResult.email,
           bio: findResult.message,
           height : findResult.height,
@@ -348,6 +396,66 @@ app.get('/informationp',async(req,res,next)=>{
           age: findResult.age,
           club: findResult.club,
           scoutposition: findResult.scoutposition,
+          biographydescription: findResult.biographydescription,
+        }),
+
+      //  reqs: data.reqs,
+      })
+      console.log(findResult.scoutposition);
+    //    res.send(data);
+        console.log(req.query);
+    //  res.render('profilep', { title: 'profile', user: data,  });
+        })
+
+
+
+  } catch (err) {
+    currentError = "User not exist."
+    res.redirect("/error");
+    return;
+  }
+
+})
+
+app.get('/informationp',async(req,res,next)=>{
+  const searchField = req.query.username;
+  const uid = req.body.username;
+  //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
+  const findResult = await User.findOne({
+    username: searchField,
+  });
+console.log("yessss");
+  try {
+
+    console.log(findResult);
+      let jwtToken = null;
+
+      jwtToken = jwt.sign({
+        email: findResult.email,
+        username: findResult.username,
+        }, "mohit_pandey_1996", {
+          expiresIn: 300000
+        });
+
+      User.find({username:{$regex: searchField,$options: '$i'}})
+        .then(data=>{
+          res.render("informationp", {
+            token: jwtToken,
+
+         user: JSON.stringify({
+          username: findResult.username,
+
+          email: findResult.email,
+          bio: findResult.message,
+          height : findResult.height,
+          weight : findResult.weight,
+          nationality : findResult.nationality,
+          foot : findResult.foot,
+          main_Position : findResult.main_Position,
+          pace : findResult.pace,
+          fullName: findResult.fullName,
+          overall_rate: findResult.overall_rate,
+
           biographydescription: findResult.biographydescription,
         }),
 
@@ -997,7 +1105,7 @@ app.post("/login", function (req, res) {
 app.post("/search", function (req, res) {
   const username = req.body.username;
   //const photoName = 'P'+loggedInUser.email + '_' + Math.random().toString().replace(/0\./, '');
-  
+
   User.findOne({ username: username }).then(function (foundUser) {
     if (!foundUser) {
       currentError = "no user with this username."
@@ -1007,16 +1115,16 @@ app.post("/search", function (req, res) {
         chosenUser = foundUser;
         console.log(chosenUser);
         res.redirect("/profilep");
-      } else if (findResult.role === 'scout') {
+      } else {
         chosenUser = foundUser;
-        res.redirect("/ProfilePageScout");
+        res.redirect("/scoutprofilep");
       }
     }
   }).catch(function (e) {
     currentError = "search error."
     res.redirect("/error");
   })
-  
+
 })
 
 /**
@@ -1305,11 +1413,11 @@ app.post("/informationEditScout", async (req, res) => {
 
 
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-port = 3000;
-}
-app.listen(port);
+//let port = process.env.PORT;
+//if (port == null || port == "") {
+//port = 3000;
+//}
+//app.listen(port);
 
 app.listen(3000, function () {
  console.log("server on 3000");
