@@ -1056,7 +1056,7 @@ User.findOne({ username: loggedInUser?.username }).then(async function (loggedIn
     loggedInUser.save();
     res.redirect("/ProfilePageScout");
   }else {
-    currentError = "Only scout can save"
+    currentError = "Only scout can save a user"
       res.redirect("/error");
       return;
   }
